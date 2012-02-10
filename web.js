@@ -11,12 +11,6 @@ var db = mysql.createClient({
 var app = express.createServer(express.logger());
 
 app.get('/', function(req, res) {
-	console.log(process.env.RDS_ENDPOINT);
-	console.log(process.env.RDS_PORT);
-	console.log(process.env.RDS_USERNAME);
-	console.log(process.env.RDS_PASSWORD);
-	console.log(process.env.RDS_DATABASE);
-	
 	db.query('select * from UsersMeta', function(err, results, fields) {
 		console.log(err);
 		console.log(results);
