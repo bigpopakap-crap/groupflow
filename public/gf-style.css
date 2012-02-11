@@ -1,0 +1,19 @@
+/* stuff to override bootstrap things */
+:focus, a {
+	outline: none !important;
+}
+
+/* the site look-and-feel */
+body {
+	background-attachment: fixed;
+	background-color: #C0DEED;
+	background-repeat: repeat-x;
+	background-image: url("/public/images/banner_01.png");
+}
+
+/* other utility classes */
+.nowrap {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}

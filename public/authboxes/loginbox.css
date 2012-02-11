@@ -1,0 +1,34 @@
+.loginbox-partial {
+	min-width: 380px;
+}
+.loginbox-partial .color-black {
+	color: #333333;
+}
+
+.loginbox-partial .loginbox-partial-inner {
+	background-color: white;
+}
+
+.loginbox-partial legend {
+	margin-bottom: 8px;
+}
+
+.loginbox-partial .fb-login {
+	margin-bottom: 12px;
+}
+
+.loginbox-partial .inline-logo {
+	height: 16px;
+	width: 16px;
+	padding-right: 4px;
+	vertical-align: text-top;
+}
+
+.loginbox-partial .input-field {
+	width: 100%;
+}
+
+.loginbox-partial .login-button {
+	padding-left: 12px;
+	padding-right: 12px;
+}

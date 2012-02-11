@@ -1,0 +1,23 @@
+<%/*
+	Includes stylesheets and scripts, making sure not to include anything twice
+
+	Variables expected by this component:
+		- resources (object with attributes equal to the included resources)
+		- stylesheets (array of urls)
+		- scripts (array of urls)
+*/%>
+<%
+for (var i=0; i < stylesheets.length; i++) {
+	if (!resources[stylesheets[i]]) {
+		%><link rel="stylesheet" href="<%= stylesheets[i] %>"><%
+		resources[stylesheets[i]] = true;
+	}
+}
+%><%
+for (var i=0; i < scripts.length; i++) {
+	if (!resources[scripts[i]]) {
+		%><script type="text/javascript" src="<%= scripts[i] %>"></script><%
+		resources[scripts[i]] = true;
+	}
+}
+%>

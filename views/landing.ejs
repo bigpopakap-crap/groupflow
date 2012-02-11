@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= process.env.APP_NAME %><% if (user) { %> - <%= user.name.full %><% } %></title>
+	<link href="public/images/favicon_01.png" rel="shortcut icon">
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/gf-style.css',
+				'/public/landing.css'
+			],
+			scripts: []
+		}) %>
+</head>
+<body class="align-banner fix-banner">
+	<%- partial('partials/topbar.ejs') %>
+
+	<div class="container container-fluid">
+		<div class="row-fluid over-banner">
+			<img src="/public/images/brandlogo_01_134_134.png">
+			<span class="title"><%= process.env.APP_NAME %></span>
+		</div>
+
+		<div class="row-fluid section">
+			<div class="pull-left">
+				<%- partial('partials/authboxes/loginbox.ejs') %>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/style.css',
+				'/public/authboxes/loginbox.css'
+			],
+			scripts: []
+		}) %>
+</head>
+<body>
+	<div class="loginbox-partial">
+		<div class="loginbox-partial-inner alert alert-info">
+			<legend>Login to <%= process.env.APP_NAME %></legend>
+
+			<div class="fb-login color-black">
+				<span><a href="/auth/login/facebook"><img class="inline-logo" src="/public/images/facebook/f_logo.png">Login with Facebook</a></span>
+				<span class="pull-right">(<a href="#">What's this?</a>)</span>
+				<%/* <!-- TODO make this "what's this" work --> */%>
+			</div>
+
+			<form class="gf-login" method="post" action="/auth/login/password">
+				<h7 class="color-black">Or enter your userid and password:</h7>
+				<fieldset>
+					<div><input name="userid" class="input-field input-xlarge" type="text" placeholder="userid"></div>
+					<div><input name="password" class="input-field input-xlarge" type="password" placeholder="password"></div>
+					<div>
+						<input class="login-button btn btn-primary" type="submit" value="Login">
+						<a class="pull-right" href="/auth/register">Create an account</a>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
+

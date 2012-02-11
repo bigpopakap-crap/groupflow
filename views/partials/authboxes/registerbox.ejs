@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/style.css',
+				'/public/authboxes/registerbox.css'
+			],
+			scripts: []
+		}) %>
+</head>
+<body>
+	<div class="registerbox-partial">
+		<div class="registerbox-partial-inner alert alert-info">
+			<form class="form-vertical" method="post" action="/auth/register">
+				<legend>Create a <%= process.env.APP_NAME %> account</legend>
+
+				<fieldset>
+					<div class="control-group">
+						<label class="control-label">Your desired userid (must be available)</label>
+						<div class="controls">
+							<input name="userid" class="input-xlarge" type="text" placeholder="myusername23">
+						</div>
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<div class="control-group">
+						<label class="control-label">Choose a password</label>
+						<div class="controls">
+							<input name="password" class="input-xlarge" type="password" placeholder="password">
+							<input name="password2" class="input-xlarge" type="password" placeholder="confirm password">
+						</div>
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<div class="control-group">
+						<label class="control-label">Your full name</label>
+						<div class="controls">
+							<input name="first_name" class="input-xlarge" type="text" placeholder="first name">
+							<input name="last_name" class="input-xlarge" type="text" placeholder="last name">
+						</div>
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<div class="control-group">
+						<label class="control-label">Your email address</label>
+						<div class="controls">
+							<input name="email" class="input-xlarge" type="emamil" placeholder="yourname@example.com">
+						</div>
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<div class="form-actions">
+						<input class="register-button btn-primary" type="submit" value="Register">
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

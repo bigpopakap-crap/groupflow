@@ -1,0 +1,19 @@
+.registerbox-partial .registerbox-partial-inner {
+	background-color: white;
+}
+.registerbox-partial .color-black {
+	color: #333333;
+}
+
+.registerbox-partial form {
+	margin-bottom: 0px;
+}
+
+.registerbox-partial .register-button {
+	padding-left: 12px;
+	padding-right: 12px;
+}
+
+.registerbox-partial .control-group {
+	width: 100%;
+}

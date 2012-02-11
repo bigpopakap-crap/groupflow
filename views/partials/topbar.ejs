@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/style.css',
+				'/public/topbar.css'
+			],
+			scripts: [
+				'/public/lib/jquery/jquery.min.js',
+				'/public/lib/bootstrap/js/bootstrap.min.js'
+			]
+		}) %>
+</head>
+<body>
+	<div class="topbar-partial">
+		<div class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<!-- topbar content -->
+					<a class="brand" href="/">
+						<%= process.env.APP_NAME %>
+						<% if (user) { %>
+							<span class="notification-num label label-important" title="Notifications">6</span>
+						<% } %>
+					</a>
+
+					<% if (user) { %>
+						<ul class="nav pull-right">
+							<%/* TODO figure out how to make image part of the dropdown */%>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle user-name nowrap"
+											data-toggle="dropdown">
+									<b class="caret"></b>
+									<%= user.name.full %>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a href="/settings">Account settings</a></li>
+									<li><a href="/feedback">Send feedback</a></li>
+									<% if (gftools.canAccess) { %>
+										<li class="divider"></li>
+										<li><a href="/gftools/commandline">Command line</a></li>
+										<li><a href="/gftools/datamgr">Data manager</a></li>
+									<% } %>
+									<li class="divider"></li>
+									<li><a href="/auth/logout">Logout</a></li>
+								</ul>
+							</li>
+							<li>
+								<img class="profile-picture" src="/api/users/me/picture?type=square">
+							</li>
+						</ul>
+					<% } %>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

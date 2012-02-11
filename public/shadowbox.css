@@ -1,0 +1,22 @@
+.shadowbox-partial {
+	position: fixed;
+	z-index: -50;
+	top: 0px;
+	bottom: 0px;
+	background-color: white;
+	left: 50%;
+	
+	box-shadow: 0 0 16px #333333;
+	-moz-box-shadow: 0 0 16px #333333;
+	-webkit-box-shadow: 0 0 16px #333333;
+	-o-box-shadow: 0 0 16px #333333;
+
+	width: 820px;
+	margin-left: -410px;
+}
+
+.container,
+.container-fluid,
+.content-width {
+	width: 780px !important;
+}

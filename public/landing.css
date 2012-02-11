@@ -1,0 +1,25 @@
+body.align-banner {
+	padding-top: 88px;
+}
+
+body.fix-banner {
+	background-attachment: scroll;
+}
+
+.over-banner {
+	margin-top: 
+	height: 134px;
+	padding-bottom: 20px;
+	padding-top: 20px;
+}
+.over-banner .title {
+	font-size: 134px;
+	line-height: 134px;
+	vertical-align: top;
+	margin-left: 24px;
+}
+
+.section {
+	padding-top: 12px;
+	padding-bottom: 12px;
+}
