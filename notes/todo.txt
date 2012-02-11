@@ -1,0 +1,5 @@
+1. re-do login auth (with errors, and client validation)
+2. re-do registration
+3. re-do facebook linking
+4. create command-line, db-command-line and API doc
+5. continue working on API with just the command line
