@@ -17,17 +17,43 @@ exports.configure = function(app, url_prefix) {
 	On success: returns the user object
 	On error: returns some form validation error
 */
-exports.register = function(user, params, callback) {
+exports.register = function(req, params, callback) {
+	//do synchronous checking of the input params
 	var paramErrors = api_validate.validate(params, {
-		'param': {
-			required: true,
-			minlen: 2,
-			maxlen: 12,
-			notlike: [{ val: 'Groupflow', tol: 2}]
-		}
+		userid: { required: true, minlen: 4, maxlen: 40, isword: true,
+					singleunderscores: true, nowhite: true, startletter: true,
+					notlike: [{ val: 'Groupflow', tol: 4, ignorecase: true }] },
+		password: { required: true, minlen: 6, maxlen: 30, nowhite: true },
+		password2: { required: true, custom: function(val, params) {
+						if (val !== params.password)
+							return {
+								devMsg: 'Passwords do not match',
+								userMsg: 'Passwords do not match'
+							};
+						else return null;
+					}},
+		first_name: { required: true, maxlen: 60, isname: true, startcapletter: true,
+					singlespaces: true, singledashes: true, singledots: true, 
+					notrailingwhite: true },
+		last_name: { required: true, maxlen: 60, isname: true, startcapletter: true,
+					singlespaces: true, singledashes: true, singledots: true, 
+					notrailingwhite: true },
+		email: { required: true, maxlen: 60, isemail: true }
 	});
 
-	//for now, don't wrap in error object
-	callback(paramErrors);
+	//if there were already errors, return them
+	if (paramErrors) {
+		return callback(api_errors.badFormParams(req.user, params, paramErrors);
+	}
+	else {
+		//TODO check if the user exists already
+		return callback(api_errors.userIdTaken(req.user, params));
+
+		//TODO create the user
+
+		//TODO log in with the user
+
+		//TODO return the user
+	}
 }
 

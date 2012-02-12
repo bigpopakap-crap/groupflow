@@ -31,3 +31,28 @@ exports.badInputParams = function (user, params, paramErrors) {
 		nestedError: null
 	});
 }
+
+/* an error when the input parameters have errors, and it is expected that the user entered a form */
+exports.badFormParams = function (user, params, paramErrors) {
+	return wrapError(params, {
+		statusCode: 400,
+		errorCode: 'BAD_FORM_PARAMS',
+		devMsg: 'The input parameters did not satisfy the necessary constraints. See "paramErrors" value',
+		userMsg: 'Some fields were invalid',
+		paramErrors: paramErrors,
+		nestedError: null
+	});
+}
+
+/* an error when a user tries to register with a taken userid */
+exports.userIdTaken = function (user, params) {
+	return wrapError(params, {
+		statusCode: 400,
+		errorCode: 'USER_ID_TAKEN',
+		devMsg: 'The requested userid already exists',
+		userMsg: 'Sorry, that userid has already been taken',
+		paramErrors: {},
+		nestedError: null
+	});
+}
+

@@ -13,11 +13,20 @@
 		minlen (int) - enforces a min # of characters (0 means that no min-length is enforced)
 		maxlen (int) - enforces max # of characters	(0 means that no max-length is enforced. the "required" constraint will catch that case)
 		isnum (bool) - requires that the field can be converted to a number
+		isalpha (bool) - requires that the field only contains a-zA-Z and spaces
 		isword (bool) - requires that the field consists of only word characters (letters, nums, and _ )
-		singleunderscores (bool) - requires that there are no underscores next to each other		
+		isname (bool) - requires that the field only has a-zA-Z, spaces, dashes and periods		
+		startletter (bool) requires that the field starts with a-zA-Z	
+		startcapletter (bool) - requires that the field starts with A-Z	
+		singlespaces (bool) - requires that the field doesn't have any spaces next to each other
+		singleunderscores (bool) - requires that there are no underscores next to each other
+		singledashes (bool) - requires that there are no dashes next to each other
+		singledots (bool) - requires that there are not periods next to eaach other	
 		nowhite (bool) -requires that there be no whitespace		
+		notrailingwhite (bool) - requires that the field doesn't have trailing whitespace
 		inrange (arr) - requires that the field equals something in the given array.
 						if the array is empty, this check will be skipped
+		isemail (bool) - checks that it is a possibly-valid email
 		notlike (arr) - requires that the field doesn't resemble any of the given words
 						(calculated by levenstein distance). the elements of the array
 						must be objects like this:
@@ -36,10 +45,17 @@ exports.validate = function(params, constraints) {
 		var minlen = constraints[field].minlen;
 		var maxlen = constraints[field].maxlen;
 		var isnum = constraints[field].isnum;
+		var isalpha = constraints[field].isalpha;
 		var isword = constraints[field].isword;
+		var isname = constraints[field].isname;
+		var startletter = constraints[field].startletter;
+		var startcapletter = constraints[field].startcapletter;
+		var singlespaces = constraints[field].singlespaces;
 		var singleunderscores = constraints[field].singleunderscores;
 		var nowhite = constraints[field].nowhite;
+		var notrailingwhite = constraints[field].notrailingwhite;
 		var inrange = constraints[field].inrange;
+		var isemail = constraints[field].isemail;
 		var notlike = constraints[field].notlike;
 		var custom = constraints[field].custom;
 
@@ -66,21 +82,57 @@ exports.validate = function(params, constraints) {
 			//not a number
 			paramErrors[field] = not_number_error(field);
 
+		else if (isalpha && !isAlpha(value))
+			//not only letters and spaces
+			paramErrors[field] = not_alpha_error(field);
+
 		else if (isword && !isWord(value))
 			//not a word field
 			paramErrors[field] = not_word_error(field);
+
+		else if (isname && !isName(value))
+			//not a name field
+			paramErrors[field] = not_name_error(field);
+
+		else if (startletter && !startsLetter(value))
+			//doesn't start with a letter
+			paramErrors[field] = not_start_letter_error(field);
+
+		else if (startcapletter && !startsCapLetter(value))
+			//doesn't start with a capital letter
+			paramErrors[field] = not_start_cap_letter_error(field);
+
+		else if (singlespaces && hasAdjacentSpaces(value))
+			//has adjacent spaces
+			paramErrors[field] = adjacent_spaces_error(field);
 
 		else if (singleunderscores && hasAdjacentUnderscores(value))
 			//has multiple underscores together
 			paramErrors[field] = adjacent_underscores_error(field);
 
+		else if (singledashes && hasAdjacentDashes(value))
+			//has adjacent dashes
+			paramErrors[field] = adjacent_dashes_error(field);
+
+		else if (singledots && hasAdjacentPeriods(value))
+			//has adjacent periods
+			paramErrors[field] = adjacent_dots_error(field);
+
 		else if (nowhite && hasWhitespace(value))
 			//contains whitespace
 			paramErrors[field] = has_whitespace_error(field);
 
+		else if (notrailingwhite && hasTrailingWhitespace(value))
+			//has trailing whitespace
+			paramErrors[field] = trailing_white_error(field);
+
 		else if (inrange && inrange.length > 0 && !arrContains(inrange, value))
 			//not in the range!
 			paramErrors[field] = not_in_range_error(field, inrange);
+
+		else if (isemail && !isEmail(value))
+			//not a possible email address
+			paramErrors[field] = not_email_error(field);
 
 		else if (notlike && (temp = resembles(value, notlike)))
 			//the word resembles the taboo string in "temp"
@@ -104,9 +156,29 @@ function isNumber(str) {
 	else return !isNaN(str);						//if it is NOT NaN, return true
 }
 
+//helper to determine if the words has only spaces and letters
+function isAlpha(str) {
+	return /^[a-zA-Z ]*$/.test(str);
+}
+
 //helper to determine if there are only words characters in the field
 function isWord(str) {
 	return /^\w*$/.test(str);
+}
+
+//helper to determine if there are only letters, spaces, dashes and dots
+function isName(str) {
+	return /^[a-zA-Z.- ]*$/.test(str);
+}
+
+//helper to determine if the string starts with a letter
+function startsLetter(str) {
+	return /^[a-zA-Z]/.test(str);
+}
+
+//helper to determine if the string starts with a capital letter
+function startsCapLetter(str) {
+	return /^[A-Z]/.test(str);
 }
 
 //helper to determine if a value is in an array
@@ -117,14 +189,39 @@ function arrContains(arr, val) {
 	return false;
 }
 
+//helper to determine if there are adjacent spaces
+function hasAdjacentSpaces(str) {
+	return /  /.test(str);
+}
+
 //helper to determine if the field has adjacent underscores
 function hasAdjacentUnderscores(str) {
 	return /__/.test(str);
 }
 
+//helper to determine if the field has adjacent dashes
+function hasAdjacentDashes(str) {
+	return /--/.test(str);
+}
+
+//helper to determine if the field has adjacent periods
+function hasAdjacentPeriods(str) {
+	return /\.\./.test(str);
+}
+
 //helper to determine if there is any whitespace
 function hasWhitespace(str) {
 	return /\s/.test(str);
+}
+
+//helper to determine if there is any trailing whitespace
+function hasTrailingWhitespace(str) {
+	return /\s+$/.test(str);
+}
+
+//helper to determine if the string is formatted as a possible email
+function isEmail(str) {
+	return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(str);
 }
 
 //helper to determine whether a word resembles any of the given taboo words
@@ -144,9 +241,9 @@ function resembles(str, taboos) {
 		for (var i=0; i < words.length; i++) {
 			//ignore case if requested
 			var word = ignorecase ? words[i].toLowerCase() : words[i];
-			taboo = ignorecase ? taboo.toLowerCase() : taboo;
+			var taboo_corrected = ignorecase ? taboo.toLowerCase() : taboo;
 
-			if (levenshtein(words[i], taboo) < tol)
+			if (levenshtein(words[i], taboo_corrected) < tol)
 				return taboo;
 		}
 	}
@@ -184,11 +281,40 @@ function not_number_error(field) {
 	}
 }
 
+function not_alpha_error(field) {
+	return {
+		devMsg: 'The ' + field + ' param can only have letters and spaces',
+		userMsg: 'Must only contain letters and spaces'
+	}
+}
+
 function not_word_error(field) {
 	return {
-		devMsg: 'The ' + field + ' param can only have letters, digits and underscores. ' +
-				'(Must satisfy the regexp: ^\\w*$)',
+		devMsg: 'The ' + field + ' param can only have letters, digits and underscores',
 		userMsg: 'Must only contain letters, digits and underscores'
+	}
+}
+
+function not_start_letter_error(field) {
+	return {
+		devMsg: 'The ' + field + ' param must start with a letter (a-z or A-Z)',
+		userMsg: 'Must start with a letter'
+	}
+}
+
+function not_start_cap_letter_error(field) {
+	return {
+		devMsg: 'The ' + field + ' param must start with a capital letter (A-Z). ' +
+				'Consider capitalizing the first letter for the user',
+		userMsg: 'Must start with a capital letter'
+	}
+}
+
+function adjacent_spaces_error(field) {
+	return {
+		devMsg: 'The ' + field + ' param cannot have adjacent spaces. ' +
+				'Consider converting all double-spaces to single-spaces for the user',
+		userMsg: 'Must not contain adjacent spaces'
 	}
 }
 
@@ -199,11 +325,33 @@ function adjacent_underscores_error(field) {
 	}
 }
 
+function adjacent_dashes_error(field) {
+	return {
+		devMsg: 'The ' + field + ' param cannot have adjacent dashes',
+		userMsg: 'Must not contain adjacent dashes'
+	}
+}
+
+function adjacent_dots_error(field) {
+	return {
+		devMsg: 'The ' + field + ' param cannot have adjacent periods',
+		userMsg: 'Must not contain adjacent periods'
+	}
+}
+
 function has_whitespace_error(field) {
 	return {
 		devMsg: 'The ' + field + ' param cannot have any whitespace. ' +
-				'Check for beginning or trailing whitespace, and consider trimming inputs for the user',
+				'Check for beginning or trailing whitespace, and consider trimming beginning and trailing whitespace for the user',
 		userMsg: 'Must not contain any whitespace (spaces, tabs, etc.)'
+	}
+}
+
+function trailing_white_error(field) {
+	return {
+		devMsg: 'The ' + field + ' param cannot have any trailing whitespace. ' +
+				'Check for beginning or trailing whitespace, and consider trimming inputs for the user',
+		userMsg: 'Must not contain any whitespace at the end (spaces, tabs, etc.)'
 	}
 }
 
@@ -221,6 +369,14 @@ function not_in_range_error(field, range) {
 	return {
 		devMsg: 'The ' + field + ' param must fall in the range: ' + rangeStr,
 		userMsg: 'This field must be one of: ' + rangeStr
+	}
+}
+
+function not_email_error(field) {
+	return {
+		devMsg: 'The ' + field + ' param must be formatted as a possible email. ' +
+				'The regexp used is: \'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$\'',
+		userMsg: 'This field must be the correct email format'
 	}
 }
 

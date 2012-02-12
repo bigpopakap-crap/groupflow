@@ -2,14 +2,14 @@ var gen_utils = require('../../gen-utils.js');
 
 /* converts an internal api function to one accessible from a GET or POST
 
-	handler(user, params, callback)
-		user - the user of the session
+	handler(req, params, callback)
+		req - the request object
 		params - the REST params passed to the function
 		callback - takes the JSON response
 */
 exports.restHandler = function(handler) {
 	return function(req, res) {
-		handler(req.user, gen_utils.getParams(req), function(json) {
+		handler(req, gen_utils.getParams(req), function(json) {
 			res.writeHead(200, {'Content-Type': 'application/json'});
 			res.write(JSON.stringify(json));
 			res.end();

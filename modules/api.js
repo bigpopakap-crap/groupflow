@@ -16,8 +16,8 @@ exports.configure = function(app) {
 	app.post(url_prefix + '/*', api_utils.restHandler(uncaughtApiCall));
 }
 
-function uncaughtApiCall(user, params, callback) {
-	callback(api_errors.noSuchApiPath(user, params));
+function uncaughtApiCall(req, params, callback) {
+	return callback(api_errors.noSuchApiPath(req.session.user, params));
 }
 
 //subdomains of the api
