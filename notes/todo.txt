@@ -1,4 +1,6 @@
 0. figure out what is a good session-store to use
+0. figure out how to limit RDS access to just local machine and heroku
+
 1. re-do login auth (with errors, and client validation)
 2. re-do registration
 3. re-do facebook linking
