@@ -1,3 +1,4 @@
+0. figure out what is a good session-store to use
 1. re-do login auth (with errors, and client validation)
 2. re-do registration
 3. re-do facebook linking
