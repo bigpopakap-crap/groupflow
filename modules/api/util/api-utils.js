@@ -11,7 +11,7 @@ exports.restHandler = function(handler) {
 	return function(req, res) {
 		handler(req, gen_utils.getParams(req), function(json) {
 			res.writeHead(200, {'Content-Type': 'application/json'});
-			res.write(JSON.stringify(json));
+			res.write(JSON.stringify(json, null, 4));
 			res.end();
 		});
 	}

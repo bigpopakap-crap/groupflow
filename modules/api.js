@@ -14,6 +14,8 @@ exports.configure = function(app) {
 	users.configure(app, url_prefix);
 
 	//if the requested path wasn't handled, return a bad-path error
+	app.get(url_prefix, api_utils.restHandler(uncaughtApiCall));
+	app.post(url_prefix, api_utils.restHandler(uncaughtApiCall));
 	app.get(url_prefix + '/*', api_utils.restHandler(uncaughtApiCall));
 	app.post(url_prefix + '/*', api_utils.restHandler(uncaughtApiCall));
 }

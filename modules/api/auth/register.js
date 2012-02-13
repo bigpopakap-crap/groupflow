@@ -11,6 +11,7 @@
 var api_utils = require('../util/api-utils.js');
 var api_errors = require('../util/api-errors.js');
 var api_validate = require('../util/api-validate.js');
+var users = require('../users.js');
 
 //function to configure the app
 exports.configure = function(app, url_prefix) {
@@ -24,8 +25,10 @@ exports.configure = function(app, url_prefix) {
 	Validates the registration inputs, ensures uniqueness of ID's,
 	then creates the new user
 
-	On success: returns the user object
-	On error: returns some form validation error
+	Cases:
+		Success: returns the user object
+		Error: returns some form validation error
+		Warning: (none)
 */
 exports.register = function(req, params, callback) {
 	//do synchronous checking of the input params
@@ -56,14 +59,35 @@ exports.register = function(req, params, callback) {
 		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
 	}
 	else {
-		//TODO check if the user exists already
-		return callback(api_errors.usernameTaken(req.session.user, params, params.username));
-
-		//TODO create the user
-
-		//TODO log in with the user
-
-		//TODO return the user
+		//check if the user exists already
+		user.get(req, params, function(data) {
+			if (data.response.error) {
+				//some error - just relay it (the params have been correctly passed)
+				return callback(data);
+			}
+			else if (data.response.success) {
+				//user exists, return an error
+				return callback(api_errors.usernameTaken(req.session.user, params, params.username));
+			}
+			else if (data.response.warning) {
+				//no such user exists, create them, log them in and return them
+				users.create(req, params, function(data) {
+					if (data.response.error) {
+						//TODO there was an error
+					}
+					else if (data.response.success) {
+						//TODO the user was created
+					}
+					else {
+						//TODO some weird state
+					}
+				});
+			}
+			else {
+				//some weird case - return intenal server error and log this error
+				//TODO use: gen_utils.err_log();
+			}
+		});
 	}
 }
 

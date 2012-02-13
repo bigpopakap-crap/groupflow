@@ -34,6 +34,11 @@ exports.configure = function(app, url_prefix) {
 	Inputs:
 		username (required)
 
+	Cases:
+		error: database error or input params error
+		success: the user object
+		warning: no such user
+
 	Gets the user object by their username. The user object looks like:
 		{
 			username: <string>,
@@ -97,13 +102,24 @@ exports.get = function(req, params, callback) {
 	Creates a new user object, assuming that all fields have been validated
 	and the username is unique
 */
-//TODO use transactions to make sure all tables are updated atomically
-//		https://github.com/bminer/node-mysql-queues
+function create(req, params, callback) {
+	//TODO use transactions to make sure all tables are updated atomically
+	//		https://github.com/bminer/node-mysql-queues
+	callback('not implemented');
+}
 
 //helper: takes the user object from the database and returns the object
 //	as it is structured in the API
 function dbToApiUser(user) {
-	return user; //TODO
+	return {
+		username: user.username,
+		name: {
+			first: user.firstName,
+			last: user.lastName,
+			full: user.firstName + ' ' + user.lastName
+		},
+		blurb: user.blurb
+	};
 }
 
 //subdomains of the api
