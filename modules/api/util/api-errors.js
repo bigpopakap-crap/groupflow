@@ -56,3 +56,14 @@ exports.usernameTaken = function (user, params, username) {
 	});
 }
 
+exports.database = function(user, params, err) {
+	return wrapError(params, {
+		statusCode: 500,
+		errorCode: 'DATABASE',
+		devMsg: 'Error communicating with the database',
+		userMsg: 'Uh oh! Something went wrong while processing your request',
+		paramErrors: {},
+		nestedError: err //TODO use the user permissions to determine whether user can see this or not
+	});
+}
+

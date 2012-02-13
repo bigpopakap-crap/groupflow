@@ -19,8 +19,9 @@ exports.restHandler = function(handler) {
 
 /* wraps the response data into the correct structure
 	options:
-		error: the error object to return
-		warning: the warning object to return
+		error: the error object to return (used for when the operation couldn't complete)
+		warning: the warning object to return (used for when the operation completes and doesn't have
+												anything useful to return. I.e. user doesn't exist in api.users.get())
 		succes: the successs object to return
 		params: the request params
 */

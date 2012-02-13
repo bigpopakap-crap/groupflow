@@ -1,3 +1,13 @@
+/*
+	This API domain:
+		/api/auth/register, api.auth.register
+
+	REST functions:
+		register - registers a new user after validating the inputs
+	
+	Internal-only functions:
+		--
+*/
 var api_utils = require('../util/api-utils.js');
 var api_errors = require('../util/api-errors.js');
 var api_validate = require('../util/api-validate.js');

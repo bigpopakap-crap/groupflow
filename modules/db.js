@@ -7,7 +7,19 @@ var client = require('mysql').createClient({
 	database: process.env.RDS_DATABASE
 });
 
-//wrap the query function in one that escapes params
+/* wrap the query function in to one that accepts parameters
+		callback(err, results, fields)
+			retults is the array of JSON items returned
+
+		params are to be reference as @(param1) in the query string
+*/
 exports.query = function(querystr, params, callback) {
-	//TODO use client.query()
+	//replace the params in the query string
+	for (var i in params) {
+		var queryReg = new RegExp('@\\(' + i + '\\)', 'g');
+		querystr = querystr.replace(queryReg, params[i]);
+	}
+
+	client.query(querystr, callback);
 }
+

@@ -43,3 +43,9 @@ exports.dft_render_vars = function(req) {
 		}
 	}
 }
+
+/* logs an error: both using console.log, and writing the error to the database */
+exports.err_log = function(str) {
+	console.log(str);
+	//TODO write this string to the database
+}
