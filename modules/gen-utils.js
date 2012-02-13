@@ -37,7 +37,7 @@ exports.dft_render_vars = function(req) {
 	return {
 		layout: false,
 		resources: {},
-		user: req.user,
+		user: req.session.user,
 		request: {
 			params: this.getParams(req)
 		}

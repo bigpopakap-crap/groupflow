@@ -45,11 +45,11 @@ exports.badFormParams = function (user, params, paramErrors) {
 }
 
 /* an error when a user tries to register with a taken userid */
-exports.userIdTaken = function (user, params) {
+exports.userIdTaken = function (user, params, userid) {
 	return wrapError(params, {
 		statusCode: 400,
 		errorCode: 'USER_ID_TAKEN',
-		devMsg: 'The requested userid already exists',
+		devMsg: 'The requested userid ' + userid + ' already exists',
 		userMsg: 'Sorry, that userid has already been taken',
 		paramErrors: {},
 		nestedError: null

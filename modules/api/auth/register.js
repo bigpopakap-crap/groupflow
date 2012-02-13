@@ -43,11 +43,11 @@ exports.register = function(req, params, callback) {
 
 	//if there were already errors, return them
 	if (paramErrors) {
-		return callback(api_errors.badFormParams(req.user, params, paramErrors));
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
 	}
 	else {
 		//TODO check if the user exists already
-		return callback(api_errors.userIdTaken(req.user, params));
+		return callback(api_errors.userIdTaken(req.session.user, params, params.userid));
 
 		//TODO create the user
 

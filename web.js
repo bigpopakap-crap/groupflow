@@ -14,7 +14,7 @@ require('./modules/api.js').configure(app);
 
 /* BEGIN PAGE ROUTING *******************************************/
 app.get('/', function(req, res) {
-	if (req.user) /* TODO go to a different page */ gen_utils.render(req, res, 'landing.ejs');
+	if (req.session.user) /* TODO go to a different page */ gen_utils.render(req, res, 'landing.ejs');
 	else gen_utils.render(req, res, 'landing.ejs');
 });
 /* END PAGE ROUTING *********************************************/
