@@ -44,13 +44,13 @@ exports.badFormParams = function (user, params, paramErrors) {
 	});
 }
 
-/* an error when a user tries to register with a taken userid */
-exports.userIdTaken = function (user, params, userid) {
+/* an error when a user tries to register with a taken username */
+exports.usernameTaken = function (user, params, username) {
 	return wrapError(params, {
 		statusCode: 400,
 		errorCode: 'USER_ID_TAKEN',
-		devMsg: 'The requested userid ' + userid + ' already exists',
-		userMsg: 'Sorry, that userid has already been taken',
+		devMsg: 'The requested username ' + username + ' already exists',
+		userMsg: 'Sorry, that username has already been taken',
 		paramErrors: {},
 		nestedError: null
 	});

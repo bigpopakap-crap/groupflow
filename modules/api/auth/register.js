@@ -20,7 +20,7 @@ exports.configure = function(app, url_prefix) {
 exports.register = function(req, params, callback) {
 	//do synchronous checking of the input params
 	var paramErrors = api_validate.validate(params, {
-		userid: { required: true, minlen: 4, maxlen: 40, isword: true,
+		username: { required: true, minlen: 4, maxlen: 40, isword: true,
 					singleunderscores: true, nowhite: true, startletter: true,
 					notlike: [{ val: 'Groupflow', tol: 4, ignorecase: true }] },
 		password: { required: true, minlen: 6, maxlen: 30, nowhite: true },
@@ -47,7 +47,7 @@ exports.register = function(req, params, callback) {
 	}
 	else {
 		//TODO check if the user exists already
-		return callback(api_errors.userIdTaken(req.session.user, params, params.userid));
+		return callback(api_errors.usernameTaken(req.session.user, params, params.username));
 
 		//TODO create the user
 
