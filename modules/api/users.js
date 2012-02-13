@@ -103,9 +103,9 @@ exports.get = function(req, params, callback) {
 	and the username is unique
 */
 function create(req, params, callback) {
-	//TODO use transactions to make sure all tables are updated atomically
-	//		https://github.com/bminer/node-mysql-queues
-	callback('not implemented');
+	//enter values into: UsersName, UsersEmail, UsersAuth
+	//	and set the initial blurb
+	//TODO
 }
 
 //helper: takes the user object from the database and returns the object

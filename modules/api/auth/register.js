@@ -15,7 +15,7 @@ var users = require('../users.js');
 
 //function to configure the app
 exports.configure = function(app, url_prefix) {
-	url_prefix += '/register';	
+	url_prefix += '/register';
 
 	//set the handler for registration
 	app.post(url_prefix, api_utils.restHandler(this.register));
