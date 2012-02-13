@@ -40,6 +40,7 @@ exports.startTransaction = function() {
 	}
 }
 
+//helper to replace params in query string
 function replaceParams(querystr, params) {
 	for (var i in params) {
 		var queryReg = new RegExp('@\\(' + i + '\\)', 'g');
