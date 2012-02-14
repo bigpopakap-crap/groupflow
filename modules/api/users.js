@@ -71,7 +71,7 @@ exports.get = function(req, params, callback) {
 		//now execute the database query
 		db.query(
 			GET_QUERY_STRING,
-			{ username: params.username },
+			[ params.username, params.username ],
 			getUserCallback(req, params, callback)
 		);
 	}
@@ -98,7 +98,7 @@ exports.getbypassword = function(req, params, callback) {
 		//now execute the database query
 		db.query(
 			GET_PASSWORD_QUERY_STRING,
-			{ username: params.username, password: params.password },
+			[ params.username, params.username, params.username, params.password ],
 			getUserCallback(req, params, callback)
 		);
 	}
@@ -146,11 +146,11 @@ exports.create = function(req, params, callback) {
 //the query string to get user data
 var GET_QUERY_STRING = 'select n.username, n.firstName, n.lastName, b.blurb ' +
 				'from (UsersName n, UsersBlurb b) ' +
-				'where n.username=\'@(username)\' and b.username=\'@(username)\'';
+				'where n.username=? and b.username=?';
 var GET_PASSWORD_QUERY_STRING = 'select n.username, n.firstName, n.lastName, b.blurb ' +
 				'from (UsersName n, UsersBlurb b, UsersAuth a) ' +
-				'where n.username=\'@(username)\' and b.username=\'@(username)\' and a.username=\'@(username)\' ' +
-					'and a.password=\'@(password)\'';
+				'where n.username=? and b.username=? and a.username=? ' +
+					'and a.password=?';
 
 //handles the when the database returns the user data
 function getUserCallback(req, params, callback) {

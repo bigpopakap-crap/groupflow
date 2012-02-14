@@ -1,3 +1,16 @@
+/*
+	This API domain:
+		/api/users/blurb, api.users.blurb
+
+	REST functions:
+		set - updates the user's blurb
+	
+	Internal-only functions:
+		--
+
+	Directly touches database tables:
+		UsersBlurb (write)
+*/
 var api_utils = require('../util/api-utils.js');
 var api_errors = require('../util/api-errors.js');
 var api_validate = require('../util/api-validate.js');
@@ -31,8 +44,8 @@ exports.set = function(req, params, callback) {
 	else {
 		//update the user blurb
 		db.query(
-			'update UsersBlurb set blurb=\'@(blurb)\' where username=\'@(username)\'',
-			{ blurb: params.blurb, username: req.session.user.username },
+			'update UsersBlurb set blurb=? where username=?',
+			[ params.blurb, req.session.user.username ],
 			function (err) {
 				if (err) return callback(api_errors.database(req.session.user, params, err));
 				else return callback(api_utils.wrapResponse({
