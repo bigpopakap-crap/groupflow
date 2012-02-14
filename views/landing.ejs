@@ -22,8 +22,10 @@
 		</div>
 
 		<div class="row-fluid section">
-			<div class="span5">
-				<%- partial('partials/authboxes/loginbox.ejs') %>
+			<div id="gf-login-outer" class="span5">
+				<%- partial('partials/authboxes/loginbox.ejs', {
+						parent: "#gf-login-outer"
+					}) %>
 			</div>
 		</div>
 	</div>

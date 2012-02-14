@@ -17,8 +17,10 @@
 	
 	<div class="container container-fluid">
 		<div class="row-fluid">
-			<div class="span5">
-				<%- partial('partials/authboxes/registerbox.ejs') %>
+			<div id="gf-register-outer" class="span5">
+				<%- partial('partials/authboxes/registerbox.ejs', {
+						parent: "#gf-register-outer"
+					}) %>
 			</div>
 			<div class="span7">
 				<div class="right-column header row-fluid over-banner">

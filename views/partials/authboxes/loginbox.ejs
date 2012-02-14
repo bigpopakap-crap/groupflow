@@ -21,6 +21,9 @@
 				<%/* <!-- TODO make this "what's this" work --> */%>
 			</div>
 
+			<%- partial('partials/gf-validate-init.ejs', {
+					selector: parent + " form.gf-login"
+				}) %>
 			<form class="gf-login" method="post" action="/api/auth/login">
 				<h7 class="color-black">Or enter your username and password:</h7>
 				<fieldset>

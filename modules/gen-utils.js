@@ -40,6 +40,10 @@ exports.dft_render_vars = function(req) {
 		user: req.session.user,
 		request: {
 			params: this.getParams(req)
+		},
+		errors: {
+			msg: '',
+			params: {}
 		}
 	}
 }

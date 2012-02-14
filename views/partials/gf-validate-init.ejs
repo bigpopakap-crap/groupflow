@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [],
+			scripts: [
+				'/public/lib/jquery/jquery.min.js',
+				'/public/lib/gf/gf-form-validate.js'
+			]
+		}) %>
+	<script type="text/javascript">
+		//starts the validator on the login form
+		$(document).ready(function() {
+			$('<%= selector %>').gfvalidate(
+				<%= JSON.stringify(request.params) %>,
+				<%= JSON.stringify(errors.params) %>
+			);
+		});
+	</script>
+</head>
+<body>
+</body>
+</html>
