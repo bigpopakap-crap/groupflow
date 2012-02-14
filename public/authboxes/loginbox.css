@@ -24,8 +24,8 @@
 	vertical-align: text-top;
 }
 
-.loginbox-partial .input-field {
-	width: 100%;
+.loginbox-partial .control-group {
+	margin-bottom: 0px;
 }
 
 .loginbox-partial .login-button {

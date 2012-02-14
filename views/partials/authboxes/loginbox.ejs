@@ -22,14 +22,33 @@
 			</div>
 
 			<%- partial('partials/gf-validate-init.ejs', {
-					selector: parent + " form.gf-login"
+					selector: parent + " .loginbox-partial form.gf-login"
 				}) %>
 			<form class="gf-login" method="post" action="/">
-				<h7 class="color-black">Or enter your username and password:</h7>
 				<fieldset>
-					<div><input name="username" class="input-field input-xlarge" type="text" placeholder="username"></div>
-					<div><input name="password" class="input-field input-xlarge" type="password" placeholder="password"></div>
-					<div>
+					<label class="control-label">Or enter your username and password</label>
+					
+					<!-- username -->
+					<div class="control-group">
+						<div class="controls">
+							<input name="username" class="input-field input-xlarge" type="text" placeholder="username">
+							<span class="help-inline gf-validate-field-error"></span>						
+						</div>
+					</div>
+
+					<!-- password -->
+					<div class="control-group">
+						<div class="controls">
+							<input name="password" class="input-field input-xlarge" type="password" placeholder="password">
+							<span class="help-inline gf-validate-field-error"></span>						
+						</div>
+					</div>		
+
+					<!-- error block -->
+					<div class="alert alert-error gf-validate-generic-error hidden"></div>		
+	
+					<!-- submit -->
+					<div class="control-group">
 						<input class="login-button btn btn-primary" type="submit" value="Login">
 						<a class="pull-right" href="/register">Create an account</a>
 					</div>

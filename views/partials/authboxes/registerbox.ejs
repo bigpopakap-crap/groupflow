@@ -14,7 +14,7 @@
 	<div class="registerbox-partial">
 		<div class="registerbox-partial-inner alert alert-info">
 			<%- partial('partials/gf-validate-init.ejs', {
-					selector: parent + " form.gf-register"
+					selector: parent + " .registerbox-partial form.gf-register"
 				}) %>
 			<form class="gf-register form-vertical" method="post" action="/register">
 				<legend>Create a <%= process.env.APP_NAME %> account</legend>
