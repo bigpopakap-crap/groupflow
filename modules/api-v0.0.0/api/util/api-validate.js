@@ -297,6 +297,13 @@ function not_word_error(field) {
 	}
 }
 
+function not_name_error(field) {
+	return {
+		devMsg: 'The ' + field + ' param can only have letters, spaces, dashes and periods',
+		userMsg: 'Must only contain letters, spaces, dashes and periods'
+	}
+}
+
 function not_start_letter_error(field) {
 	return {
 		devMsg: 'The ' + field + ' param must start with a letter (a-z or A-Z)',
