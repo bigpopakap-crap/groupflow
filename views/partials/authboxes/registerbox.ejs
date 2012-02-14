@@ -19,11 +19,18 @@
 			<form class="gf-register form-vertical" method="post" action="/register">
 				<legend>Create a <%= process.env.APP_NAME %> account</legend>
 
+				<!-- error block -->
+				<div class="alert alert-error gf-validate-generic-error hidden"></div>	
+
 				<fieldset>
 					<div class="control-group">
 						<label class="control-label">Your desired username (must be available)</label>
 						<div class="controls">
-							<input name="username" class="input-xlarge" type="text" placeholder="myusername23">
+							<!-- username -->
+							<div class="gf-validate-input-container">
+								<input name="username" class="input-xlarge" type="text" placeholder="myusername23">
+								<span class="help-inline gf-validate-field-error"></span>								
+							</div>						
 						</div>
 					</div>
 				</fieldset>
@@ -32,8 +39,17 @@
 					<div class="control-group">
 						<label class="control-label">Choose a password</label>
 						<div class="controls">
-							<input name="password" class="input-xlarge" type="password" placeholder="password">
-							<input name="password2" class="input-xlarge" type="password" placeholder="confirm password">
+							<!-- password -->
+							<div class="gf-validate-input-container">
+								<input name="password" class="input-xlarge" type="password" placeholder="password">
+								<span class="help-inline gf-validate-field-error"></span>	
+							</div>
+
+							<!-- confirm password -->
+							<div class="gf-validate-input-container">
+								<input name="password2" class="input-xlarge" type="password" placeholder="confirm password">
+								<span class="help-inline gf-validate-field-error"></span>	
+							</div>						
 						</div>
 					</div>
 				</fieldset>
@@ -42,8 +58,17 @@
 					<div class="control-group">
 						<label class="control-label">Your full name</label>
 						<div class="controls">
-							<input name="firstName" class="input-xlarge" type="text" placeholder="first name">
-							<input name="lastName" class="input-xlarge" type="text" placeholder="last name">
+							<!-- first name -->
+							<div class="gf-validate-input-container">
+								<input name="firstName" class="input-xlarge" type="text" placeholder="first name">
+								<span class="help-inline gf-validate-field-error"></span>	
+							</div>	
+
+							<!-- last name -->
+							<div class="gf-validate-input-container">							
+								<input name="lastName" class="input-xlarge" type="text" placeholder="last name">
+								<span class="help-inline gf-validate-field-error"></span>	
+							</div>
 						</div>
 					</div>
 				</fieldset>
@@ -52,7 +77,11 @@
 					<div class="control-group">
 						<label class="control-label">Your email address</label>
 						<div class="controls">
-							<input name="email" class="input-xlarge" type="emamil" placeholder="yourname@example.com">
+							<!-- email -->
+							<div class="gf-validate-input-container">
+								<input name="email" class="input-xlarge" type="emamil" placeholder="yourname@example.com">
+								<span class="help-inline gf-validate-field-error"></span>	
+							</div>	
 						</div>
 					</div>
 				</fieldset>

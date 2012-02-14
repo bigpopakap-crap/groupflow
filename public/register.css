@@ -1,11 +1,15 @@
-.right-column.header,
-.right-column.header .brand-logo {
-	height: 80px;
+.right-column {
+	margin-left: 12px;
 }
 
-.right-column.header .title {
-	font-size: 80px;
-	line-height: 80px;
+.right-column .header,
+.right-column .header .brand-logo {
+	height: 72px;
+}
+
+.right-column .header .title {
+	font-size: 72px;
+	line-height: 72px;
 	vertical-align: top;
-	margin-left: 24px;
+	margin-left: 8px;
 }

@@ -27,8 +27,9 @@
 			var controlGroup = field.parents('.control-group').first();
 			controlGroup.addClass('error');
 
-			//add error message to the control group's help-block
-			var errorText = controlGroup.find('.gf-validate-field-error');
+			//add error message to the input field's group's help-block
+			var inputContainer = field.parents('.gf-validate-input-container').first();
+			var errorText = inputContainer.find('.gf-validate-field-error');
 			errorText.text(errorText.text() + error); //TODO put every error on a new line
 		}
 
