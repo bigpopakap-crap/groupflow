@@ -1,6 +1,6 @@
 var express = require('express');
-var gen_utils = require('./modules/gen-utils.js');
 var api = require('./modules/api-v0.0.0/api.js');
+var gen_utils = require('./modules/gen-utils.js').useApi(api);
 
 var app = express.createServer(
 	express.logger(),
