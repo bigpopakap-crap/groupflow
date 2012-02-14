@@ -7,7 +7,9 @@
 				'/public/gf-style.css',
 				'/public/authboxes/registerbox.css'
 			],
-			scripts: []
+			scripts: [
+				'/public/lib/jquery/jquery.min.js'
+			]
 		}) %>
 </head>
 <body>
@@ -30,7 +32,37 @@
 							<div class="gf-validate-input-container">
 								<input name="username" class="input-xlarge" type="text" placeholder="myusername23">
 								<span class="help-inline gf-validate-field-error"></span>								
-							</div>						
+							</div>
+
+							<!-- username availability check -->
+							<span class="help-block">
+								<a href="#" class="username-availability-button btn disabled">
+									Check availability
+								</a>
+								<span class="username-availability-text"></span>
+								<script type="text/javascript">
+									$(document).ready(function() {
+										var usernameField = $('<%= parent %> input[name=username]');
+										var availButton = $('<%= parent %> a.username-availability-button');
+										var availText = $('<%= parent %> a.username-availability-text');
+										
+										availButton.removeClass('disabled');
+
+										availButton.click(function() {
+											//TODO complete this
+											availText.text('checking...');
+											$.ajax({
+												type: 'GET',
+												url: '/api/users/get',
+												data: { username: usernameField.val() },
+												success: function(data) {
+													alert(JSON.stringify(data));
+												}
+											});
+										});
+									});
+								</script>
+							<span>				
 						</div>
 					</div>
 				</fieldset>
