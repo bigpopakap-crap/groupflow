@@ -9,7 +9,7 @@ var app = express.createServer(
 );
 app.use('/public', express.static(__dirname + '/public'));
 
-//configure the api (which includes auth)
+//configure the api, which includes the auth stuff
 require('./modules/api-v0.0.0/api.js').configure(app);
 
 /* BEGIN PAGE ROUTING *******************************************/
