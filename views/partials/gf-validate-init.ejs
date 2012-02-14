@@ -12,8 +12,9 @@
 		//starts the validator on the login form
 		$(document).ready(function() {
 			$('<%= selector %>').gfvalidate(
-				<%= JSON.stringify(request.params) %>,
-				<%= JSON.stringify(errors.params) %>
+				<%- JSON.stringify(param_values) %>,
+				<%- JSON.stringify(param_errors) %>,
+				<%- JSON.stringify(errors) %>
 			);
 		});
 	</script>

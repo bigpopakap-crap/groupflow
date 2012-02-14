@@ -83,7 +83,7 @@ exports.internalServer = function(user, params) {
 
 /* invalid username/password combination */
 exports.invalidLogin = function(user, params) {
-	return wrapError({
+	return wrapError(params, {
 		statusCode: 400,
 		errorCode: 'INVALID_LOGIN',
 		devMsg: 'The username/password combination is incorrect',
@@ -95,7 +95,7 @@ exports.invalidLogin = function(user, params) {
 
 /* no auth'd user error */
 exports.noAuth = function(user, params) {
-	return wrapError({
+	return wrapError(params, {
 		statusCode: 401,
 		errorCode: 'NO_AUTH',
 		devMsg: 'This method requires user authentication',

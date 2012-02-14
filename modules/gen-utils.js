@@ -35,16 +35,12 @@ exports.render = function(req, res, path, vars) {
 exports.dft_render_vars = function(req) {
 	req = req || {};
 	return {
-		layout: false,
-		resources: {},
-		user: req.session.user,
-		request: {
-			params: this.getParams(req)
-		},
-		errors: {
-			msg: '',
-			params: {}
-		}
+		layout: false,							//don't user a layout
+		resources: {},							//initialize to no resources included yet
+		user: req.session.user,					//the user of the request
+		param_values: this.getParams(req),		//the request parameters
+		param_errors: {},						//any errors on the request parameters
+		errors: []								//an array of generic error strings
 	}
 }
 
