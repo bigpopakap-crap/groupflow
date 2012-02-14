@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><%= process.env.APP_NAME %> - Feedback</title>
+	<title><%= process.env.APP_NAME %><%= if (user) { %><%= user.name.full %><% } %></title>
 	<link href="public/images/favicon_01.png" rel="shortcut icon">
 	<%- partial('partials/resources.ejs', {
 			stylesheets: [
