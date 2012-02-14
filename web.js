@@ -74,9 +74,11 @@ app.post('/register', function(req, res) {
 //logout path
 app.get('/logout', function(req, res) {
 	api.auth.logout(req, gen_utils.getParams(req), function(data) {
+		//make sure the response was success or warning
 		if (data.response.success || data.response.warning) {
 			res.redirect('/');
 		}
+		//else the function returned something it never should have
 		else {
 			//TODO display an error message?
 			gen_utils.err_log('weird case: xxkgh80afh8*HSla-2');
