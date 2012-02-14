@@ -1,4 +1,4 @@
-var gen_utils = require('../../gen-utils.js');
+var gen_utils = require('../../../gen-utils.js');
 
 /* converts an internal api function to one accessible from a GET or POST
 
