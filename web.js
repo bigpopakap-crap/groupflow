@@ -18,7 +18,7 @@ api.configure(app);
 */
 //go to the landing page, or home page
 app.get('/', function(req, res) {
-	if (req.session.user) /* TODO go to a different page */ gen_utils.render(req, res, 'landing.ejs');
+	if (req.session.user) gen_utils.render(req, res, 'user-home.ejs');
 	else gen_utils.render(req, res, 'landing.ejs');
 });
 //handle login POST request
@@ -68,6 +68,53 @@ app.post('/register', function(req, res) {
 			gen_utils.err_log('weird case: shfihwlsh28HSh2hsa');
 			res.redirect('/');
 		}
+	});
+});
+
+//account settings page
+app.get('/settings', function(req, res, next) {
+	//make sure there is an auth'd user
+	if (req.session.user) gen_utils.render(req, res, 'user-settings.ejs');
+	else return next();
+});
+
+//feedback page
+app.get('/feedback', function(req, res, next) {
+	//make sure there is an auth'd user
+	if (req.session.user) gen_utils.render(req, res, 'feedback.ejs');
+	else return next();
+});
+
+//command line page (for privileged users)
+app.get('/devtools/cmdline', function(req, res, next) {
+	//make sure the user has access to devtools
+	api.users.permissions.get(req, gen_utils.getParams(req), function(data) {
+		//data.response.success is the permission object, if it exists
+		if (data.response.success && data.response.success.devtools)
+			gen_utils.render(req, res, 'devtools/api-cmd.ejs');
+		else return next();
+	});
+});
+
+//sql queryer page (for privileged users)
+app.get('/devtools/sqlqueryer', function(req, res, next) {
+	//make sure the user has access to devtools
+	api.users.permissions.get(req, gen_utils.getParams(req), function(data) {
+		//data.response.success is the permission object, if it exists
+		if (data.response.success && data.response.success.devtools)
+			gen_utils.render(req, res, 'devtools/sql-queryer.ejs');
+		else return next();
+	});
+});
+
+//app documentation (for privileged users)
+app.get('/devtools/appdoc', function(req, res, next) {
+	//make sure the user has access to devtools
+	api.users.permissions.get(req, gen_utils.getParams(req), function(data) {
+		//data.response.success is the permission object, if it exists
+		if (data.response.success && data.response.success.devtools)
+			gen_utils.render(req, res, 'devtools/app-doc.ejs');
+		else return next();
 	});
 });
 

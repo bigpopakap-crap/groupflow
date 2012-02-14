@@ -28,7 +28,7 @@ exports.get = function(req, params, callback) {
 		//this is the site admin
 		return callback(api_utils.wrapResponse({
 			success: {
-				dev_tools: true
+				devtools: true
 			}
 		}));
 	}
@@ -36,7 +36,7 @@ exports.get = function(req, params, callback) {
 		//this is not the site admin
 		return callback(api_utils.wrapResponse({
 			success: {
-				dev_tools: false
+				devtools: false
 			}
 		}));
 	}
