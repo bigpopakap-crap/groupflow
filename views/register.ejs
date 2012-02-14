@@ -17,18 +17,16 @@
 	
 	<div class="container container-fluid">
 		<div class="row-fluid">
-			<div id="gf-register-outer" class="pull-left">
+			<div id="gf-register-outer" class="span6">
 				<%- partial('partials/authboxes/registerbox.ejs', {
 						parent: "#gf-register-outer"
 					}) %>
 			</div>
-			<div class="right-column pull-left">
-				<div class="header over-banner">
+			<div class="span6">
+				<div class="header">
 					<img class="brand-logo" src="/public/images/brandlogo_01_134_134.png">
 					<span class="title"><%= process.env.APP_NAME %></span>
 				</div>
-
-				<%/* <!-- TODO add some info about why joining the site is great --> */%>
 			</div>
 		</div>
 	</div>
