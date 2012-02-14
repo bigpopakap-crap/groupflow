@@ -71,6 +71,20 @@ app.post('/register', function(req, res) {
 	});
 });
 
+//logout path
+app.get('/logout', function(req, res) {
+	api.auth.logout(req, gen_utils.getParams(req), function(data) {
+		if (data.response.success || data.response.warning) {
+			res.redirect('/');
+		}
+		else {
+			//TODO display an error message?
+			gen_utils.err_log('weird case: xxkgh80afh8*HSla-2');
+			res.redirect('/');
+		}
+	});
+});
+
 //any unhandled path goes back to the root
 app.get('/*', function(req, res) {
 	res.redirect('/');
