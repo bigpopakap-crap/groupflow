@@ -23,7 +23,7 @@ app.get('/', function(req, res) {
 });
 //handle login POST request
 app.post('/', function(req, res) {
-	api.auth.login.login(req, gen_utils.getParams(req), function(data) {
+	api.auth.login(req, gen_utils.getParams(req), function(data) {
 		//if successful, go to back to the root, which will go to the homepage
 		if (data.response.success) {
 			res.redirect('/');
@@ -50,7 +50,7 @@ app.get('/register', function(req, res) {
 });
 //handle register POST request
 app.post('/register', function(req, res) {
-	api.auth.register.register(req, gen_utils.getParams(req), function(data) {
+	api.auth.register(req, gen_utils.getParams(req), function(data) {
 		//if successful, go to back to the root, which will go to the homepage
 		if (data.response.success) {
 			res.redirect('/');
