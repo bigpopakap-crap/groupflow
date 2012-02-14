@@ -22,7 +22,7 @@ exports.configure = function(app, url_prefix) {
 	url_prefix += '/login';	
 
 	//configure login
-	app.get(url_prefix, api_utils.restHandler(this.login));
+	app.post(url_prefix, api_utils.restHandler(this.login));
 }
 
 /*
