@@ -6,8 +6,8 @@ var client = require('mysql').createClient({
 	password: process.env.RDS_PASSWORD,
 	database: process.env.RDS_DATABASE
 });
-require('mysql-queues').queues(client, (process.env.NODE_ENV === 'testing'));
-										//^^ debug if in testing environment
+require('mysql-queues')(client, (process.env.NODE_ENV === 'testing'));
+								//^^ debug if in testing environment
 
 /* wrap the query function in to one that accepts parameters
 		callback(err, results, fields)
@@ -20,7 +20,44 @@ exports.query = function(querystr, params, callback) {
 	client.query(replaceParams(querystr, params), callback);
 }
 
-/* returns a wrapped transaction object
+/*
+	Executes a transaction of queries (if the intermediate results are not important)
+		generally used if the queries are just a bunch of INSERTS
+
+	Input:
+		an array of queries:
+			[ { query: 'INSTERT...', params: {} }, ... ]
+		a callback:
+			callback(err, data) - returns the database error, or the result of the last query
+*/
+exports.insertTransaction = function(queries, callback) {
+	var trans = this.startTransaction();
+
+	//queue all the queries
+	for (var i=0; i<queries.length; i++) {
+		trans.query(
+			queries[i].query, queries[i].params,
+			(function (i) {
+				return function (err, info) {
+					//rollback if error
+					if (err && !trans.rolledback) {
+						trans.rollback();
+						return callback(err);
+					}
+					//if last one and no error, do the success callback
+					else if (!err && (i == queries.length - 1)) {
+						return callback(null, info);
+					}
+				}
+			})(i)
+		);
+	}
+
+	//commit the transaction
+	trans.commit();
+}
+
+/* returns a wrapped transaction object (simply to allow use of @(param) replacement)
 	the transaction object has methods:
 		rollback
 		commit
@@ -30,14 +67,14 @@ exports.query = function(querystr, params, callback) {
 */
 exports.startTransaction = function() {
 	var trans = client.startTransaction();
-	return {
-		rollback: trans.rollback,
-		commit: trans.commit,
-		execute: trans.execute,
-		query: function (querystr, params, callback) {	//use parameters
-			return trans.query(replaceParams(querystr, params), callback);
-		}
+	var queryfn = trans.query; //the original query function
+
+	//set the new wrapped query function
+	trans.query = function(querystr, params, callback) {
+		return queryfn.call(trans, replaceParams(querystr, params), callback);
 	}
+
+	return trans;
 }
 
 //helper to replace params in query string

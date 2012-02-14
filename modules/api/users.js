@@ -7,6 +7,13 @@
 	
 	Internal-only functions:
 		create - creates a user object without validating inputs
+		getbypassword - gets the user by username and password
+
+	Directly touches database tables:
+		UsersName (read/write)
+		UsersEmail (read/write)
+		UsersBlurb (read/write)
+		UsersAuth (read/write)
 */
 var api_utils = require('./util/api-utils.js');
 var api_errors = require('./util/api-errors.js');
@@ -32,7 +39,7 @@ exports.configure = function(app, url_prefix) {
 
 /*
 	Inputs:
-		username (required)
+		username
 
 	Cases:
 		error: database error or input params error
@@ -63,49 +70,117 @@ exports.get = function(req, params, callback) {
 	else {
 		//now execute the database query
 		db.query(
-			'select n.username, n.firstName, n.lastName, b.blurb ' +
-				'from (UsersName n, UsersBlurb b) ' +
-				'where n.username=\'@(username)\'',
+			GET_QUERY_STRING,
 			{ username: params.username },
-			function (err, results) {
-				if (err) {
-					//return a database error
-					return callback(api_errors.database(req.session.user, params, err));
-				}
-				else if (results.length < 1) {
-					//return a warning that the user doesn't exist
-					callback(api_warnings.noSuchUser(req.session.user, params, params.username));
-				}
-				else if (results.length > 1) {
-					//return the first element of the array to the caller, but log an error
-					get_utils.err_log('Username ' + params.username + ' is not unique');
-					var user = dbToApiUser(results[0]);
-					callback(api_utils.wrapResponse({
-						params: params,
-						success: user
-					}));
-				}
-				else {
-					//return the first element of the array to the caller
-					var user = dbToApiUser(results[0]);
-					callback(api_utils.wrapResponse({
-						params: params,
-						success: user
-					}));
-				} //end if-else on database return values
-			} //end callback from database
-		); //end db.query
-	} //end if-else on param errors
+			getUserCallback(req, params, callback)
+		);
+	}
+}
+
+/*
+	Inputs:
+		username, password
+
+	Gets the user object by username and password
+*/
+exports.getbypassword = function(req, params, callback) {
+	//make sure the username is there
+	var paramErrors = api_validate.validate(params, {
+		username: { required: true },
+		password: { required: true }
+	});
+
+	//check for errors on the input
+	if (paramErrors) {
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+	}
+	else {
+		//now execute the database query
+		db.query(
+			GET_PASSWORD_QUERY_STRING,
+			{ username: params.username, password: params.password },
+			getUserCallback(req, params, callback)
+		);
+	}
 }
 
 /*
 	Creates a new user object, assuming that all fields have been validated
-	and the username is unique
+	and the username is unique (if they are defined)
 */
-function create(req, params, callback) {
-	//enter values into: UsersName, UsersEmail, UsersAuth
-	//	and set the initial blurb
-	//TODO
+exports.create = function(req, params, callback) {
+	var paramErrors = api_validate.validate(params, {
+		//assume that if the params are there, they are valid
+		username: { required: true },
+		password: { required: true },
+		firstName: { required: true },
+		lastName: { required: true },
+		email: { required: true }
+	});
+
+	if (paramErrors) {
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+	}
+	else {
+		var initBlurb = 'Hello, world! I just joined ' + process.env.APP_NAME + '!';
+
+		//enter values into: UsersName, UsersEmail, UsersAuth, UsersBlurb
+		db.insertTransaction(
+			[
+				{ query: 'insert into UsersName values(\'@(username)\', \'@(firstName)\', \'@(lastName)\')',
+				  params: params },
+				{ query: 'insert into UsersEmail values(\'@(username)\', \'@(email)\')',
+				  params: params },
+				{ query: 'insert into UsersAuth values(\'@(username)\', \'@(password)\')',
+				  params: params },
+				{ query: 'insert into UsersBlurb values(\'@(username)\', \'' + initBlurb + '\')',
+				  params: params },
+				{ query: GET_QUERY_STRING,
+				  params: params }
+			],
+			getUserCallback(req, params, callback)
+		);
+	}
+}
+
+//the query string to get user data
+var GET_QUERY_STRING = 'select n.username, n.firstName, n.lastName, b.blurb ' +
+				'from (UsersName n, UsersBlurb b) ' +
+				'where n.username=\'@(username)\' and b.username=\'@(username)\'';
+var GET_PASSWORD_QUERY_STRING = 'select n.username, n.firstName, n.lastName, b.blurb ' +
+				'from (UsersName n, UsersBlurb b, UsersAuth a) ' +
+				'where n.username=\'@(username)\' and b.username=\'@(username)\' and a.username=\'@(username)\' ' +
+					'and a.password=\'@(password)\'';
+
+//handles the when the database returns the user data
+function getUserCallback(req, params, callback) {
+	return function (err, results) {
+		if (err) {
+			//return a database error
+			return callback(api_errors.database(req.session.user, params, err));
+		}
+		else if (results.length < 1) {
+			//return a warning that the user doesn't exist
+			return callback(api_warnings.noSuchUser(req.session.user, params, params.username));
+		}
+		else if (results.length > 1) {
+			//return the first element of the array to the caller, but log an error
+			gen_utils.err_log('Username ' + params.username + ' is not unique');
+			var user = dbToApiUser(results[0]);
+			return callback(api_utils.wrapResponse({
+				params: params,
+				success: user
+			}));
+		}
+		else {
+			//return the first element of the array to the caller
+			var user = dbToApiUser(results[0]);
+			return callback(api_utils.wrapResponse({
+				params: params,
+				success: user
+			}));
+		}
+	}
 }
 
 //helper: takes the user object from the database and returns the object

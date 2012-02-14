@@ -170,7 +170,7 @@ function isWord(str) {
 
 //helper to determine if there are only letters, spaces, dashes and dots
 function isName(str) {
-	return /^[a-zA-Z.- ]*$/.test(str);
+	return /^[a-zA-Z\.\- ]*$/.test(str);
 }
 
 //helper to determine if the string starts with a letter

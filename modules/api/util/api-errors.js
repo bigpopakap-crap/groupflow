@@ -56,6 +56,7 @@ exports.usernameTaken = function (user, params, username) {
 	});
 }
 
+/* an error communicating with the database */
 exports.database = function(user, params, err) {
 	return wrapError(params, {
 		statusCode: 500,
@@ -64,6 +65,42 @@ exports.database = function(user, params, err) {
 		userMsg: 'Uh oh! Something went wrong while processing your request',
 		paramErrors: {},
 		nestedError: err //TODO use the user permissions to determine whether user can see this or not
+	});
+}
+
+/* a generic internal server error */
+exports.internalServer = function(user, params) {
+	return wrapError(params, {
+		statusCode: 500,
+		errorCode: 'INTERNAL_SERVER',
+		devMsg: 'Uncaught internal error',
+		userMsg: 'Uh oh! Something went wrong while processing your request',
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
+/* invalid username/password combination */
+exports.invalidLogin = function(user, params) {
+	return wrapError({
+		statusCode: 400,
+		errorCode: 'INVALID_LOGIN',
+		devMsg: 'The username/password combination is incorrect',
+		userMsg: 'Invalid username/password combination',
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
+/* no auth'd user error */
+exports.noAuth = function(user, params) {
+	return wrapError({
+		statusCode: 401,
+		errorCode: 'NO_AUTH',
+		devMsg: 'This method requires user authentication',
+		userMsg: 'Please log in to complete this operation',
+		paramErrors: {},
+		nestedError: null
 	});
 }
 
