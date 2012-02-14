@@ -13,7 +13,8 @@ exports.noSuchApiPath = function (user, params) {
 	return wrapError(params, {
 		statusCode: 404,
 		errorCode: 'NO_SUCH_API_PATH',
-		devMsg: 'The requested path does not exist as an API call. Check for a typo in your request path',
+		devMsg: 'The requested path does not exist as an API call. ' +
+				'Check for a typo in your request path, and the method (GET or POST)',
 		userMsg: 'Uh oh! Something went wrong while processing your request',
 		paramErrors: {},
 		nestedError: null

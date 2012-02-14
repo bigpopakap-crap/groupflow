@@ -13,7 +13,7 @@
 <body>
 	<div class="registerbox-partial">
 		<div class="registerbox-partial-inner alert alert-info">
-			<form class="form-vertical" method="post" action="/auth/register">
+			<form class="form-vertical" method="post" action="/api/auth/register">
 				<legend>Create a <%= process.env.APP_NAME %> account</legend>
 
 				<fieldset>
@@ -39,8 +39,8 @@
 					<div class="control-group">
 						<label class="control-label">Your full name</label>
 						<div class="controls">
-							<input name="first_name" class="input-xlarge" type="text" placeholder="first name">
-							<input name="last_name" class="input-xlarge" type="text" placeholder="last name">
+							<input name="firstName" class="input-xlarge" type="text" placeholder="first name">
+							<input name="lastName" class="input-xlarge" type="text" placeholder="last name">
 						</div>
 					</div>
 				</fieldset>

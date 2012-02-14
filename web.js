@@ -17,6 +17,10 @@ app.get('/', function(req, res) {
 	if (req.session.user) /* TODO go to a different page */ gen_utils.render(req, res, 'landing.ejs');
 	else gen_utils.render(req, res, 'landing.ejs');
 });
+
+app.get('/register', function(req, res) {
+	gen_utils.render(req, res, 'register.ejs');
+});
 /* END PAGE ROUTING *********************************************/
 
 var port = process.env.PORT || 8080;

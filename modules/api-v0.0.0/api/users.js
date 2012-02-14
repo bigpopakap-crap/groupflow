@@ -127,16 +127,16 @@ exports.create = function(req, params, callback) {
 		//enter values into: UsersName, UsersEmail, UsersAuth, UsersBlurb
 		db.insertTransaction(
 			[
-				{ query: 'insert into UsersName values(\'@(username)\', \'@(firstName)\', \'@(lastName)\')',
-				  params: params },
-				{ query: 'insert into UsersEmail values(\'@(username)\', \'@(email)\')',
-				  params: params },
-				{ query: 'insert into UsersAuth values(\'@(username)\', \'@(password)\')',
-				  params: params },
-				{ query: 'insert into UsersBlurb values(\'@(username)\', \'' + initBlurb + '\')',
-				  params: params },
+				{ query: 'insert into UsersName values(?, ?, ?)',
+				  params: [ params.username, params.firstName, params.lastName ] },
+				{ query: 'insert into UsersEmail values(?, ?)',
+				  params: [ params.username, params.email ] },
+				{ query: 'insert into UsersAuth values(?, ?)',
+				  params: [ params.username, params.password ] },
+				{ query: 'insert into UsersBlurb values(?, ?)',
+				  params: [ params.username, initBlurb ] },
 				{ query: GET_QUERY_STRING,
-				  params: params }
+				  params: [ params.username, params.username ] }
 			],
 			getUserCallback(req, params, callback)
 		);

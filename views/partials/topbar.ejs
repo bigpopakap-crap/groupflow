@@ -38,13 +38,8 @@
 								<ul class="dropdown-menu">
 									<li><a href="/settings">Account settings</a></li>
 									<li><a href="/feedback">Send feedback</a></li>
-									<% if (gftools.canAccess) { %>
-										<li class="divider"></li>
-										<li><a href="/gftools/commandline">Command line</a></li>
-										<li><a href="/gftools/datamgr">Data manager</a></li>
-									<% } %>
 									<li class="divider"></li>
-									<li><a href="/auth/logout">Logout</a></li>
+									<li><a href="/api/auth/logout">Logout</a></li>
 								</ul>
 							</li>
 							<li>

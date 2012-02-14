@@ -20,27 +20,39 @@ exports.query = function(querystr, params, callback) {
 
 	Input:
 		an array of queries:
-			[ { query: 'INSTERT...', params: {} }, ... ]
+			[ { query: 'INSTERT...', params: [...] }, ... ]
 		a callback:
 			callback(err, data) - returns the database error, or the result of the last query
 */
 exports.insertTransaction = function(queries, callback) {
-	var trans = this.startTransaction();
+	var trans = startTransaction();
 
 	//queue all the queries
 	for (var i=0; i<queries.length; i++) {
 		trans.query(
-			queries[i].query, queries[i].params,
+			queries[i].query,
+			queries[i].params,
 			(function (i) {
-				return function (err, info) {
-					//rollback if error
-					if (err && !trans.rolledback) {
-						trans.rollback();
-						return callback(err);
+				if (i < queries.length - 1) {
+					//function for everything but the last query
+					return function (err, info) {
+						if (err && !trans.rolledback) {
+							trans.rollback();
+							return callback(err, info);
+						}
 					}
-					//if last one and no error, do the success callback
-					else if (!err && (i == queries.length - 1)) {
-						return callback(null, info);
+				}
+				else {
+					//function for the last query
+					return function(err, info) {
+						if (err) {
+							if (!trans.rolledback) trans.rollback();
+							return callback(err, info);
+						}
+						else {
+							//succes!
+							return callback(err, info);
+						}
 					}
 				}
 			})(i)
@@ -52,7 +64,8 @@ exports.insertTransaction = function(queries, callback) {
 }
 
 //return the client's corresponding function
-exports.startTransaction = function() {
+function startTransaction() {
 	return client.startTransaction();
 }
+exports.startTransaction = startTransaction;
 

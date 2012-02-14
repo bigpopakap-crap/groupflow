@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title><%= process.env.APP_NAME %> - Register</title>
+	<link href="public/images/favicon_01.png" rel="shortcut icon">
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/gf-style.css',
+				'/public/register.css'
+			],
+			scripts: []
+		}) %>
+</head>
+<body>
+	<%- partial('partials/topbar.ejs') %>
+	
+	<div class="container container-fluid">
+		<div class="row-fluid">
+			<div class="span5">
+				<%- partial('partials/authboxes/registerbox.ejs') %>
+			</div>
+			<div class="span7">
+				<div class="right-column header row-fluid over-banner">
+					<img class="brand-logo" src="/public/images/brandlogo_01_134_134.png">
+					<span class="title"><%= process.env.APP_NAME %></span>
+				</div>
+
+				<%/* <!-- TODO add some info about why joining the site is great --> */%>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
