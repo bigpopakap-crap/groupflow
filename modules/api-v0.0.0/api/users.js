@@ -35,6 +35,7 @@ exports.configure = function(app, url_prefix) {
 	
 	//configure this api domain
 	app.get(url_prefix + '/get', api_utils.restHandler(this.get));
+	app.get(url_prefix + '/me', api_utils.restHandler(this.me));
 }
 
 /*
@@ -57,7 +58,7 @@ exports.configure = function(app, url_prefix) {
 			blurb: <string>
 		}
 */
-exports.get = function(req, params, callback) {
+function get(req, params, callback) {
 	//make sure the username is there
 	var paramErrors = api_validate.validate(params, {
 		username: { required: true }
@@ -74,6 +75,25 @@ exports.get = function(req, params, callback) {
 			[ params.username, params.username ],
 			getUserCallback(req, params, callback)
 		);
+	}
+}
+exports.get = get;
+
+/*
+	gets the username of the auth'd user and passes it to the get function
+*/
+exports.me = function(req, params, callback) {
+	if (!req.session.user) {
+		//no auth' user
+		return callback(api_errors.noAuth(req.session.user, params));
+	}
+	else {
+		var username = req.session.user.username;
+		return get(req, { username: username }, function(data) {
+			//just overwrite the params and relay the response
+			data.request.params = params;
+			return callback(data);
+		});
 	}
 }
 
