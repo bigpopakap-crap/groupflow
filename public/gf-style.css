@@ -9,6 +9,7 @@ body {
 	background-color: #C0DEED;
 	background-repeat: repeat-x;
 	background-image: url("/public/images/banner_01.png");
+	overflow-y: scroll;
 }
 
 /* other utility classes */
