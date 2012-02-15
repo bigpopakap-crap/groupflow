@@ -10,7 +10,8 @@
 			],
 			scripts: [
 				'/public/lib/jquery/jquery.min.js',
-				'/public/lib/gf/gf-data-bind.js'
+				'/public/lib/gf/gf-data-bind.js',
+				'/public/lib/pretty-json.js'
 			]
 		}) %>
 
@@ -39,12 +40,13 @@
 			var queryHistorySel = '#query-history';		//selector for the query history list
 
 			$(document).ready(function() {
-				//initialize gfbind
-				var queryHistory = $(queryHistorySel).gfbind_init();
-
+				var queryHistory = $(queryHistorySel);
 				var inputArea = $(inputAreaSel);
 
-				//set the two ways that queries can be executed
+				//initialize gfbind
+				queryHistory.gfbind_init();
+
+				//set the ways to trigger the request
 				inputArea.keydown(function(e) {
 					if (e.keyCode == 13) {
 						makeQuery(clearAndFocus());
@@ -83,6 +85,11 @@
 				};
 				var queryHistory = $(queryHistorySel);
 				queryHistory.gfbind_prepend(sql);
+
+				//pretty print all the elements
+				$('.query-history-entry .response').each(function() {
+					$(this).prettyJson(JSON.parse($(this).text()));
+				});
 			}
 
 			function handleError(query, response) {

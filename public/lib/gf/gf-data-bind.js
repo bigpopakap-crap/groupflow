@@ -1,5 +1,11 @@
 (function($) {
 
+	//make sure JQuery is defined
+	if (!$) {
+		console.log('gf-data-bind requires JQuery!');
+		return;
+	}
+
 	//classes and attributes that the HTML elements must have        
 	var templateClass = 'gf-bind-template';
 	var templateSel = '.' + templateClass;
