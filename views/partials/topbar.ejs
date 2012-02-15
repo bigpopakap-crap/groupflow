@@ -21,10 +21,15 @@
 					<!-- topbar content -->
 					<a class="brand" href="/">
 						<%= process.env.APP_NAME %>
-						<% if (user) { %>
-							<span class="notification-num label label-important" title="Notifications">6</span>
-						<% } %>
 					</a>
+					<% if (user) { %>
+						<ul class="nav">
+							<li><a href="/">
+								<span class="notification-num label label-important">6</span>
+								Notifications
+							</a></li>
+						</ul>
+					<% } %>
 
 					<% if (user) { %>
 						<ul class="nav pull-right">
