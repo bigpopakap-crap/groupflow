@@ -69,3 +69,10 @@ exports.err_log = function(str) {
 	//TODO write this string to the database
 }
 
+/* returns an error with the given code and message, returns the response so the caller can end it */
+exports.respondErr = function(res, statusCode, message) {
+	res.writeHead(statusCode);
+	if (message) res.write(message);
+	return res;
+}
+

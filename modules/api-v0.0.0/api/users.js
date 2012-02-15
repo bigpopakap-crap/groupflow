@@ -24,6 +24,7 @@ var db = require('../db.js');
 //subdomain modules
 var blurb = require('./users/blurb.js');
 var permissions = require('./users/permissions.js');
+var picture = require('./users/picture.js');
 
 //function to configure the app
 exports.configure = function(app, url_prefix) {
@@ -32,6 +33,7 @@ exports.configure = function(app, url_prefix) {
 	//configure each of the domains
 	blurb.configure(app, url_prefix);
 	permissions.configure(app, url_prefix);
+	picture.configure(app, url_prefix);
 	
 	//configure this api domain
 	app.get(url_prefix + '/get', api_utils.restHandler(this.get));
