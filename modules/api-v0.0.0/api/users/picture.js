@@ -39,8 +39,6 @@ function get(req, res) {
 		type: { range: ['square', 'small', 'normal', 'large'] }
 	});
 
-	console.log(params);
-
 	if (paramErrors && paramErrors.username) {
 		//no username was given
 		gen_utils.respondErr(res, 400, 'The username parameter is required').end();

@@ -1,7 +1,16 @@
+FROM EMAIL:
+1. in every API doman, make a note of which values it relies on in the session object
+2. make the "users/permissions" domain cache its value in req.session.user_permissions
+3. think about other values to cache in req.session (make sure they get changed if they get changed in the database!)
+4. make the command line and sql queryer
+5. encrypt passwords!
+
 0. figure out what is a good session-store to use
 0. figure out how to limit RDS access to just local machine and heroku
 0. figure out how to NOT return password parameters
 0. remove all direct definitions of exports.asdf = function()...
+
+ON RDS: remove the groupflowtest instance and everything associated with it
 
 1. do client-validation on forms
 3. re-do facebook linking

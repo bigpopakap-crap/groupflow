@@ -8,16 +8,128 @@
 				'/public/lib/bootstrap/css/bootstrap.min.css',
 				'/public/gf-style.css'
 			],
-			scripts: []
+			scripts: [
+				'/public/lib/jquery/jquery.min.js',
+				'/public/lib/gf/gf-data-bind.js'
+			]
 		}) %>
+
+	<!-- style for this page
+		(not public as to not hint that such a page exists) -->
+	<style type="text/css">
+		.query-history-entry {
+			margin-bottom: 12px;
+			margin-left: 0px;
+			padding-left: 4px;
+			border-left: solid 2px #999999;
+		}
+		.query-history-entry .response {
+			background-color: #DDDDDD;
+			max-height: 200px;
+			overflow-y: auto;
+		}
+	</style>
+
+	<!-- style for this page
+		(not public as to not hint that such a page exists or how to access the database) -->
+	<script type="text/javascript">
+		(function() {
+
+			var inputAreaSel = '#input-area';			//selector for the input area
+			var queryHistorySel = '#query-history';		//selector for the query history list
+
+			$(document).ready(function() {
+				//initialize gfbind
+				var queryHistory = $(queryHistorySel).gfbind_init();
+
+				var inputArea = $(inputAreaSel);
+
+				//set the two ways that queries can be executed
+				inputArea.keydown(function(e) {
+					if (e.keyCode == 13) {
+						makeQuery(clearAndFocus());
+					}
+				});
+			});
+
+			//clears the input text, makes it focused
+			//and returns the value before it was cleared
+			function clearAndFocus() {
+				var input = $(inputAreaSel + ' .query');
+				var val = input.val();
+				input.val('').focus();
+				return val;
+			}
+
+			function makeQuery(query) {
+				$.ajax({
+					type: 'POST',
+					data: { query: query },
+					url: '/api/sqlquery',
+					success: function(response) {
+						handleSuccess(query, response);
+					},
+					error: function(data) {
+						handleError(query, response);
+					}
+				});
+			}
+
+			function handleSuccess(query, response) {
+				////bind it to the query history view
+				var sql = {
+					query: query,
+					response: JSON.stringify(response)
+				};
+				var queryHistory = $(queryHistorySel);
+				queryHistory.gfbind_prepend(sql);
+			}
+
+			function handleError(query, response) {
+				//TODO bind that it was an error to the query history
+			}
+
+		})();
+	</script>
 </head>
 <body>
 	<%- partial('partials/topbar.ejs') %>
 	<%- partial('partials/shadowbox.ejs') %>
 
 	<div class="container container-fluid">
+		<!-- the title -->
 		<div class="row-fluid">
-			SQL queryer (coming soon)
+			<h1>SQL Queryer</h1>
+			<label>
+				Use this to execute SQL queries directly on the database. Output is printed
+				in JSON format
+			</label>
+		</div>
+
+		<!-- the input area -->
+		<div class="row-fluid">
+			<h2>Issue a new query</h2>
+			<label>Enter a query <strong>without</strong> the ending semicolon</label>
+			<div id="input-area">
+				<input class="query span9" type="text" placeholder="show tables/select * from ..."></input>
+				<input class="span2 btn btn-primary" type="button" value="Execute"></input>
+			</div>
+		</div>
+
+		<!-- the past query history -->
+		<div class="row-fluid">
+			<h2>Query history</h2>
+			<div id="query-history">
+				<!-- the query result template -->
+				<div class="query-history-entry gf-bind-template span11">
+					<p class="query" data-gf-bind='{"innerText":"query"}'>
+						select * from ExampleQuery where query='show tables'
+					</p>				
+					<p class="response" data-gf-bind='{"innerText":"response"}'>
+						{ error: 'this is just an example!' }
+					</p>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>
