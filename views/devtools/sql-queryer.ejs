@@ -21,8 +21,9 @@
 		.query-history-entry {
 			margin-bottom: 12px;
 			margin-left: 0px;
-			padding-left: 4px;
-			border-left: solid 2px #999999;
+		}
+		.query-history-entry .query {
+			font-weight: bold;
 		}
 		.query-history-entry .response {
 			background-color: #DDDDDD;
@@ -67,7 +68,7 @@
 				$.ajax({
 					type: 'POST',
 					data: { query: query },
-					url: '/api/sqlquery',
+					url: '/api/devtools/sqlquery',
 					success: function(response) {
 						handleSuccess(query, response);
 					},
@@ -88,7 +89,12 @@
 
 				//pretty print all the elements
 				$('.query-history-entry .response').each(function() {
-					$(this).prettyJson(JSON.parse($(this).text()));
+					try {
+						$(this).prettyJson(JSON.parse($(this).text()));
+					}
+					catch (ex) {
+						//do nothing: the element did not contain JSON
+					}
 				});
 			}
 
@@ -136,6 +142,9 @@
 						{ error: 'this is just an example!' }
 					</p>
 				</div>
+			</div>
+			<div class="alert alert-warning">
+				End of query history. <strong><a href="#">Back to top</a></strong>
 			</div>
 		</div>
 	</div>
