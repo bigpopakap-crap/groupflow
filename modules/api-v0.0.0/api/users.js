@@ -93,12 +93,10 @@ exports.me = function(req, params, callback) {
 		return callback(api_errors.noAuth(req.session.user, params));
 	}
 	else {
-		var username = req.session.user.username;
-		return get(req, { username: username }, function(data) {
-			//just overwrite the params and relay the response
-			data.request.params = params;
-			return callback(data);
-		});
+		//use the cached user object in the session
+		callback(api_utils.wrapResponse({
+			success: req.session.user
+		}));
 	}
 }
 
