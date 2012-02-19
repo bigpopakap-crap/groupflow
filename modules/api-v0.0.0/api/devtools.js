@@ -19,12 +19,13 @@ var api_validate = require('./util/api-validate.js');
 var db = require('../db.js');
 var permissions = require('./users/permissions.js');
 
-exports.configure = function(app, url_prefix) {
+function configure(app, url_prefix) {
 	url_prefix += '/devtools';
 
 	//configure the actions in this API domain
 	app.post(url_prefix + '/sqlquery', handleSqlQuery);
 }
+exports.configure = configure;
 
 //handles executing a sql query for the user
 //	if the user has no access to devtools, calls next()

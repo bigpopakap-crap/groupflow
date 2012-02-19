@@ -19,7 +19,7 @@ var gen_utils = require('../../../gen-utils.js');
 var api_validate = require('../util/api-validate.js');
 var url_path = '/';
 
-exports.configure = function(app, url_prefix) {
+function configure(app, url_prefix) {
 	url_prefix += '/picture';
 	url_path = url_prefix;
 
@@ -27,6 +27,7 @@ exports.configure = function(app, url_prefix) {
 	app.get(url_prefix + '/get', get);
 	app.get(url_prefix + '/me', me);
 }
+exports.configure = configure;
 
 /*
 	Cases:

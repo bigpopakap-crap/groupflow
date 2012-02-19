@@ -19,12 +19,13 @@ var api_utils = require('../util/api-utils.js');
 var api_errors = require('../util/api-errors.js');
 var api_validate = require('../util/api-validate.js');
 
-exports.configure = function(app, url_prefix) {
+function configure(app, url_prefix) {
 	url_prefix += '/permissions';
 
 	//configure get function
-	app.get(url_prefix + '/get', api_utils.restHandler(this.get));
+	app.get(url_prefix + '/get', api_utils.restHandler(get));
 }
+exports.configure = configure;
 
 /*
 	Requires authentication
@@ -36,7 +37,7 @@ exports.configure = function(app, url_prefix) {
 	Notes:
 		MAKE SURE THAT THE PERMISSIONS IS A FLAT OBJECT (NO SUB-OBJECTS)
 */
-exports.get = function(req, params, callback) {
+function get(req, params, callback) {
 	if (!req.session.user) {
 		//no auth'd user
 		return callback(api_errors.noAuth(req.session.user, params));
@@ -60,4 +61,5 @@ exports.get = function(req, params, callback) {
 		return callback(api_utils.wrapResponse({ success: permissions }));
 	}
 }
+exports.get = get;
 

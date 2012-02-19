@@ -19,19 +19,20 @@ var api_errors = require('../util/api-errors.js');
 var api_validate = require('../util/api-validate.js');
 var db = require('../../db.js');
 
-exports.configure = function(app, url_prefix) {
+function configure(app, url_prefix) {
 	url_prefix += '/blurb';
 
 	//configure this domain
-	app.post(url_prefix + '/set', api_utils.restHandler(this.set));
+	app.post(url_prefix + '/set', api_utils.restHandler(set));
 }
+exports.configure = configure;
 
 /*
 	Cases:
 		success: returns the new blurb string
 		error: returns a database or input params error
 */
-exports.set = function(req, params, callback) {
+function set(req, params, callback) {
 	var paramErrors = api_validate.validate(params, {
 		blurb: { required: true, maxlen: 560, notrailingwhite: true }
 	});
@@ -59,4 +60,5 @@ exports.set = function(req, params, callback) {
 		);
 	}
 }
+exports.set = set;
 

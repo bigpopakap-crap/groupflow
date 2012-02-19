@@ -25,7 +25,7 @@ function getParams(req) {
 exports.getParams = getParams;
 
 /* renders a page with some default view variables */
-exports.render = function(req, res, path, vars) {
+function render(req, res, path, vars) {
 	req = req || {};
 	vars = vars || {};
 
@@ -39,6 +39,7 @@ exports.render = function(req, res, path, vars) {
 		res.render(path, vars);
 	});
 }
+exports.render = render;
 
 /* helper: default render vars */
 function dflt_render_vars(req, callback) {
@@ -64,15 +65,17 @@ function dflt_render_vars(req, callback) {
 }
 
 /* logs an error: both using console.log, and writing the error to the database */
-exports.err_log = function(str) {
+function err_log(str) {
 	console.log(str);
 	//TODO write this string to the database
 }
+exports.err_log = err_log;
 
 /* returns an error with the given code and message, returns the response so the caller can end it */
-exports.respondErr = function(res, statusCode, message) {
+function respondErr(res, statusCode, message) {
 	res.writeHead(statusCode);
 	if (message) res.write(message);
 	return res;
 }
+exports.respondErr = respondErr;
 

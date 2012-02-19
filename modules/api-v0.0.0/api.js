@@ -7,7 +7,7 @@ var users = require('./api/users.js');
 var friends = require('./api/friends.js');
 
 //function to configure the app
-exports.configure = function(app) {
+function configure(app) {
 	var url_prefix = '/api';	
 
 	//configure each of the domains
@@ -22,6 +22,7 @@ exports.configure = function(app) {
 	app.get(url_prefix + '/*', api_utils.restHandler(uncaughtApiCall));
 	app.post(url_prefix + '/*', api_utils.restHandler(uncaughtApiCall));
 }
+exports.configure = configure;
 
 //returns the error for API calls that went unhandled
 function uncaughtApiCall(req, params, callback) {

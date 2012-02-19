@@ -28,17 +28,18 @@ var users = require('./users.js');
 var facebook = require('./auth/facebook.js');
 
 //function to configure the app
-exports.configure = function(app, url_prefix) {
+function configure(app, url_prefix) {
 	url_prefix += '/auth';	
 
 	//configure each of the subdomains
 	facebook.configure(app, url_prefix);
 
 	//configure the actions in this domain
-	app.post(url_prefix + '/register', api_utils.restHandler(this.register));
-	app.post(url_prefix + '/login', api_utils.restHandler(this.login));
-	app.get(url_prefix + '/logout', api_utils.restHandler(this.logout));
+	app.post(url_prefix + '/register', api_utils.restHandler(register));
+	app.post(url_prefix + '/login', api_utils.restHandler(login));
+	app.get(url_prefix + '/logout', api_utils.restHandler(logout));
 }
+exports.configure = configure;
 
 /*
 	Validates the registration inputs, ensures uniqueness of ID's,
@@ -49,7 +50,7 @@ exports.configure = function(app, url_prefix) {
 		Error: returns some form validation error
 		Warning: (none)
 */
-exports.register = function(req, params, callback) {
+function register(req, params, callback) {
 	//do synchronous checking of the input params
 	var paramErrors = api_validate.validate(params, {
 		username: { required: true, minlen: 4, maxlen: 40, isword: true,
@@ -116,6 +117,7 @@ exports.register = function(req, params, callback) {
 		});
 	}
 }
+exports.register = register;
 
 /*
 	Takes a username/password combination
@@ -124,7 +126,7 @@ exports.register = function(req, params, callback) {
 		success: the user object
 		error: invalid login or database error
 */
-exports.login = function(req, params, callback) {
+function login(req, params, callback) {
 	var paramErrors = api_validate.validate(params, {
 		username: { required: true },
 		password: { required: true }
@@ -161,13 +163,14 @@ exports.login = function(req, params, callback) {
 		});
 	}
 }
+exports.login = login;
 
 /*
 	Cases:
 		success: there was a user, and their session ended
 		warning: there was no user to begin with
 */
-exports.logout = function(req, params, callback) {
+function logout(req, params, callback) {
 	//no need to check params, just clear the session
 	if (req.session.user) {
 		//user was auth'd to the session
@@ -186,6 +189,7 @@ exports.logout = function(req, params, callback) {
 		}));
 	}
 }
+exports.logout = logout;
 
 /* helper to attach the user to the session */
 function setSession(req, user) {

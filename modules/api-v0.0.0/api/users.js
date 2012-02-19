@@ -30,7 +30,7 @@ var permissions = require('./users/permissions.js');
 var picture = require('./users/picture.js');
 
 //function to configure the app
-exports.configure = function(app, url_prefix) {
+function configure(app, url_prefix) {
 	url_prefix += '/users';	
 
 	//configure each of the domains
@@ -39,9 +39,10 @@ exports.configure = function(app, url_prefix) {
 	picture.configure(app, url_prefix);
 	
 	//configure this api domain
-	app.get(url_prefix + '/get', api_utils.restHandler(this.get));
-	app.get(url_prefix + '/me', api_utils.restHandler(this.me));
+	app.get(url_prefix + '/get', api_utils.restHandler(get));
+	app.get(url_prefix + '/me', api_utils.restHandler(me));
 }
+exports.configure = configure;
 
 /*
 	Inputs:
@@ -87,7 +88,7 @@ exports.get = get;
 /*
 	gets the username of the auth'd user and passes it to the get function
 */
-exports.me = function(req, params, callback) {
+function me(req, params, callback) {
 	if (!req.session.user) {
 		//no auth' user
 		return callback(api_errors.noAuth(req.session.user, params));
@@ -99,6 +100,7 @@ exports.me = function(req, params, callback) {
 		}));
 	}
 }
+exports.me = me;
 
 /*
 	Inputs:
@@ -106,7 +108,7 @@ exports.me = function(req, params, callback) {
 
 	Gets the user object by username and password
 */
-exports.getbypassword = function(req, params, callback) {
+function getbypassword(req, params, callback) {
 	//make sure the username is there
 	var paramErrors = api_validate.validate(params, {
 		username: { required: true },
@@ -126,12 +128,13 @@ exports.getbypassword = function(req, params, callback) {
 		);
 	}
 }
+exports.getbypassword = getbypassword;
 
 /*
 	Creates a new user object, assuming that all fields have been validated
 	and the username is unique (if they are defined)
 */
-exports.create = function(req, params, callback) {
+function create(req, params, callback) {
 	var paramErrors = api_validate.validate(params, {
 		//assume that if the params are there, they are valid
 		username: { required: true },
@@ -165,6 +168,7 @@ exports.create = function(req, params, callback) {
 		);
 	}
 }
+exports.create = create;
 
 //the query string to get user data
 var GET_QUERY_STRING = 'select n.username, n.firstName, n.lastName, b.blurb ' +

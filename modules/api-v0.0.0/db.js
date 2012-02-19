@@ -10,9 +10,10 @@ require('mysql-queues')(client, (process.env.NODE_ENV === 'testing'));
 								//^^ debug if in testing environment
 
 //does the same thing as the client query
-exports.query = function(querystr, params, callback) {
+function query(querystr, params, callback) {
 	return client.query(querystr, params, callback);
 }
+exports.query = query;
 
 /*
 	Executes a transaction of queries (if the intermediate results are not important)
@@ -24,7 +25,7 @@ exports.query = function(querystr, params, callback) {
 		a callback:
 			callback(err, data) - returns the database error, or the result of the last query
 */
-exports.insertTransaction = function(queries, callback) {
+function insertTransaction(queries, callback) {
 	var trans = startTransaction();
 
 	//queue all the queries
@@ -62,6 +63,7 @@ exports.insertTransaction = function(queries, callback) {
 	//commit the transaction
 	trans.commit();
 }
+exports.insertTransaction = insertTransaction;
 
 //return the client's corresponding function
 function startTransaction() {
