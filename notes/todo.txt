@@ -1,12 +1,7 @@
 FROM EMAIL:
 4. make the command line
 5. encrypt passwords!
-
-FROM EMAIL 02:
-use HTML5 shim (on google code)
-put in standard page header partials
-     - beginning: favicon
-     - end: html5 shim (if IE)
+6. use HTML5 shim (on google code)
 add dependencies to app doc:
 jquery, bootstrap, shim, other scripts/styles... these can be updated when new versions come out
 also, remove the CSS width property for the profile picture

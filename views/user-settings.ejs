@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title><%= process.env.APP_NAME %> - Settings</title>
-	<link href="public/images/favicon_01.png" rel="shortcut icon">
+	<%- partial('partials/header/header-start.ejs', {
+			title: process.env.APP_NAME + ' - Settings'
+		}) %>
 	<%- partial('partials/resources.ejs', {
 			stylesheets: [
 				'/public/lib/bootstrap/css/bootstrap.min.css',
@@ -10,6 +11,7 @@
 			],
 			scripts: []
 		}) %>
+	<%- partial('partials/header/header-end.ejs') %>
 </head>
 <body>
 	<%- partial('partials/topbar.ejs') %>
