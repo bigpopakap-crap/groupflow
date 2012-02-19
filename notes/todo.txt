@@ -3,8 +3,6 @@ FROM EMAIL:
 5. encrypt passwords!
 
 FROM EMAIL 02:
-change application/json to text/plain
-redirect user to page they originally requested if they need to log in
 add onclick to sqlqueryer button
 move blurb as an action to users domain
 use HTML5 shim (on google code)
