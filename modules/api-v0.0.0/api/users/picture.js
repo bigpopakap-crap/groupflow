@@ -11,6 +11,9 @@
 
 	Directly touches database tables:
 		(none)
+
+	Directly touches session variables:
+		req.session.user (read)
 */
 var gen_utils = require('../../../gen-utils.js');
 var api_validate = require('../util/api-validate.js');

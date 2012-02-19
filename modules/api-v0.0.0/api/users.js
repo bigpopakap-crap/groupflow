@@ -14,6 +14,9 @@
 		UsersEmail (read/write)
 		UsersBlurb (read/write)
 		UsersAuth (read/write)
+
+	Directly touches session variables:
+		req.session.user (read)
 */
 var api_utils = require('./util/api-utils.js');
 var api_errors = require('./util/api-errors.js');

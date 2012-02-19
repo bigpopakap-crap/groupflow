@@ -1,9 +1,22 @@
 FROM EMAIL:
-1. in every API doman, make a note of which values it relies on in the session object
 2. make the "users/permissions" domain cache its value in req.session.user_permissions
 3. think about other values to cache in req.session (make sure they get changed if they get changed in the database!)
 4. make the command line and sql queryer
 5. encrypt passwords!
+6. use the cached user in /users/me
+
+FROM EMAIL 02:
+change application/json to text/plain
+redirect user to page they originally requested if they need to log in
+add onclick to sqlqueryer button
+move blurb as an action to users domain
+use HTML5 shim (on google code)
+put in standard page header partials
+     - beginning: favicon
+     - end: html5 shim (if IE)
+add dependencies to app doc:
+jquery, bootstrap, shim, other scripts/styles... these can be updated when new versions come out
+also, remove the CSS width property for the profile picture
 
 0. figure out what is a good session-store to use
 0. figure out how to limit RDS access to just local machine and heroku

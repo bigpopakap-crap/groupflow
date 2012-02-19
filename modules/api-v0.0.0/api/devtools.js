@@ -1,3 +1,19 @@
+/*
+	This API domain:
+		/api/devtools
+
+	REST functions:
+		sqlquery - executes a SQL statement directly on the database
+	
+	Internal-only functions:
+		(none)
+
+	Directly touches database tables:
+		any: privileged user has complete control
+
+	Directly touches session variables:
+		(none)
+*/
 var gen_utils = require('../../gen-utils.js');
 var api_validate = require('./util/api-validate.js');
 var db = require('../db.js');

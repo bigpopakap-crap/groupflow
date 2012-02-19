@@ -1,3 +1,20 @@
+/*
+	This API domain:
+		/api/users/permissions, api.users.permissions
+
+	REST functions:
+		get - get's the auth'd user's permissions
+	
+	Internal-only functions:
+		(none)
+
+	Directly touches database tables:
+		(none)
+
+	Directly touches session variables:
+		req.session.user
+		req.session.user_permissions
+*/
 var api_utils = require('../util/api-utils.js');
 var api_errors = require('../util/api-errors.js');
 var api_validate = require('../util/api-validate.js');

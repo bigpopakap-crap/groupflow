@@ -15,6 +15,9 @@
 
 	Directly touches database tables:
 		(none)
+
+	Directly touches session variables:
+		req.session.user (read/write)
 */
 var api_utils = require('./util/api-utils.js');
 var api_errors = require('./util/api-errors.js');
