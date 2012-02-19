@@ -44,7 +44,7 @@ exports.get = function(req, params, callback) {
 	else if (req.session.user_permissions) {
 		//just use the object cached in the session
 		return callback(api_utils.wrapResponse({
-			success: req.session.user_permissions;
+			success: req.session.user_permissions
 		}));
 	}
 	else if (req.session.user.username == process.env.APP_NAME) {
