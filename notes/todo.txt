@@ -1,19 +1,14 @@
-FROM EMAIL:
-4. make the command line
-5. encrypt passwords!
-6. use HTML5 shim (on google code)
-add dependencies to app doc:
-jquery, bootstrap, shim, other scripts/styles... these can be updated when new versions come out
-also, remove the CSS width property for the profile picture
+. make the command line
+. encrypt passwords!
+. use HTML5 shim (on google code)
+. add dependencies to app doc:
+	jquery, bootstrap, shim, other scripts/styles. these can be updated when new versions come out
+. do client-validation on forms
+. re-do facebook linking
 
-0. figure out what is a good session-store to use
-0. figure out how to limit RDS access to just local machine and heroku
-0. figure out how to NOT return password parameters
-0. remove all direct definitions of exports.asdf = function()...
+. figure out what is a good session-store to use
+. figure out how to limit RDS access to just local machine and heroku
+. figure out how to NOT return password parameters
+. remove all direct definitions of exports.asdf = function()...
 
-ON RDS: remove the groupflowtest instance and everything associated with it
-
-1. do client-validation on forms
-3. re-do facebook linking
-4. create command-line, db-command-line and API doc
-5. continue working on API with just the dev tools, and update the doc
+. remove the groupflowtest instance and everything associated with it
