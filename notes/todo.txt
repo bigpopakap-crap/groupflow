@@ -1,5 +1,4 @@
 FROM EMAIL:
-2. make the "users/permissions" domain cache its value in req.session.user_permissions
 3. think about other values to cache in req.session (make sure they get changed if they get changed in the database!)
 4. make the command line and sql queryer
 5. encrypt passwords!
