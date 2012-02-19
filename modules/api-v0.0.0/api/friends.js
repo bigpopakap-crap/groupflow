@@ -3,3 +3,5 @@ function configure(app, url_prefix) {
 
 	//TODO
 }
+exports.configure = configure;
+
