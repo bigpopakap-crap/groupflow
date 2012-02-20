@@ -90,7 +90,7 @@ exports.get = get;
 */
 function me(req, params, callback) {
 	if (!req.session.user) {
-		//no auth' user
+		//no auth'd user
 		return callback(api_errors.noAuth(req.session.user, params));
 	}
 	else {
