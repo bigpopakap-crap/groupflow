@@ -1,6 +1,5 @@
 . make the command line
 . encrypt passwords!
-. use HTML5 shim (on google code)
 . add dependencies to app doc:
 	jquery, bootstrap, shim, other scripts/styles. these can be updated when new versions come out
 . friends and friend requests
