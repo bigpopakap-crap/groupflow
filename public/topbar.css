@@ -4,6 +4,7 @@ body {
 
 .topbar-partial .profile-picture {
 	height: 28px;
+	width: 28px;				/* TODO figure out how to make this work in IE */
 	margin-top: 5px;
 	border: solid 1px #BFBFBF;
 }
@@ -16,3 +17,4 @@ body {
 	font-size: 12px;
 	padding: 2px 6px;
 }
+
