@@ -5,6 +5,8 @@
 
 .header-row .user-picture-outer {
 	margin-right: 8px;
+	max-width: 180px;
+	max-height: 180px;
 }
 
 .header-row .user-picture {
