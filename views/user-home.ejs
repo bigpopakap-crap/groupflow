@@ -19,7 +19,7 @@
 	<%- partial('partials/shadowbox.ejs') %>
 
 	<div class="container container-fluid">
-		<div class="row-fluid">
+		<div class="header-row row-fluid">
 			<div class="user-picture-outer pull-left">
 				<img class="user-picture" src="/api/users/picture/me?type=normal">
 			</div>
@@ -28,15 +28,15 @@
 		</div>
 
 		<div class="row-fluid">
-			<h3>Notifications</h3>
-		</div>
+			<div class="span3">
+				<%- partial('partials/sidebar-nav.ejs', {
+						active: 'Inbox'
+					}) %>
+			</div>
 
-		<div class="row-fluid">
-			<h3>Groups</h3>
-		</div>
-
-		<div class="row-fluid">
-			<h3>Friends</h3>
+			<div class="main-content span9">
+				Main content!
+			</div>
 		</div>
 	</div>
 </body>

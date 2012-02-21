@@ -1,0 +1,13 @@
+.sidebar-partial {
+	background-color: #F5F5F5;
+	padding: 8px;
+
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-o-border-radius: 4px;
+	-webkit-border-radius: 4px;
+}
+
+.sidebar-partial .title {
+	color: #555555;
+}

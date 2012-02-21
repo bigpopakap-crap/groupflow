@@ -1,11 +1,16 @@
-.user-picture-outer {
+.header-row {
+	border-bottom: solid 1px #EEEEEE;
+	margin-bottom: 12px;
+}
+
+.header-row .user-picture-outer {
 	margin-right: 8px;
 }
 
-.user-picture {
+.header-row .user-picture {
 	border: solid 1px #999999;
 }
 
-.blurb {
+.header-row .blurb {
 	color: #666666;
 }
