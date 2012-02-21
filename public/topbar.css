@@ -3,6 +3,8 @@ body {
 }
 
 .topbar-partial .dropdown-toggle {
+	position: relative;
+	left: 20px;
 	padding: 0px !important;
 	height: 40px;
 }
@@ -25,4 +27,5 @@ body {
 
 .topbar-partial .dropdown-toggle .caret {
 	vertical-align: text-top;
+	margin-right: 20px;
 }
