@@ -3,10 +3,9 @@ body {
 }
 
 .topbar-partial .dropdown-toggle {
-	position: relative;
-	left: 20px;
 	padding: 0px !important;
 	height: 40px;
+	margin-right: -20px;
 }
 
 .topbar-partial .dropdown-toggle .user-picture {
