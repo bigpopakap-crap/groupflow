@@ -2,18 +2,27 @@ body {
 	padding-top: 52px;
 }
 
-.topbar-partial .profile-picture {
+.topbar-partial .dropdown-toggle {
+	padding: 0px !important;
+	height: 40px;
+}
+
+.topbar-partial .dropdown-toggle .user-picture {
 	height: 28px;
 	width: 28px;				/* TODO figure out how to make this work in IE */
-	margin-top: 5px;
 	border: solid 1px #BFBFBF;
+	vertical-align: middle;
+	margin-left: 4px;
+}
+.topbar-partial .dropdown-toggle:hover .user-picture {
+	border-color: #CFCFCF;
 }
 
-.topbar-partial .user-name {
+.topbar-partial .dropdown-toggle .user-name {
 	max-width: 240px;
+	line-height: 40px;
 }
 
-.topbar-partial .user-name .caret {
-	margin-right: 2px;
+.topbar-partial .dropdown-toggle .caret {
+	vertical-align: text-top;
 }
-
