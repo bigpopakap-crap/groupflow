@@ -28,3 +28,7 @@ body {
 	vertical-align: text-top;
 	margin-right: 20px;
 }
+
+.topbar-partial i {
+	margin-left: 2px;
+}

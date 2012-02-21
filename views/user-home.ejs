@@ -7,7 +7,8 @@
 	<%- partial('partials/resources.ejs', {
 			stylesheets: [
 				'/public/lib/bootstrap/css/bootstrap.min.css',
-				'/public/gf-style.css'
+				'/public/gf-style.css',
+				'/public/user-home.css'
 			],
 			scripts: []
 		}) %>
@@ -19,7 +20,23 @@
 
 	<div class="container container-fluid">
 		<div class="row-fluid">
-			User homepage (coming soon)
+			<div class="user-picture-outer pull-left">
+				<img class="user-picture" src="/api/users/picture/me?type=large">
+			</div>
+			<h1 class="nowrap"><%= user.name.full %></h1>
+			<p class="blurb"><%= user.blurb %></p>
+		</div>
+
+		<div class="row-fluid">
+			<h3>Notifications</h3>
+		</div>
+
+		<div class="row-fluid">
+			<h3>Groups</h3>
+		</div>
+
+		<div class="row-fluid">
+			<h3>Friends</h3>
 		</div>
 	</div>
 </body>
