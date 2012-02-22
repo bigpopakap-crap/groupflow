@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+	<iframe src="https://www.facebook.com/plugins/registration.php?
+				 client_id=<%= process.env.FB_APP_KEY %>&
+				 redirect_uri=<%= process.env.SITE_URL %>/api/accounts/linkfacebook&
+				 fb_only=true
+			scrolling="auto"
+			frameborder="no"
+			style="border:none"
+			allowTransparency="true"
+			width="100%"
+			height="330">
+	</iframe>
+</body>

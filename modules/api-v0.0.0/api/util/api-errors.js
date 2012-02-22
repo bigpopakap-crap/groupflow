@@ -105,3 +105,15 @@ exports.noAuth = function(user, params) {
 	});
 }
 
+/* the account was already linked */
+exports.accountAlreadyLinked = function(user, params) {
+	return wrapError(params, {
+		statusCode: 400,
+		errorCode: 'ACCOUNT_ALREADY_LINKED',
+		devMsg: 'Either the external account or the ' + process.env.APP_NAME + ' account has already been linked',
+		userMsg: 'Either the external account or the ' + process.env.APP_NAME + ' account has already been linked',
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
