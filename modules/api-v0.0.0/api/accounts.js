@@ -15,7 +15,7 @@
 		UsersFacebookId (read/write)
 
 	Directly touches session variables:
-		req.session.user_fbid (read/write)
+		(none)
 */
 var base64url = require('b64url');
 var crypto = require('crypto');
