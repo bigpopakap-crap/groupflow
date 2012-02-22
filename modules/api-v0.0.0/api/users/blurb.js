@@ -52,10 +52,13 @@ function set(req, params, callback) {
 			[ params.blurb, req.session.user.username ],
 			function (err) {
 				if (err) return callback(api_errors.database(req.session.user, params, err));
-				else return callback(api_utils.wrapResponse({
-					params: params,
-					success: params.blurb
-				}));
+				else  {
+					req.session.user.blurb = params.blurb; //update the blurb in the session
+					return callback(api_utils.wrapResponse({
+						params: params,
+						success: params.blurb
+					}));
+				}
 			}
 		);
 	}
