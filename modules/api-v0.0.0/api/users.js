@@ -96,6 +96,7 @@ function me(req, params, callback) {
 	else {
 		//use the cached user object in the session
 		callback(api_utils.wrapResponse({
+			params: params,
 			success: req.session.user
 		}));
 	}

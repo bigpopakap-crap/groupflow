@@ -5,6 +5,15 @@ exports.useApi = function(module) {
 	return this;
 }
 
+/* determines if a value is in an array */
+function arrContains(arr, val) {
+	for (i = 0; i < arr.length; i++) {
+		if (arr[i] === val) return true;
+	}
+	return false;
+}
+exports.arrContains = arrContains;
+
 /* gets the params from the request */
 function getParams(req) {
 	if (!req) {

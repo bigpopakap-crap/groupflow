@@ -45,6 +45,7 @@ function get(req, params, callback) {
 	else if (req.session.user_permissions) {
 		//just use the object cached in the session
 		return callback(api_utils.wrapResponse({
+			params: params,
 			success: req.session.user_permissions
 		}));
 	}
@@ -52,13 +53,19 @@ function get(req, params, callback) {
 		//this is the site admin
 		var permissions = { devtools: true };
 		req.session.user_permissions = permissions; //cache the value in the session
-		return callback(api_utils.wrapResponse({ success: permissions }));
+		return callback(api_utils.wrapResponse({
+					params: params,
+					success: permissions
+				}));
 	}
 	else {
 		//this is not the site admin
 		var permissions = { devtools: false };
 		req.session.user_permissions = permissions; //cache the value in the session
-		return callback(api_utils.wrapResponse({ success: permissions }));
+		return callback(api_utils.wrapResponse({
+					params: params,
+					success: permissions
+				}));
 	}
 }
 exports.get = get;

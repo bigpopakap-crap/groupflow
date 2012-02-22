@@ -35,6 +35,7 @@ function num(req, params, callback) {
 	else {
 		//TODO for now, just return 0
 		callback(api_utils.wrapResponse({
+			params: params,
 			success: 0
 		}));
 	}
@@ -61,6 +62,7 @@ function list(req, params, callback) {
 	else {
 		//TODO for now, just return an empty list
 		callback(api_utils.wrapResponse({
+			params: params,
 			success: []
 		}));
 	}
