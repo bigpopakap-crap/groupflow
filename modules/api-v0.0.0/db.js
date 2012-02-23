@@ -1,10 +1,10 @@
 /* Creates a database client and activates the queues on it */
 var client = require('mysql').createClient({
-	host: process.env.RDS_ENDPOINT,
-	port: process.env.RDS_PORT,
-	user: process.env.RDS_USERNAME,
-	password: process.env.RDS_PASSWORD,
-	database: process.env.RDS_DATABASE
+	host: process.env.DB_ENDPOINT,
+	port: process.env.DB_PORT,
+	user: process.env.DB_USERNAME,
+	password: process.env.DB_PASSWORD,
+	database: process.env.DB_DATABASE
 });
 require('mysql-queues')(client, (process.env.NODE_ENV === 'testing'));
 								//^^ debug if in testing environment
