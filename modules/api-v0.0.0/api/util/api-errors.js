@@ -117,3 +117,17 @@ exports.accountAlreadyLinked = function(user, params) {
 	});
 }
 
+/* a general error message with no param errors */
+exports.genError = function(user, params, message, statusCode) {
+	return wrapError(params, {
+		statusCode: statusCode || 500,
+		errorCode: 'SOME_ERROR',
+		devMsg: message.devMsg,
+		userMsg: message.userMsg,
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
+
+

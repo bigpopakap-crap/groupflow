@@ -18,6 +18,7 @@
 	Directly touches session variables:
 		req.session.user (read)
 */
+var bcrypt = require('bcrypt');
 var api_utils = require('./util/api-utils.js');
 var api_errors = require('./util/api-errors.js');
 var api_warnings = require('./util/api-warnings.js');
@@ -124,12 +125,29 @@ function getbypassword(req, params, callback) {
 		//now execute the database query
 		db.query(
 			GET_PASSWORD_QUERY_STRING,
-			[ params.username, params.username, params.username, params.password ],
-			getUserCallback(req, params, callback)
+			[ params.username, params.username, params.username ],
+			function (err, results) {
+				//if a user was returned, make sure the passwords match
+				if (!err && results && results[0]) {
+					var hash = results[0].password;
+					if (!passwordMatchesHash(params.password, hash)) {
+						//set the array to the empty array
+						results = [];
+					}
+				}
+
+				//now call the function to return the user object
+				return getUserCallback(req, params, callback)(err, results);
+			}
 		);
 	}
 }
 exports.getbypassword = getbypassword;
+
+//helper: returns true if the password matches the hash
+function passwordMatchesHash(password, hash) {
+	return bcrypt.compare_sync(password, hash);
+}
 
 /*
 	Creates a new user object, assuming that all fields have been validated
@@ -175,10 +193,9 @@ exports.create = create;
 var GET_QUERY_STRING = 'select n.username, n.firstName, n.lastName, b.blurb ' +
 				'from (UsersName n, UsersBlurb b) ' +
 				'where n.username=? and b.username=?';
-var GET_PASSWORD_QUERY_STRING = 'select n.username, n.firstName, n.lastName, b.blurb ' +
+var GET_PASSWORD_QUERY_STRING = 'select n.username, n.firstName, n.lastName, b.blurb, a.password ' +
 				'from (UsersName n, UsersBlurb b, UsersAuth a) ' +
-				'where n.username=? and b.username=? and a.username=? ' +
-					'and a.password=?';
+				'where n.username=? and b.username=? and a.username=?';
 
 //handles the when the database returns the user data
 function getUserCallback(req, params, callback) {

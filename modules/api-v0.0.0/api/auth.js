@@ -19,6 +19,7 @@
 	Directly touches session variables:
 		req.session.user (read/write)
 */
+var bcrypt = require('bcrypt');
 var api_utils = require('./util/api-utils.js');
 var api_errors = require('./util/api-errors.js');
 var api_validate = require('./util/api-validate.js');
@@ -79,7 +80,14 @@ function register(req, params, callback) {
 		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
 	}
 	else {
-		//check if the user exists already
+		//hash the password and make sure its not too long for the database
+		params.password = hashPassword(params.password);
+		if (params.password.length > 80) { //TODO: make this 80 into a constant?
+			gen_utils.err_log('hashed password was too long for the database!');
+			return callback(api_errors.internalServer(req.session.user, params));
+		}
+
+		//now check if the user exists already
 		users.get(req, params, function(data) {
 			if (data.response.error) {
 				//some error - just relay it (the params have been correctly passed)
@@ -118,6 +126,13 @@ function register(req, params, callback) {
 	}
 }
 exports.register = register;
+
+//helper: salts and hashes a password to safely store it in the db
+function hashPassword(password) {
+	var salt = bcrypt.gen_salt_sync(10);
+	var hash = bcrypt.encrypt_sync(password, salt);
+	return hash;
+}
 
 /*
 	Takes a username/password combination
