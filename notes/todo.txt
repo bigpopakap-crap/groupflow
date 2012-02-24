@@ -1,13 +1,11 @@
+. put labels next to username and password in loginbox, set username focused
 . make the command line
-. encrypt passwords!
 . add dependencies to app doc:
 	jquery, bootstrap, shim, other scripts/styles. these can be updated when new versions come out
 . friends and friend requests
 . do client-validation on forms
-. re-do facebook linking
+. log in with facebook
 
 . figure out what is a good session-store to use
 . figure out how to limit RDS access to just local machine and heroku
 . figure out how to NOT return password parameters
-
-. on RDS: remove the groupflowtest instance and everything associated with it
