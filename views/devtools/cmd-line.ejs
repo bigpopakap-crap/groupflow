@@ -79,6 +79,7 @@
 
 			function makeSqlQuery() {
 				var query = $(sqlInputAreaSel).find('.query').val();
+				$(sqlInputAreaSel).find('.query').val('').focus();
 
 				$.ajax({
 					type: 'POST',
