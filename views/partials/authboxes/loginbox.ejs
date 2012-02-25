@@ -15,24 +15,17 @@
 		<div class="loginbox-partial-inner alert alert-info">
 			<legend>Login to <%= process.env.APP_NAME %></legend>
 
-			<div class="fb-login color-black">
-				<span><a href="/auth/login/facebook"><img class="inline-logo" src="/public/images/facebook/f_logo.png">Login with Facebook</a></span>
-				<span class="pull-right">(<a href="#">What's this?</a>)</span>
-				<%/* <!-- TODO make this "what's this" work --> */%>
-			</div>
-
 			<%- partial('partials/gf-validate-init.ejs', {
 					selector: parent + " .loginbox-partial form.gf-login"
 				}) %>
 			<form class="gf-login" method="post" action="/">
-				<fieldset>
-					<label class="control-label">Or enter your username and password</label>
-					
+				<fieldset>					
 					<!-- username -->
 					<div class="control-group">
 						<div class="controls">
 							<div class="gf-validate-input-container">
-								<input name="username" class="input-field input-xlarge" type="text" placeholder="username">
+								<label class="input-label help-inline">Username</label>
+								<input name="username" class="input-field input-xlarge" type="text" placeholder="username" autofocus="autofocus">
 								<span class="help-inline gf-validate-field-error"></span>	
 							</div>
 						</div>
@@ -42,6 +35,7 @@
 					<div class="control-group">
 						<div class="controls">
 							<div class="gf-validate-input-container">
+								<label class="input-label help-inline">Password</label>
 								<input name="password" class="input-field input-xlarge" type="password" placeholder="password">
 								<span class="help-inline gf-validate-field-error"></span>	
 							</div>					
@@ -53,11 +47,17 @@
 	
 					<!-- submit -->
 					<div class="control-group">
-						<input class="login-button btn btn-primary" type="submit" value="Login">
+						<input class="login-button btn btn-primary span4" type="submit" value="Login">
 						<a class="pull-right" href="/register">Create an account</a>
 					</div>
 				</fieldset>
 			</form>
+
+			<div class="fb-login color-black">
+				<span><a href="/auth/login/facebook"><img class="inline-logo" src="/public/images/facebook/f_logo.png">Login with Facebook</a></span>
+				<span class="pull-right">(<a href="#">What's this?</a>)</span>
+				<%/* <!-- TODO make this "what's this" work --> */%>
+			</div>
 		</div>
 	</div>
 </body>
