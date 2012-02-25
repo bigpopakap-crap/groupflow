@@ -93,7 +93,7 @@
 
 		for (var i=0; i < arr.length; i++) {
 			var newElem = bindElem(data.template, arr[i]);
-			root.append(newElem);
+			data.root.append(newElem);
 		}
 	}
 

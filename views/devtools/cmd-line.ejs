@@ -59,8 +59,14 @@
 				var sqlInputArea = $(sqlInputAreaSel);
 				var apiInputArea = $(apiInputAreaSel);
 
-				//initialize gfbind
+				//initialize gfbind on query history and param-pairs
 				queryHistory.gfbind_init();
+				apiInputArea.find('.params .list').gfbind_init();
+
+				//set the ways to add parameters
+				apiInputArea.find('.params .add-param-button').click(function() {
+					apiInputArea.find('.params .list').gfbind_append({});
+				});
 
 				//set the ways to trigger sql requests
 				sqlInputArea.keydown(function(e) { if (e.keyCode == 13) { makeSqlQuery(); } });
@@ -73,6 +79,7 @@
 
 			function makeSqlQuery() {
 				var query = $(sqlInputAreaSel).find('.query').val();
+
 				$.ajax({
 					type: 'POST',
 					data: { query: query },
@@ -87,11 +94,15 @@
 			}
 
 			function makeApiQuery() {
-				var method = $(apiInputAreaSel).find('.method').val();
-				var url = $(apiInputAreaSel).find('.url').val();
+				var apiInputArea = $(apiInputAreaSel);
+
+				var method = apiInputArea.find('.method').val();
+				var url = apiInputArea.find('.url').val();
+				var data = getApiParams(apiInputArea.find('.params .list'));
+
 				$.ajax({
 					type: method,
-					data: {},
+					data: data,
 					url: url,
 					success: function(response) {
 						handleSuccess(method.toUpperCase() + ' ' + url, response);
@@ -100,6 +111,21 @@
 						handleError(method.toUpperCase() + ' ' + url, response);
 					}
 				});
+			}
+
+			function getApiParams(jparamlist) {
+				var data = {};				
+
+				jparamlist.find('.param').each(function() {
+					var jparam = $(this);
+					var key = jparam.find('.key').val();
+					var value = jparam.find('.value').val();
+
+					if (key) data[key] = value;
+				});
+
+				console.log(data);
+				return data;
 			}
 
 			function handleSuccess(query, response) {
@@ -144,24 +170,41 @@
 			</label>
 		</div>
 
-		<!-- the API input area -->
 		<div class="row-fluid">
-			<strong>Issue an API request</strong>
-			<div class="input-area api-input-area alert">
-				<label>Enter a query method, url and args</label>
-				<input class="method query span1" type="text" placeholder="get"></input>
-				<input class="url query span8" type="text" placeholder="/api/users/me"></input>
-				<input class="execute-button span2 btn btn-primary" type="button" value="Execute"></input>
-			</div>
-		</div>
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#api-pane" data-toggle="tab">API Reqest</a></li>
+				<li><a href="#sql-pane" data-toggle="tab">SQL Query</a></li>
+			</ul>
 
-		<!-- the sql input area -->
-		<div class="row-fluid">
-			<strong>Issue a SQL query</strong>
-			<div class="input-area sql-input-area alert">
-				<label>Enter a query <strong>without</strong> the ending semicolon</label>
-				<input class="query span9" type="text" placeholder="show tables/select * from ..."></input>
-				<input class="execute-button span2 btn btn-primary" type="button" value="Execute"></input>
+			<div class="tab-content">
+				<!-- the API input area -->
+				<div id="api-pane" class="tab-pane active">
+					<div class="input-area api-input-area alert">
+						<label><strong>API Request:</strong> enter a query method, url and args</label>
+						<input class="method query span1" type="text" placeholder="get">
+						<input class="url query span8" type="text" placeholder="/api/users/me">
+						<input class="execute-button span2 btn btn-primary" type="button" value="Execute">
+
+						<div class="params">
+							<div class="list">
+								<div class="param gf-bind-template">
+									<input class="key span2" type="text" placeholder="key">
+									<input class="value span7" type="text" placeholder="value">
+								</div>
+							</div>
+							<input class="add-param-button btn" type="button" value="Add param">
+						</div>			
+					</div>
+				</div>
+
+				<!-- the SQL input area -->
+				<div id="sql-pane" class="tab-pane">
+					<div class="input-area sql-input-area alert">
+						<label><strong>SQL Query:</strong> enter a query <strong>without</strong> the ending semicolon</label>
+						<input class="query span9" type="text" placeholder="show tables/select * from ..."></input>
+						<input class="execute-button span2 btn btn-primary" type="button" value="Execute"></input>
+					</div>
+				</div>
 			</div>
 		</div>
 

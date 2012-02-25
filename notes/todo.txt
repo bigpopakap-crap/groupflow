@@ -1,6 +1,4 @@
 . figure out how to NOT return password parameters
-. add data parameters to api commandline
-
 . friends and friend requests
 
 . add dependencies to app doc:
