@@ -91,18 +91,7 @@ app.get('/devtools/cmdline', function(req, res, next) {
 	api.users.permissions.get(req, gen_utils.getParams(req), function(data) {
 		//data.response.success is the permission object, if it exists
 		if (data.response.success && data.response.success.devtools)
-			gen_utils.render(req, res, 'devtools/api-cmd.ejs');
-		else return next();
-	});
-});
-
-//sql queryer page (for privileged users)
-app.get('/devtools/sqlqueryer', function(req, res, next) {
-	//make sure the user has access to devtools
-	api.users.permissions.get(req, gen_utils.getParams(req), function(data) {
-		//data.response.success is the permission object, if it exists
-		if (data.response.success && data.response.success.devtools)
-			gen_utils.render(req, res, 'devtools/sql-queryer.ejs');
+			gen_utils.render(req, res, 'devtools/cmd-line.ejs');
 		else return next();
 	});
 });

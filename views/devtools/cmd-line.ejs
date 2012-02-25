@@ -19,17 +19,29 @@
 	<!-- style for this page
 		(not public as to not hint that such a page exists) -->
 	<style type="text/css">
+		.input-area {
+			padding: 8px;
+		}
 		.query-history-entry {
 			margin-bottom: 12px;
 			margin-left: 0px;
 		}
+		.query-history-entry .query,
+		.query-history-entry .response {
+			padding: 4px;
+			padding-left: 6px;
+		}
 		.query-history-entry .query {
 			font-weight: bold;
+			margin-bottom: 0px;
+			background-color: #EEEEEE;
+			border-bottom: solid 1px #CCCCCC;
 		}
 		.query-history-entry .response {
 			background-color: #DDDDDD;
 			max-height: 200px;
 			overflow-y: auto;
+			font-family: "Courier", monospace;
 		}
 	</style>
 
@@ -38,46 +50,54 @@
 	<script type="text/javascript">
 		(function() {
 
-			var inputAreaSel = '#input-area';			//selector for the input area
+			var sqlInputAreaSel = '.sql-input-area';	//selector for the sql input area
+			var apiInputAreaSel = '.api-input-area';	//selector for the api input area
 			var queryHistorySel = '#query-history';		//selector for the query history list
 
 			$(document).ready(function() {
 				var queryHistory = $(queryHistorySel);
-				var inputArea = $(inputAreaSel);
+				var sqlInputArea = $(sqlInputAreaSel);
+				var apiInputArea = $(apiInputAreaSel);
 
 				//initialize gfbind
 				queryHistory.gfbind_init();
 
-				//set the ways to trigger the request
-				inputArea.keydown(function(e) {
-					if (e.keyCode == 13) {
-						makeQuery(clearAndFocus());
-					}
-				});
-				inputArea.find('input[type=button]').click(function() {
-					makeQuery(clearAndFocus());
-				});
+				//set the ways to trigger sql requests
+				sqlInputArea.keydown(function(e) { if (e.keyCode == 13) { makeSqlQuery(); } });
+				sqlInputArea.find('.execute-button').click(function() { makeSqlQuery(); });
+
+				//set the ways to trigger api requests
+				apiInputArea.keydown(function(e) { if (e.keyCode == 13) { makeApiQuery(); } });
+				apiInputArea.find('.execute-button').click(function() { makeApiQuery(); });
 			});
 
-			//clears the input text, makes it focused
-			//and returns the value before it was cleared
-			function clearAndFocus() {
-				var input = $(inputAreaSel + ' .query');
-				var val = input.val();
-				input.val('').focus();
-				return val;
-			}
-
-			function makeQuery(query) {
+			function makeSqlQuery() {
+				var query = $(sqlInputAreaSel).find('.query').val();
 				$.ajax({
 					type: 'POST',
 					data: { query: query },
 					url: '/api/devtools/sqlquery',
 					success: function(response) {
-						handleSuccess(query, response);
+						handleSuccess('SQL ' + query, response);
 					},
-					error: function(data) {
-						handleError(query, response);
+					error: function(response) {
+						handleError('SQL ' + query, response);
+					}
+				});
+			}
+
+			function makeApiQuery() {
+				var method = $(apiInputAreaSel).find('.method').val();
+				var url = $(apiInputAreaSel).find('.url').val();
+				$.ajax({
+					type: method,
+					data: {},
+					url: url,
+					success: function(response) {
+						handleSuccess(method.toUpperCase() + ' ' + url, response);
+					},
+					error: function(response) {
+						handleError(method.toUpperCase() + ' ' + url, response);
 					}
 				});
 			}
@@ -86,7 +106,7 @@
 				////bind it to the query history view
 				var sql = {
 					query: query,
-					response: JSON.stringify(response)
+					response: response
 				};
 				var queryHistory = $(queryHistorySel);
 				queryHistory.gfbind_prepend(sql);
@@ -94,7 +114,7 @@
 				//pretty print all the elements
 				$('.query-history-entry .response').each(function() {
 					try {
-						$(this).prettyJson(JSON.parse($(this).text()));
+						$(this).prettyJson(JSON.parse($(this).text()), 3);
 					}
 					catch (ex) {
 						//do nothing: the element did not contain JSON
@@ -117,20 +137,31 @@
 	<div class="container container-fluid">
 		<!-- the title -->
 		<div class="row-fluid">
-			<h1>SQL Queryer</h1>
+			<h1>Command line</h1>
 			<label>
-				Use this to execute SQL queries directly on the database. Output is printed
-				in JSON format
+				Use this to execute API requests or SQL queries directly on the database.
+				Output is printed in JSON format
 			</label>
 		</div>
 
-		<!-- the input area -->
+		<!-- the API input area -->
 		<div class="row-fluid">
-			<h2>Issue a new query</h2>
+			<h2>Issue an API request</h2>
+			<label>Enter a query method, url and args</label>
+			<div class="input-area api-input-area alert">
+				<input class="method query span1" type="text" placeholder="get"></input>
+				<input class="url query span8" type="text" placeholder="/api/users/me"></input>
+				<input class="execute-button span2 btn btn-primary" type="button" value="Execute"></input>
+			</div>
+		</div>
+
+		<!-- the sql input area -->
+		<div class="row-fluid">
+			<h2>Issue a SQL query</h2>
 			<label>Enter a query <strong>without</strong> the ending semicolon</label>
-			<div id="input-area">
+			<div class="input-area sql-input-area alert">
 				<input class="query span9" type="text" placeholder="show tables/select * from ..."></input>
-				<input class="span2 btn btn-primary" type="button" value="Execute"></input>
+				<input class="execute-button span2 btn btn-primary" type="button" value="Execute"></input>
 			</div>
 		</div>
 
@@ -147,6 +178,13 @@
 						{ error: 'this is just an example!' }
 					</p>
 				</div>
+			</div>
+		</div>
+
+		<!-- marker of the end of the query history -->
+		<div class="row-fluid">
+			<div class="alert">
+				End of query history
 			</div>
 		</div>
 	</div>

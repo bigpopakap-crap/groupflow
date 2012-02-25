@@ -57,7 +57,7 @@ function handleSqlQuery(req, res, next) {
 					});
 					
 					//send the response
-					res.writeHead(200, {'Content-Type': 'application/json'});
+					res.writeHead(200, {'Content-Type': 'text/plain'});
 					res.write(response);
 					res.end();
 				});
