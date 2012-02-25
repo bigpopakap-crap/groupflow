@@ -19,13 +19,7 @@
 	<%- partial('partials/shadowbox.ejs') %>
 
 	<div class="container container-fluid">
-		<div class="header-row row-fluid">
-			<div class="user-picture-outer pull-left">
-				<img class="user-picture" src="/api/users/picture/me?type=normal">
-			</div>
-			<h1 class="nowrap"><%= user.name.full %></h1>
-			<p class="blurb"><%= user.blurb %></p>
-		</div>
+		<%- partial('partials/page-headers/user-header.ejs') %>
 
 		<div class="row-fluid">
 			<div class="span3">

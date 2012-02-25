@@ -1,5 +1,6 @@
 . figure out how to NOT return password parameters
 . put labels next to username and password in loginbox, set username focused
+. make "check availability" button not be a focus element"
 . add data parameters to api commandline
 
 . friends and friend requests
