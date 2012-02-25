@@ -76,7 +76,7 @@ exports.supported = supported;
 function linkfacebook(req, params, callback) {
 	//error when something is wrong with the signed request
 	function sr_error(callback) {
-		return callback(api_errors.badInputParams(req.session.user, params, {
+		return callback(api_errors.badInputParams(req.session.user, {}, {
 			signed_req: {
 				devMsg: 'Something was wrong with the signed_request',
 				userMsg: 'The value of this field is corrupted'
@@ -87,7 +87,7 @@ function linkfacebook(req, params, callback) {
 	//make sure there's and auth'd user
 	var user = req.session.user;
 	if (!user) {
-		return callback(api_errors.noAuth(req.session.user, params));
+		return callback(api_errors.noAuth(req.session.user, {}));
 	}
 
 	//check that the signed request parameter is there
@@ -115,16 +115,16 @@ function linkfacebook(req, params, callback) {
 		function(err, results) {
 			if (err && (err.number == 1060 || err.number == 1061 || err.number == 1062)) {
 				//account already linked
-				return callback(api_errors.accountAlreadyLinked(req.session.user, params));
+				return callback(api_errors.accountAlreadyLinked(req.session.user, {}));
 			}
 			else if (err) {
 				//some other error
-				return callback(api_errors.database(req.session.user, params, err));
+				return callback(api_errors.database(req.session.user, {}, err));
 			}
 			else {
 				//yay! linked!
 				return callback(api_utils.wrapResponse({
-					params: params,
+					params: {},
 					success: true
 				}));
 			}
