@@ -1,5 +1,4 @@
 . figure out how to NOT return password parameters
-. don't return signed_request parameter in /api/accounts/linkfacebook
 . put labels next to username and password in loginbox, set username focused
 . add data parameters to api commandline
 
