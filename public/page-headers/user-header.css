@@ -1,0 +1,18 @@
+.user-header-partial {
+	border-bottom: solid 1px #EEEEEE;
+	margin-bottom: 12px;
+}
+
+.user-header-partial .user-picture-outer {
+	margin-right: 8px;
+	max-width: 180px;
+	max-height: 180px;
+}
+
+.user-header-partial .user-picture {
+	border: solid 1px #999999;
+}
+
+.user-header-partial .blurb {
+	color: #666666;
+}
