@@ -138,6 +138,11 @@ function decode_sr(signed_request) {
 	var secret = process.env.FB_APP_SECRET;
 
     encoded_data = signed_request.split('.',2);
+	//make sure that the length of the array is 2
+	if (encoded_data.length != 2) {
+		return null;
+	}
+
     // decode the data
     sig = encoded_data[0];
     json = base64url.decode(encoded_data[1]);
