@@ -91,6 +91,7 @@ module.exports = function(options) {
 					  values map to the type of the column
 		apply: a function (or array of functions, which are applied in order)
 				that are applied to the object, where "this" is the object
+		//TODO uniqueness of values?
 */
 function Model(name, definition) {
 	//default the input values
@@ -103,7 +104,17 @@ function Model(name, definition) {
 		applyfns = [applyfns];
 
 	//TODO define the model
-	//select() - starts a select query
+	/*
+		select() - a query() with count=false
+		count() - a query() with count=true
+		all() - shorthand for select with no "where"
+		countall() - shorthand for count() with no "where"
+
+		internal:
+			query() - starts a query with options:
+				where: some constraints TODO
+				count: is this just a count?
+	*/
 	
 	/*
 		The public portion of the Model
