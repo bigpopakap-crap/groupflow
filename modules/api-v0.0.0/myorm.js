@@ -39,32 +39,32 @@ module.exports = function(options) {
 		}
 	}
 
-	//helper array to keep track of all models created
-	var models = {};
+	//helper array to keep track of all tables created
+	var tables = {};
 
 	/*
-		Gets the model of the given name (or undefined/null if there was no model defined)
+		Gets the table of the given name (or undefined/null if there was no table defined)
 	*/
-	function getModel(name) {
-		return models[name];
+	function getTable(name) {
+		return tables[name];
 	}
 
 	/*
-		Defines a new model (if the name has been defined before, then
+		Defines a new table (if the name has been defined before, then
 		it overwrites the previous definition)
 		
 		name (str) - the name of the object (used for the database table)
-		definition (obj) - the definition of the model (see documentation of Model())
+		definition (obj) - the definition of the table (see documentation of Table())
 	*/
 	function define(name, definition) {
-		//create the model, store it and then return it
-		var model = Model(name, definition);
-		models[name] = model;
-		return model;
+		//create the table, store it and then return it
+		var table = Table(name, definition);
+		tables[name] = table;
+		return table;
 	}
 
 	/*
-		Syncs the models with the database
+		Syncs the tables with the database
 		TODO
 	*/
 	function sync(/* TODO */) {
@@ -75,7 +75,7 @@ module.exports = function(options) {
 	BEGIN SUBCLASSES BEGIN SUBCLASSES BEGIN SUBCLASSES
 	************************************************************************** */
 	/*
-		Creates a new model with the given name
+		Creates a new table with the given name
 	
 		name (str) - the name of the object (used for the database table)
 		definition (obj) - has the following fields:
@@ -85,7 +85,7 @@ module.exports = function(options) {
 					that are applied to the object, where "this" is the object
 			//TODO uniqueness of values?
 	*/
-	function Model(name, definition) {
+	function Table(name, definition) {
 		//default the input values
 		name = name; //this is here for completeness (all three inputs are listed in one block)
 		var pubfields = (definition && definition.fields) || {};
@@ -95,7 +95,7 @@ module.exports = function(options) {
 		if (typeof applyfns == 'function')
 			applyfns = [applyfns];
 
-		//TODO define the model
+		//TODO define the table
 		/*
 			GET methods:
 			select() - a query() with count=false
@@ -111,7 +111,7 @@ module.exports = function(options) {
 		*/
 	
 		/*
-			The public portion of the Model
+			The public portion of the Table
 		*/
 		return {
 			//TODO actually define this, remove the temp vars
@@ -151,7 +151,7 @@ module.exports = function(options) {
 	*/
 	return  {
 		sqltypes: sqltypes,
-		getModel: getModel,
+		getTable: getTable,
 		define: define,
 		sync: sync
 	}
