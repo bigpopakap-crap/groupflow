@@ -30,14 +30,21 @@ module.exports = function(options) {
 			notnull (bool): if true, adds NOT NULL
 			primary (bool): if true, adds PRIMARY KEY
 	*/
-	var sqltypes = {
+	var coltypes = {
 		string: function (options) {
 			options = options || {};
 			return 'VARCHAR(' + normalizeNumberInput(options.length, 255, 1, 255) + ')' +
 				    (options.notnull ? ' NOT NULL' : '') +
 					(options.primary ? ' PRIMARY KEY' : '');
 		}
-	}
+	};
+
+	/*
+		The enum of query types
+	*/
+	var querytypes = {
+		select: 'SELECT'
+	};
 
 	//helper array to keep track of all tables created
 	var tables = {};
@@ -123,8 +130,56 @@ module.exports = function(options) {
 
 	/*
 		Creates a new query object
+
+		type - the type of the query (SELECT, UPDATE, etc...)
+		options - options related to which query is being used
+
+		for SELECT queries, options is:
+			table - the table to select from
 	*/
-	function Query(/* TODO */) {
+	function Query(type, options) {
+		options = options || {};	//the passed options
+
+		/*
+			The "where" part of the query. Objects in this
+			are stored in the order the constraint was added, and are object
+			of the form:
+			{
+				col (string) - the name of the colum
+				op (string) - the operator
+				val (string) - the value to compare the column with
+			}
+		
+			Example:
+			{ col: 'id', op: '=', val: 'shx392' }
+
+			This is simply concatenated in the SQL string
+			'SELECT * FROM table WHERE id=?', args: shx392
+
+			IMPORTANT NOTE: all of these are assumed to be joined by ANDs
+			TODO how to support ORs?
+		*/
+		var constraints = [];		//the "where" part
+
+		/*
+			Adds a new constraint that is ANDed with the other ones
+			
+			col (string) - the name of the colum
+			op (string) - the operator
+			val (string) - the value to compare the column with
+
+			This is simply concatenated in the SQL string
+			where('id', '=', 'shx392')
+			'SELECT * FROM table WHERE id=?', args: shx392
+		*/
+		function where(col, op, val) {
+			constraints.push({
+				col: col,
+				op: op,
+				val: val
+			});
+		}
+		var and = where;
 
 		/*
 			Actually executes this query. Callback takes the args:
@@ -141,6 +196,14 @@ module.exports = function(options) {
 			//TODO
 		}
 
+		/*
+			The public portion of the query object
+		*/
+		return {
+			where: where,
+			and: and,
+			execute: execute
+		}
 	}
 	/* *************************************************************************
 	END SUBCLASSES END SUBCLASSES END SUBCLASSES
@@ -150,7 +213,8 @@ module.exports = function(options) {
 		The public portion of the ORM
 	*/
 	return  {
-		sqltypes: sqltypes,
+		coltypes: coltypes,
+		querytypes: querytypes,
 		getTable: getTable,
 		define: define,
 		sync: sync
@@ -170,3 +234,4 @@ function normalizeNumberInput(num, dflt, min, max) {
 	max = (typeof max == 'undefined' || max === null) ? num : max;
 	return Math.min(Math.max(num, min), max);
 }
+
