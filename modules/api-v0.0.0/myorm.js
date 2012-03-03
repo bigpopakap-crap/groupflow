@@ -71,6 +71,81 @@ module.exports = function(options) {
 		//TODO
 	}
 
+	/* *************************************************************************
+	BEGIN SUBCLASSES BEGIN SUBCLASSES BEGIN SUBCLASSES
+	************************************************************************** */
+	/*
+		Creates a new model with the given name
+	
+		name (str) - the name of the object (used for the database table)
+		definition (obj) - has the following fields:
+			fields: an associative array with the columns of the table
+						  values map to the type of the column
+			apply: a function (or array of functions, which are applied in order)
+					that are applied to the object, where "this" is the object
+			//TODO uniqueness of values?
+	*/
+	function Model(name, definition) {
+		//default the input values
+		name = name; //this is here for completeness (all three inputs are listed in one block)
+		var pubfields = (definition && definition.fields) || {};
+		var applyfns = (definition && definition.apply) || [];
+
+		//if the apply function is a function not an array, make it a singleton
+		if (typeof applyfns == 'function')
+			applyfns = [applyfns];
+
+		//TODO define the model
+		/*
+			GET methods:
+			select() - a query() with count=false
+			count() - a query() with count=true
+			all() - shorthand for select with no "where"
+			countall() - shorthand for count() with no "where"
+			(PRIVATE) query() - starts a query with options:
+				where: some constraints TODO
+				count: is this just a count?
+
+			UPDATE methods:
+			TODO
+		*/
+	
+		/*
+			The public portion of the Model
+		*/
+		return {
+			//TODO actually define this, remove the temp vars
+			pubfields: pubfields,
+			applyfns: applyfns,
+			name: name
+		}
+	}
+
+	/*
+		Creates a new query object
+	*/
+	function Query(/* TODO */) {
+
+		/*
+			Actually executes this query. Callback takes the args:
+
+			callback(err, objects)
+				err - the err returns from the 'mysql' module, or null
+				objects - an array of the ORM objects
+					empty array if there were no objects returned
+
+			Note that queries that were expected to return one result
+			are still returned in array form
+		*/
+		function execute(callback) {
+			//TODO
+		}
+
+	}
+	/* *************************************************************************
+	END SUBCLASSES END SUBCLASSES END SUBCLASSES
+	************************************************************************** */
+
 	/*
 		The public portion of the ORM
 	*/
@@ -80,51 +155,7 @@ module.exports = function(options) {
 		define: define,
 		sync: sync
 	}
-}
 
-/*
-	Creates a new model with the given name
-	
-	name (str) - the name of the object (used for the database table)
-	definition (obj) - has the following fields:
-		fields: an associative array with the columns of the table
-					  values map to the type of the column
-		apply: a function (or array of functions, which are applied in order)
-				that are applied to the object, where "this" is the object
-		//TODO uniqueness of values?
-*/
-function Model(name, definition) {
-	//default the input values
-	name = name; //this is here for completeness (all three inputs are listed in one block)
-	var pubfields = (definition && definition.fields) || {};
-	var applyfns = (definition && definition.apply) || [];
-
-	//if the apply function is a function not an array, make it a singleton
-	if (typeof applyfns == 'function')
-		applyfns = [applyfns];
-
-	//TODO define the model
-	/*
-		select() - a query() with count=false
-		count() - a query() with count=true
-		all() - shorthand for select with no "where"
-		countall() - shorthand for count() with no "where"
-
-		internal:
-			query() - starts a query with options:
-				where: some constraints TODO
-				count: is this just a count?
-	*/
-	
-	/*
-		The public portion of the Model
-	*/
-	return {
-		//TODO actually define this, remove the temp vars
-		pubfields: pubfields,
-		applyfns: applyfns,
-		name: name
-	}
 }
 
 
