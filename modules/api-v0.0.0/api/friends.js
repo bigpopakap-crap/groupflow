@@ -79,11 +79,9 @@ function list(req, params, callback) {
 				}
 				else {
 					//create an array of friends' usernames
-					var friends = [];
-					for (var i=0; i < results.length; i++) {
-						//push the username that is not the one of the auth'd user
-						friends.push((results[i].lesser == username ? results[i].greater : results[i].lesser));
-					}
+					var friends = results.map(function(entry) {
+						return (entry.lesser == username ? entry.greater : entry.lesser);
+					});
 
 					//return true iff the results array is not empty
 					return callback(api_utils.wrapResponse({

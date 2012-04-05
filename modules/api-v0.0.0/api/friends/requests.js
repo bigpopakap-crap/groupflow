@@ -39,13 +39,57 @@ exports.configure = configure;
 
 /*
 	Inputs:
-		TODO
+		username - the username of the user to send the request
 
 	Cases:
-		TODO
+		error: 	 no auth'd user,
+				 username doesn't exist
+				 username is the auth'd user
+				 username is already friends with auth'd user
+				 username has already requested the auth'd user as a friend
+				 database error
+		warning: there is already a request pending with that user
+		success: the request was sent (and none of the above occurred)
 */
 function create(req, params, callback) {
-	//TODO
+	//make sure the username is there
+	var paramErrors = api_validate.validate(params, {
+		username: { required: true }
+	});
+
+	//check for auth'd user and errors on the input
+	if (!req.session.user) {
+		//no auth'd user
+		return callback(api_errors.noAuth(req.session.user, params));
+	}
+	else if (paramErrors) {
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+	}
+	else {
+		//get the two important vars
+		var username = params.username;
+		var user = req.session.user;
+
+		//make sure the user isn't friend requesting himself
+		if (username == user.username) {
+			//TODO return the error
+		}
+
+		//make sure the username exists
+		//TODO
+
+		//make sure the two aren't already friends
+		//TODO
+
+		//make sure the other user hasn't already requested the auth'd user
+		//TODO
+
+		//check if a request is already pending with the other user
+		//TODO
+
+		//add the request to the database
+		//TODO
+	}
 }
 exports.create = create;
 
@@ -62,9 +106,7 @@ exports.create = create;
 		error: no auth'd user
 		success: the list of the usernames who have requested the auth'd user as a friend
 */
-function listin(req, params, callback) {
-	//TODO
-}
+var listin = listfun('requester', 'recipient');
 exports.listin = listin;
 
 /*
@@ -80,10 +122,63 @@ exports.listin = listin;
 		error: no auth'd user
 		success: the list of the usernames who the auth'd user has requests as friends
 */
-function listout(req, params, callback) {
-	//TODO
-}
+var listout = listfun('recipient', 'requester');
 exports.listout = listout;
+
+/*
+	Returns a REST handler function that lists the incoming/outgoing
+	friend requests of the auth'd user
+
+	Incoming: endpoint = 'requester', origin = 'recipient'
+	Outgoing: endpoint = 'recipient', origin = 'requester'
+*/
+function listfun(endpoint, origin) {
+	return function(req, params, callback) {
+		var paramErrors = api_validate.validate(params, {
+			offset: { isnum: true },
+			maxcount: { isnum: true }
+		});
+
+		//correct the maxcount and offset
+		if (typeof params.offset == 'undefined') params.offset = 0;			//default values
+		if (typeof params.maxcount == 'undefined') params.maxcount = 50;
+		params.offset = parseInt(params.offset);							//convert to ints
+		params.maxcount = parseInt(params.maxcount);
+		params.offset = Math.max(params.offset, 0);							//offset is at least 0
+		params.maxcount = Math.min(Math.max(params.maxcount, 0), 50);		//maxcount between 0 and 50								
+
+		if (!req.session.user) {
+			//no auth'd user
+			return callback(api_errors.noAuth(req.session.user, params));
+		}
+		else {
+			var username = req.session.user.username;
+
+			db.query(
+				'select ' + endpoint + ' from FriendRequests where ' + origin + '=? limit ?, ?',
+				[username, params.offset, params.maxcount],
+				function (err, results) {
+					if (err) {
+						//return a database error
+						return callback(api_errors.database(req.session.user, params, err));
+					}
+					else {
+						//create an array of requesters' usernames
+						results = results.map(function(entry) {
+							return entry[endpoint];
+						});
+
+						//return true iff the results array is not empty
+						return callback(api_utils.wrapResponse({
+							params: params,
+							success: results
+						}));
+					}
+				}
+			);
+		}
+	}
+}
 
 /*
 	Inputs:
