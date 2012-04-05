@@ -3,23 +3,24 @@
 		/api/friends/requests, api.friends.requests
 
 	REST functions:
-		create TODO
-		listin TODO
-		listout TODO
-		isin TODO
-		isout TODO
-		accept TODO
-		reject TODO
-		cancel TODO
+		create - creates a new friend request
+		listin - lists incoming friend requests
+		listout - lists outgoing friend requests
+		isin - determines if there is an incoming friend request from a certain user
+		isout - determines if there is an outgoing friend request to a certain user
+		accept - accepts an incoming friend request
+		reject - rejects and incoming friend request
+		cancel - cancels an outgoing (and pending) friend request
 	
 	Internal-only functions:
-		TODO
+		(none)
 
 	Directly touches database tables:
-		TODO
+		Friendships (read/write)
+		FriendRequests (read/write)
 
 	Directly touches session variables:
-		TODO
+		req.session.user
 */
 var api_utils = require('../util/api-utils.js');
 var api_errors = require('../util/api-errors.js');
@@ -143,6 +144,8 @@ function create(req, params, callback) {
 											return callback(api_errors.database(req.session.user, params, err));
 										}
 										else {
+											//TODO send the recipient a notification of the request
+
 											//successfully sent the request!
 											return callback(api_utils.wrapResponse({
 												params: params,
