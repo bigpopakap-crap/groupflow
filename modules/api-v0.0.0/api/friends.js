@@ -12,15 +12,21 @@
 		Friendships (read/write)
 
 	Directly touches session variables:
-		(none) TODO
+		session.user
 */
 var api_utils = require('./util/api-utils.js');
 var api_errors = require('./util/api-errors.js');
 var api_validate = require('./util/api-validate.js');
 var db = require('../db.js');
 
+//subdomain modules
+var requests = require('./friends/requests.js');
+
 function configure(app, url_prefix) {
 	url_prefix += '/friends';
+
+	//configure each of the domains
+	requests.configure(app, url_prefix);
 
 	//actions in this api domain
 	app.get(url_prefix + '/list', api_utils.restHandler(list));
@@ -32,16 +38,62 @@ exports.configure = configure;
 	Inputs:
 		offset (optional, default 0) - the offset of the list of friends
 		maxcount (optional, default to the max of 50) - the max number of friends to return
-		sort (optional, defaults to 'username') - how the results should be sorted
+		(NOT YET) sort (optional, defaults to 'username') - how the results should be sorted
 			'username', 'name', 'length'
+
+	Note that this function does adjust the returned input parameters to the maxcount
+		and offset that were actually used. If maxcount was not given, it will be returned
+		as set to 50. If one of them is negative, it will return as set to 0
 
 	Cases:
 		error: no auth'd user
-		success: the list of (TODO: id's or user objects?)
-		TODO
+		success: the list of usernames of friends
 */
 function list(req, params, callback) {
-	//TODO
+	var paramErrors = api_validate.validate(params, {
+		offset: { isnum: true },
+		maxcount: { isnum: true }
+	});
+
+	//correct the maxcount and offset
+	if (typeof params.offset == 'undefined') params.offset = 0;			//default values
+	if (typeof params.maxcount == 'undefined') params.maxcount = 50;
+	params.offset = parseInt(params.offset);							//convert to ints
+	params.maxcount = parseInt(params.maxcount);
+	params.offset = Math.max(params.offset, 0);							//offset is at least 0
+	params.maxcount = Math.min(Math.max(params.maxcount, 0), 50);		//maxcount between 0 and 50								
+
+	if (!req.session.user) {
+		//no auth'd user
+		return callback(api_errors.noAuth(req.session.user, params));
+	}
+	else {
+		var username = req.session.user.username;
+		db.query(
+			'select * from Friendships where lesser=? or greater=? limit ?, ?',
+			[username, username, params.offset, params.maxcount],
+			function (err, results) {
+				if (err) {
+					//return a database error
+					return callback(api_errors.database(req.session.user, params, err));
+				}
+				else {
+					//create an array of friends' usernames
+					var friends = [];
+					for (var i=0; i < results.length; i++) {
+						//push the username that is not the one of the auth'd user
+						friends.push((results[i].lesser == username ? results[i].greater : results[i].lesser));
+					}
+
+					//return true iff the results array is not empty
+					return callback(api_utils.wrapResponse({
+						params: params,
+						success: friends
+					}));
+				}
+			}
+		);
+	}
 }
 exports.list = list;
 
@@ -94,4 +146,8 @@ function is(req, params, callback) {
 	}
 }
 exports.is = is;
+
+
+//subdomains of the api
+exports.requests = requests;
 
