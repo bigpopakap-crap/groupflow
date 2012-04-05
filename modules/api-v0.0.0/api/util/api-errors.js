@@ -117,6 +117,62 @@ exports.accountAlreadyLinked = function(user, params) {
 	});
 }
 
+/* can't friend yourself */
+exports.selfFriend = function(user, params) {
+	return wrapError(params, {
+		statusCode: 400,
+		errorCode: 'SELF_FRIEND',
+		devMsg: 'User cannot send a friend request to himself',
+		userMsg: 'It\'s cute, but you can\'t friend yourself',
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
+/* username does not exist */
+exports.noSuchUsername = function(user, params, username) {
+	return wrapError(params, {
+		statusCode: 404,
+		errorCode: 'NO_SUCH_USERNAME',
+		devMsg: 'No user exists with username ' + username,
+		userMsg: 'No user found with username "' + username + '"',
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
+/*  users are already friends
+
+	if username2 is a falsy value, then it is assumed to be the auth'd user
+*/
+exports.alreadyFriends = function(user, params, username1, username2) {
+	return wrapError(params, {
+		statusCode: 400,
+		errorCode: 'ALREADY_FRIENDS',
+		devMsg: (username2 ?
+					'Users ' + username1 + ' and ' + username2 + ' are already friends'
+					: 'The authenticated user is already friends with ' + username1),
+		userMsg: (username2 ?
+					username1 + ' and ' + username2 + ' are already friends'
+					: 'You are already friends with ' + username1),
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
+/* already incoming friend request */
+exports.alreadyIncomingFriendRequest = function(user, params, username) {
+	return wrapError(params, {
+		statusCode: 400,
+		errorCode: 'ALREADY_INCOMING_FRIEND_REQUEST',
+		devMsg: 'The authenticated user already has an pending friend request from ' + username,
+		userMsg: 'You already have a pending friend request from ' + username +
+				 '. Please accept it in order to become friends',
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
 /* a general error message with no param errors */
 exports.genError = function(user, params, message, statusCode) {
 	return wrapError(params, {
@@ -128,6 +184,4 @@ exports.genError = function(user, params, message, statusCode) {
 		nestedError: null
 	});
 }
-
-
 

@@ -6,6 +6,8 @@
 		create TODO
 		listin TODO
 		listout TODO
+		isin TODO
+		isout TODO
 		accept TODO
 		reject TODO
 		cancel TODO
@@ -21,8 +23,13 @@
 */
 var api_utils = require('../util/api-utils.js');
 var api_errors = require('../util/api-errors.js');
+var api_warnings = require('../util/api-warnings.js');
 var api_validate = require('../util/api-validate.js');
 var db = require('../../db.js');
+
+//other api domains
+var users = require('../users.js');
+var friends = require('../friends.js');
 
 function configure(app, url_prefix) {
 	url_prefix += '/requests';
@@ -31,6 +38,8 @@ function configure(app, url_prefix) {
 	app.post(url_prefix + '/create', api_utils.restHandler(create));
 	app.get(url_prefix + '/listin', api_utils.restHandler(listin));
 	app.get(url_prefix + '/listout', api_utils.restHandler(listout));
+	app.get(url_prefix + '/isin', api_utils.restHandler(isin));
+	app.get(url_prefix + '/isout', api_utils.restHandler(isout));
 	app.get(url_prefix + '/accept', api_utils.restHandler(accept));
 	app.get(url_prefix + '/reject', api_utils.restHandler(reject));
 	app.get(url_prefix + '/cancel', api_utils.restHandler(cancel));
@@ -49,7 +58,7 @@ exports.configure = configure;
 				 username has already requested the auth'd user as a friend
 				 database error
 		warning: there is already a request pending with that user
-		success: the request was sent (and none of the above occurred)
+		success: the other user object, when the request was sent (and none of the above occurred)
 */
 function create(req, params, callback) {
 	//make sure the username is there
@@ -72,23 +81,87 @@ function create(req, params, callback) {
 
 		//make sure the user isn't friend requesting himself
 		if (username == user.username) {
-			//TODO return the error
+			return callback(api_errors.selfFriend(req.session.user, params));
 		}
 
 		//make sure the username exists
-		//TODO
+		users.get(req, { username: username }, function(data) {
+			var response = data.response;
 
-		//make sure the two aren't already friends
-		//TODO
+			if (response.error) {
+				//relay the error
+				return callback(data);
+			}
+			else if (response.warning) {
+				//no such user, return that error
+				return callback(api_errors.noSuchUsername(req.session.user, params, username));
+			}
+			else if (response.success) {
+				//the user exists wooo!!
+				var user2 = response.success;
 
-		//make sure the other user hasn't already requested the auth'd user
-		//TODO
+				//make sure the two aren't already friends
+				friends.is(req, { username: user2.username }, function(data) {
+					var response = data.response;
 
-		//check if a request is already pending with the other user
-		//TODO
+					if (response.error) {
+						//relay the error
+						return callback(data);
+					}
+					else if (response.success) {
+						//they are already friends, return that error
+						return callback(api_errors.alreadyFriends(req.session.user, params, user2.username));
+					}
+					else {
+						//they aren't friends already woo!
 
-		//add the request to the database
-		//TODO
+						//make sure the other user hasn't already requested the auth'd user
+						isin(req, { username: user2.username }, function (data) {
+							var response = data.response;
+
+							if (response.error) {
+								//relay the error
+								return callback(data);
+							}
+							else if (response.success) {
+								//there is an incoming request, return that error
+								return callback(api_errors.alreadyIncomingFriendRequest(req.session.user, params, user2.username));
+							}
+							else {
+								//there is no incoming request yay!
+								//add the request to the database, warning if it was there already
+								db.query(
+									'insert into FriendRequests (requester, recipient) values (?, ?)',
+									[ user.username, user2.username ],
+									function (err, results) {
+										if (err && (err.number == 1060 || err.number == 1061 || err.number == 1062)) {
+											//warn that there was already an outgoing request
+											return callback(api_warnings.friendRequestAlreadySent(req.session.user, params, user2.username));
+										}
+										else if (err) {
+											//some other database error
+											return callback(api_errors.database(req.session.user, params, err));
+										}
+										else {
+											//successfully sent the request!
+											return callback(api_utils.wrapResponse({
+												params: params,
+												success: user2
+											}));
+										}
+									}
+								); //end database insert
+							}
+						}); //end making sure there isn't an incoming request
+					}
+				}); //end making sure they aren't already friends
+			}
+			else {
+				//some weird case - return internal server error and log it
+				gen_utils.err_log('weird case: 39dhja333hs0');
+				return callback(api_errors.internalServer(req.session.user, params));
+			}
+		}); //end making sure username exists
 	}
 }
 exports.create = create;
@@ -182,6 +255,71 @@ function listfun(endpoint, origin) {
 
 /*
 	Inputs:
+		username - the username from whom the request must have come
+
+	Cases:
+		error: no username param
+		success: true if the request exists (is pending), false otherwise
+				 (could also be false if the user doesn't exist)
+*/
+var isin = isfun('requester', 'recipient');
+exports.isin = isin;
+
+/*
+	Inputs:
+		username - the username to whom the request must have been sent
+
+	Cases:
+		error: no username param
+		success: true if the request exists (is pending), false otherwise
+				 (could also be false if the user doesn't exist)
+*/
+var isout = isfun('recipient', 'requester');
+exports.isout = isout;
+
+/*
+	Returns a REST handler function that determines the existence of incoming/outgoing
+	friend requests of the auth'd user
+
+	Incoming: endpoint = 'requester', origin = 'recipient'
+	Outgoing: endpoint = 'recipient', origin = 'requester'
+*/
+function isfun(endpoint, origin) {
+	return function(req, params, callback) {
+		var paramErrors = api_validate.validate(params, {
+			username: { required: true }
+		});
+
+		if (!req.session.user) {
+			//no auth'd user
+			return callback(api_errors.noAuth(req.session.user, params));
+		}
+		else {
+			var user = req.session.user;
+
+			db.query(
+				'select * from FriendRequests where ' + origin + '=? and ' + endpoint + '=? limit 1',
+				[ user.username, params.username ],
+				function (err, results) {
+					if (err) {
+						//return a database error
+						return callback(api_errors.database(req.session.user, params, err));
+					}
+					else {
+						//return true if and only if there was at least one result
+						return callback(api_utils.wrapResponse({
+							params: params,
+							success: (results.length > 0)
+						}));
+					}
+				}
+			);
+		}
+	}
+}
+
+/*
+	Inputs:
 		TODO
 
 	Cases:
@@ -189,6 +327,7 @@ function listfun(endpoint, origin) {
 */
 function accept(req, params, callback) {
 	//TODO
+	//make sure to remove it from the database
 }
 exports.accept = accept;
 
@@ -201,6 +340,7 @@ exports.accept = accept;
 */
 function reject(req, params, callback) {
 	//TODO
+	//make sure to remove it from the database
 }
 exports.reject = reject;
 
@@ -213,6 +353,7 @@ exports.reject = reject;
 */
 function cancel(req, params, callback) {
 	//TODO
+	//make sure to remove it from the database
 }
 exports.cancel = cancel;
 

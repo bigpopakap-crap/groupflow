@@ -19,3 +19,16 @@ exports.noSuchUser = function (user, params, username) {
 		nestedError: null
 	});
 }
+
+/* friend request already has been sent */
+exports.friendRequestAlreadySent = function (user, params, username) {
+	return wrapWarning(params, {
+		statusCode: 400,
+		errorCode: 'FRIEND_REQUEST_ALREADY_SENT',
+		devMsg: 'The authenticated user already has a friend request pending with ' + username,
+		userMsg: 'You already have a friend request pending with ' + username,
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
