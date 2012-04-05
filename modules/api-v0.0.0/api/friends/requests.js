@@ -297,6 +297,9 @@ function isfun(endpoint, origin) {
 			//no auth'd user
 			return callback(api_errors.noAuth(req.session.user, params));
 		}
+		else if (paramErrors) {
+			return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+		}
 		else {
 			var user = req.session.user;
 
@@ -323,42 +326,146 @@ function isfun(endpoint, origin) {
 
 /*
 	Inputs:
-		TODO
+		username - the person who sent the request you want to accept
 
 	Cases:
-		TODO
+		error: database, no such incoming friend request
+		success: the username of the new friend
 */
 function accept(req, params, callback) {
-	//TODO
-	//make sure to remove it from the database
+	var paramErrors = api_validate.validate(params, {
+		username: { required: true }
+	});
+
+	if (!req.session.user) {
+		//no auth'd user
+		return callback(api_errors.noAuth(req.session.user, params));
+	}
+	else if (paramErrors) {
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+	}
+	else {
+		var user = req.session.user;
+
+		//check that there in an incoming request
+		isin(req, { username: params.username }, function(data) {
+			var response = data.response;
+
+			if (response.error) {
+				//relay the error
+				return callback(data);
+			}
+			else if (!response.success) {
+				//there is no incoming request, return that error
+				return callback(api_errors.noSuchIncomingFriendRequest(req.session.user, params, params.username));
+			}
+			else {
+				//there is no incoming request yay!
+				//remove the entry from the request table, add the friendship in that table
+				db.insertTransaction(
+					[
+						{ query: 'delete from FriendRequests where requester=? and recipient=?',
+							params: [ params.username, user.username ] },
+						{ query: 'insert into Friendships (lesser, greater) values (?, ?)',
+							params: [ user.username, params.username ].sort() }
+					],
+					function (err, results) {
+						//TODO send a notification of the accepted friend request
+
+						if (err) {
+							//relay the database error
+							return callback(api_errors.database(req.session.user, params, err));
+						}
+						else {
+							//return the username of the new friend
+							return callback(api_utils.wrapResponse({
+								params: params,
+								success: params.username
+							}));
+						}
+					}
+				);
+			}
+		});
+	}
 }
 exports.accept = accept;
 
 /*
 	Inputs:
-		TODO
+		username - the person who sent the request you want to reject
 
 	Cases:
-		TODO
+		error: database, no such incoming friend request
+		success: the username of the old friend
 */
-function reject(req, params, callback) {
-	//TODO
-	//make sure to remove it from the database
-}
+var reject = deletefun('requester', 'recipient', function(req, params) {
+	return api_errors.noSuchIncomingFriendRequest(req.session.user, params, params.username)
+});
 exports.reject = reject;
 
 /*
 	Inputs:
-		TODO
+		username - the person to whom you want to cancel an outgoing request
 
 	Cases:
-		TODO
+		error: database, no such outgoing friend request
+		success: the username of the person to whom the request was cancelled
 */
-function cancel(req, params, callback) {
-	//TODO
-	//make sure to remove it from the database
-}
+var cancel = deletefun('recipient', 'requester', function(req, params) {
+	return api_errors.noSuchOutgoingFriendRequest(req.session.user, params, params.username)
+});
 exports.cancel = cancel;
+
+/*
+	Function that returns a REST handler that delets incoming/outgoing requests
+
+	incoming: endpoint=requester , origin=recipient
+	outgoing: endpoint=recipient , origin=requester
+*/
+function deletefun(endpoint, origin, noReqErrGen) {
+	return function(req, params, callback) {
+		var paramErrors = api_validate.validate(params, {
+			username: { required: true }
+		});
+
+		if (!req.session.user) {
+			//no auth'd user
+			return callback(api_errors.noAuth(req.session.user, params));
+		}
+		else if (paramErrors) {
+			return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+		}
+		else {
+			var user = req.session.user;
+
+			//delete the request, and check how many rows were affected to determine whether
+			//		there was a friend request to begin with
+			db.query(
+				'delete from FriendRequests where ' + endpoint + '=? and ' + origin + '=?',
+				[ params.username, user.username ],
+				function (err, results) {
+					if (err) {
+						//relay the database error
+						return callback(api_errors.database(req.session.user, params, err));
+					}
+					else if (results.affectedRows < 1) {
+						//there is no incoming request, return that error
+						return callback(noReqErrGen(req, params));
+					}
+					else {
+						//return the username of the new friend
+						return callback(api_utils.wrapResponse({
+							params: params,
+							success: params.username
+						}));
+					}
+				}
+			);
+		}
+	}
+}
+
 
 /*
 Time signature of middle section of "Here Comes The Sun"

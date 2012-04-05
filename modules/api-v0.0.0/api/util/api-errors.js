@@ -165,9 +165,33 @@ exports.alreadyIncomingFriendRequest = function(user, params, username) {
 	return wrapError(params, {
 		statusCode: 400,
 		errorCode: 'ALREADY_INCOMING_FRIEND_REQUEST',
-		devMsg: 'The authenticated user already has an pending friend request from ' + username,
+		devMsg: 'The authenticated user already has a pending friend request from ' + username,
 		userMsg: 'You already have a pending friend request from ' + username +
 				 '. Please accept it in order to become friends',
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
+/* no incoming friend request from that user */
+exports.noSuchIncomingFriendRequest = function(user, params, username) {
+	return wrapError(params, {
+		statusCode: 404,
+		errorCode: 'NO_SUCH_INCOMING_FRIEND_REQUEST',
+		devMsg: 'The authenticated user does not have a pending friend request from ' + username,
+		userMsg: 'You do not have a pending friend request from ' + username,
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
+/* no outgoing friend request to that user */
+exports.noSuchOutgoingFriendRequest = function(user, params, username) {
+	return wrapError(params, {
+		statusCode: 404,
+		errorCode: 'NO_SUCH_OUTGOING_FRIEND_REQUEST',
+		devMsg: 'The authenticated user does not have a pending friend request to ' + username,
+		userMsg: 'You have no friend request pending with ' + username,
 		paramErrors: {},
 		nestedError: null
 	});

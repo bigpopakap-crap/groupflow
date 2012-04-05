@@ -1,5 +1,13 @@
-. figure out how to NOT return password parameters
-. friends and friend requests
+FEATURES THAT NEED ATTENTION
+- interface for friending, and listing friends
+- api for group creation
+- interface for group creation
+- api for group posts
+- interface for group posts
+- notifications of various events
+- log in with facebook account
+- user fb picture if account is linked
+- different types of posts: youtube, website url, image url, text
 
 . add dependencies to app doc:
 	jquery, bootstrap, shim, other scripts/styles. these can be updated when new versions come out
