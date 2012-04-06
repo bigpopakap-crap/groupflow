@@ -8,6 +8,7 @@
 		search - case-sensitive search of username, first name and last name
 	
 	Internal-only functions:
+		getarr - gets an array of user objects given an array of usernames
 		create - creates a user object without validating inputs
 		getbypassword - gets the user by username and password
 
@@ -91,6 +92,45 @@ exports.get = get;
 
 /*
 	Inputs:
+		usernames: an array of usernames
+
+	Note that if any of these usernames doesn't exist, it will just silently
+		be dropped from the array
+
+	Cases:
+		Error: database error, no usernames param
+		Success: the array of userobjects
+*/
+function getarr(req, params, callback) {
+	//make sure the username is there
+	var paramErrors = api_validate.validate(params, {
+		usernames: { required: true }
+	});
+
+	//TODO don't assume usernames parameter is an array, check for that
+
+	//if array is empty, just return an empty array
+	if (params.usernames.length == 0) {
+		return callback(api_utils.wrapResponse({
+			params: params,
+			success: []
+		}));
+	}
+
+	//check for errors on the input
+	if (paramErrors) {
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+	}
+	else {
+		dbReqUserObjList(req, params, callback,
+						 ARR_QUERY_STRING(params.usernames),
+						 params.usernames.concat(params.usernames));
+	}
+}
+exports.getarr = getarr;
+
+/*
+	Inputs:
 		query (string)
 
 	Note: checks case-sensitive for exact matches on username, first name or last name
@@ -102,27 +142,9 @@ exports.get = get;
 function search(req, params, callback) {
 	//default to empty search string
 	params.query = params.query || '';
-
-	db.query(
-		SEARCH_QUERY_STRING,
-		[ params.query, params.query, params.query ],
-		function(err, results) {
-			if (err) {
-				//return a database error
-				return callback(api_errors.database(req.session.user, params, err));
-			}
-			else {
-				//map the returned objects to api user objects and return them
-				results = results.map(function(user) {
-					return dbToApiUser(user);
-				});
-				return callback(api_utils.wrapResponse({
-					params: params,
-					success: results
-				}));
-			}
-		}
-	);
+	dbReqUserObjList(req, params, callback,
+					 SEARCH_QUERY_STRING,
+					 [ params.query, params.query, params.query ]);
 }
 
 /*
@@ -135,7 +157,7 @@ function me(req, params, callback) {
 	}
 	else {
 		//use the cached user object in the session
-		callback(api_utils.wrapResponse({
+		return callback(api_utils.wrapResponse({
 			params: params,
 			success: req.session.user
 		}));
@@ -238,6 +260,18 @@ var GET_PASSWORD_QUERY_STRING = 'select n.username, n.firstName, n.lastName, b.b
 var SEARCH_QUERY_STRING = 'select n.username, n.firstName, n.lastName, b.blurb ' +
 				'from (UsersName n, UsersBlurb b) ' +
 				'where (n.username=? or n.firstName=? or n.lastName=?) and n.username=b.username';
+function ARR_QUERY_STRING(usernames) {
+	var questions = '';
+	for (i = 0; i < usernames.length; i++) {
+		if (i == 0) questions += '?';
+		else questions += ',?';
+	}
+
+	return 'select n.username, n.firstName, n.lastName, b.blurb ' +
+			'from (UsersName n, UsersBlurb b) ' +
+			'where n.username=b.username and n.username in (' + questions + ') ' +
+			'order by field(n.username, ' + questions + ')';
+}
 
 //handles the when the database returns the user data
 function getUserCallback(req, params, callback) {
@@ -268,6 +302,34 @@ function getUserCallback(req, params, callback) {
 			}));
 		}
 	}
+}
+
+/*
+	Makes a database call for a list of user objects
+	querystr - the string of SQL to use
+	queryparams - the array of params in the SQL query
+*/
+function dbReqUserObjList(req, params, callback, querystr, queryparams) {
+	db.query(
+		querystr,
+		queryparams,
+		function(err, results) {
+			if (err) {
+				//return a database error
+				return callback(api_errors.database(req.session.user, params, err));
+			}
+			else {
+				//map the returned objects to api user objects and return them
+				results = results.map(function(user) {
+					return dbToApiUser(user);
+				});
+				return callback(api_utils.wrapResponse({
+					params: params,
+					success: results
+				}));
+			}
+		}
+	);
 }
 
 //helper: takes the user object from the database and returns the object

@@ -19,6 +19,9 @@ var api_errors = require('./util/api-errors.js');
 var api_validate = require('./util/api-validate.js');
 var db = require('../db.js');
 
+//other api domains
+var users = require('./users.js');
+
 //subdomain modules
 var requests = require('./friends/requests.js');
 
@@ -47,7 +50,7 @@ exports.configure = configure;
 
 	Cases:
 		error: no auth'd user
-		success: the list of usernames of friends
+		success: the list of user objects of friends
 */
 function list(req, params, callback) {
 	var paramErrors = api_validate.validate(params, {
@@ -83,11 +86,28 @@ function list(req, params, callback) {
 						return (entry.lesser == username ? entry.greater : entry.lesser);
 					});
 
-					//return true iff the results array is not empty
-					return callback(api_utils.wrapResponse({
-						params: params,
-						success: friends
-					}));
+					//call the users getarr function on that
+					users.getarr(req, { usernames: friends }, function(data) {
+						var response = data.response;
+
+						if (response.error) {
+							//relay the error
+							return callback(data);
+						}
+						else if (response.success) {
+							//successful! return the array
+							return callback(api_utils.wrapResponse({
+								params: params,
+								success: response.success
+							}));
+						}
+						else {
+							//some weird case - return internal server error and log it
+							gen_utils.err_log('weird case: 2hdlsh2888fhsl');
+							return callback(api_errors.internalServer(req.session.user, params));//weird case, log it
+							
+						}
+					});
 				}
 			}
 		);
