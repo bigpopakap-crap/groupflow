@@ -2,6 +2,8 @@ FEATURES THAT NEED ATTENTION
 - interface for friending, and listing friends
 - api for group creation
 - interface for group creation
+- api for group invitations
+- interface for group invitations
 - api for group posts
 - interface for group posts
 - notifications of various events
