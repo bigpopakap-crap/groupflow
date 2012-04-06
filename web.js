@@ -71,6 +71,13 @@ app.post('/register', function(req, res) {
 	});
 });
 
+//view friends page
+app.get('/friends', function(req, res, next) {
+	//make sure there is an auth'd user
+	if (req.session.user) gen_utils.render(req, res, 'user-friends.ejs');
+	else return next();
+});
+
 //account settings page
 app.get('/settings', function(req, res, next) {
 	//make sure there is an auth'd user

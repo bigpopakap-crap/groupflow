@@ -7,9 +7,11 @@ FEATURES THAT NEED ATTENTION
 - notifications of various events
 - log in with facebook account
 - user fb picture if account is linked
+- other user settings: change blurb, change email, change name, unlink facebook
 - different types of posts: youtube, website url, image url, text
 - use database table for devtools permissions so they can be
 	added to any arbitrary user (by an already-trusted user)
+- feedback page
 
 . add dependencies to app doc:
 	jquery, bootstrap, shim, other scripts/styles. these can be updated when new versions come out
