@@ -4,6 +4,8 @@
 
 	REST functions:
 		get - gets the user object given a username
+		me - gets the user object of the auth'd user
+		search - case-sensitive search of username, first name and last name
 	
 	Internal-only functions:
 		create - creates a user object without validating inputs
@@ -42,6 +44,7 @@ function configure(app, url_prefix) {
 	//configure this api domain
 	app.get(url_prefix + '/get', api_utils.restHandler(get));
 	app.get(url_prefix + '/me', api_utils.restHandler(me));
+	app.get(url_prefix + '/search', api_utils.restHandler(search));
 }
 exports.configure = configure;
 
@@ -85,6 +88,42 @@ function get(req, params, callback) {
 	}
 }
 exports.get = get;
+
+/*
+	Inputs:
+		query (string)
+
+	Note: checks case-sensitive for exact matches on username, first name or last name
+
+	Cases:
+		error: database error
+		success: the list of matching user objects
+*/
+function search(req, params, callback) {
+	//default to empty search string
+	params.query = params.query || '';
+
+	db.query(
+		SEARCH_QUERY_STRING,
+		[ params.query, params.query, params.query ],
+		function(err, results) {
+			if (err) {
+				//return a database error
+				return callback(api_errors.database(req.session.user, params, err));
+			}
+			else {
+				//map the returned objects to api user objects and return them
+				results = results.map(function(user) {
+					return dbToApiUser(user);
+				});
+				return callback(api_utils.wrapResponse({
+					params: params,
+					success: results
+				}));
+			}
+		}
+	);
+}
 
 /*
 	gets the username of the auth'd user and passes it to the get function
@@ -196,6 +235,9 @@ var GET_QUERY_STRING = 'select n.username, n.firstName, n.lastName, b.blurb ' +
 var GET_PASSWORD_QUERY_STRING = 'select n.username, n.firstName, n.lastName, b.blurb, a.password ' +
 				'from (UsersName n, UsersBlurb b, UsersAuth a) ' +
 				'where n.username=? and b.username=? and a.username=?';
+var SEARCH_QUERY_STRING = 'select n.username, n.firstName, n.lastName, b.blurb ' +
+				'from (UsersName n, UsersBlurb b) ' +
+				'where (n.username=? or n.firstName=? or n.lastName=?) and n.username=b.username';
 
 //handles the when the database returns the user data
 function getUserCallback(req, params, callback) {
