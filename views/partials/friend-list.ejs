@@ -2,6 +2,7 @@
 <%/*
 	Expects variables:
 		friends - an array of user objects to populate the initial list
+					(it is expected that this is the start of the friends list)
 		offset - the offset of the current view
 		maxcount - the maxcount of the current view
 */%>
@@ -20,6 +21,22 @@
 		}) %>
 </head>
 <body>
-	
+	<div class="friend-list-partial">
+		<%	if (friends.length == 0) { %>
+			<div class="alert alert-warning">
+				<div>No friends? Search for people you know!</div>
+				<%- partial('friend-finder.ejs') %>
+			</div>
+		<% } else { %>
+			<%  friends = friends.concat(friends, friends, friends); //TODO remove this
+				for (var i in friends) { %>
+				<div class="user-tile-outer pull-left">
+					<%- partial('partials/user-tile.ejs', {
+							user: friends[i]
+						}) %>
+				</div>
+			<% } %>
+		<% } %>
+	</div>
 </body>
 </html>

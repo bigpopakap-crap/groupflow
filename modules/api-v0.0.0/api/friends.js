@@ -95,6 +95,11 @@ function list(req, params, callback) {
 							return callback(data);
 						}
 						else if (response.success) {
+							//sort the array by firstname
+							response.success = response.success.sort(function(a, b) {
+								return a.firstName.localeCompare(b.firstName);
+							});
+
 							//successful! return the array
 							return callback(api_utils.wrapResponse({
 								params: params,
