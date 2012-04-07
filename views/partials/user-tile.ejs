@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <%/*
 	Expects variables:
-		user - the user object to display
+		userObj - the user object to display
 		alert_class - one of "", "alert-info", "alert-warning", "alert-error"
 		friend_status - if known, a string indicating the relationship the auth'd user
 						has with the user whose tile this is, or a falsy value if unknown
 						(it will be looked up dynamically)
 
-						"is" - it is the auth'd user
 						"friends" - they are friends
 						"incoming" - there is an incoming friend request from this person
 						"outgoing" - there is an outgoing friend request to this person
@@ -28,25 +27,38 @@
 	<div class="user-tile-partial">
 		<div class="user-tile alert <%= alert_class %>">
 			<div class="actions pull-right">
-				<% if (friend_status == "incoming") { %>
-					<form class="action" method="post" action="">
+				<% if (friend_status == 'incoming') { %>
+					<form class="action" method="post">
 						<input type="hidden" name="action" value="accept-request">
-						<input type="hidden" name="username" value="<%= user.username %>">
+						<input type="hidden" name="username" value="<%= userObj.username %>">
 						<input type="submit" class="btn btn-primary" value="Accept">
 					</form>
-					<form class="action" method="post" action="">
+					<form class="action" method="post">
 						<input type="hidden" name="action" value="decline-request">
-						<input type="hidden" name="username" value="<%= user.username %>">
+						<input type="hidden" name="username" value="<%= userObj.username %>">
 						<input type="submit" class="btn" value="Decline">
 					</form>
 				<% } %>
+				<% if (friend_status == 'none') { %>
+					<form class="action" method="post">
+						<input type="hidden" name="action" value="create-request">
+						<input type="hidden" name="username" value="<%= userObj.username %>">
+						<input type="submit" class="btn btn-primary" value="Add friend">
+					</form>
+				<% } %>
 			</div>
+
 			<div class="pull-left">
-				<img src="/api/users/picture/get?username=<%= user.username %>?type=normal">
+				<img src="/api/users/picture/get?username=<%= userObj.username %>?type=normal">
 			</div>
+
 			<div class="user-info">
-				<strong><%= user.name.full %></strong> (<%= user.username %>)
-				<div class="user-blurb nowrap">"<%= user.blurb %>"</div>
+				<% if (userObj.username == user.username) { %>
+					<strong>You</strong> (<%= userObj.name.full %>, <%= userObj.username %>)
+				<% } else { %>
+					<strong><%= userObj.name.full %></strong> (<%= userObj.username %>)
+				<% } %>
+				<div class="user-blurb nowrap">"<%= userObj.blurb %>"</div>
 			</div>
 		</div>
 	</div>

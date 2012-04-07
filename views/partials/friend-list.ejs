@@ -30,7 +30,7 @@
 			<%  for (var i in friends) { %>
 				<div class="user-tile-outer pull-left">
 					<%- partial('partials/user-tile.ejs', {
-							user: friends[i],
+							userObj: friends[i],
 							alert_class: "alert-info",
 							friend_status: "friends"
 						}) %>
