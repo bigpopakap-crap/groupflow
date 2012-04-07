@@ -24,8 +24,7 @@
 	<div class="friend-list-partial">
 		<%	if (friends.length == 0) { %>
 			<div class="alert alert-warning">
-				<div>No friends? Search for people you know!</div>
-				<%- partial('friend-finder.ejs') %>
+				<div>No friends? Search for people you know <a href="/friends/search">here</a>!</div>
 			</div>
 		<% } else { %>
 			<%  for (var i in friends) { %>

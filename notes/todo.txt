@@ -6,9 +6,11 @@ FEATURES FOR WEB APPS
 - interface for group invitations
 - api for group posts
 - interface for group posts
+- load more results in friends list and friend requests list
 
 FEATURES AFTER WEB APPS
 - unfriending people
+- view for outgoing pending friend requests
 - notifications of various events
 - log in with facebook account
 - user fb picture if account is linked

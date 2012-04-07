@@ -132,6 +132,7 @@ exports.getarr = getarr;
 /*
 	Inputs:
 		query (string)
+		TODO - paging of results? probably do that way later...
 
 	Note: checks case-sensitive for exact matches on username, first name or last name
 

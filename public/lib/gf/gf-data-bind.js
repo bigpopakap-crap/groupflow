@@ -48,6 +48,13 @@
 		return this;
 	}
 
+	/* clears the elements from this list */
+	$.fn.gfbind_clear = function() {
+		this.each(function() {
+			clear($(this));
+		});
+	}
+
 	//makes sure the input is an array
 	function validateInputArray(arr) {
 		if (!arr) return [];
@@ -62,7 +69,7 @@
 				(arr.length !== null));
 	}
 
-	//does the initialization of bfbind on a particular element
+	//does the initialization of gfbind on a particular element
 	function init(jelem) {
 		 //get the template element and make sure it exists
 	    var template = jelem.find(templateSel).first();
@@ -106,6 +113,13 @@
 			var newElem = bindElem(data.template, arr[i]);
 			data.root.prepend(newElem);
 		}
+	}
+
+	//does the clearing on one particular gfbind list
+	function clear(jelem) {
+		var data = jelem.data(gfBindDataKey);
+		if (!data.init) return; //wasn't initialized
+		data.root.html('');
 	}
 
 	//binds the data in obj to the template element and returns the bound element

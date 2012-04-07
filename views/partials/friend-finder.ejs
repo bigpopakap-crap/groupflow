@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/gf-style.css',
+				'/public/friend-finder/friend-finder.css'
+			],
+			scripts: [
+				'/public/lib/jquery/jquery.min.js',
+				'/public/lib/gf/gf-data-bind.js',
+				'/public/friend-finder/friend-finder.js'
+			]
+		}) %>
+</head>
+<body>
+	<form class="search-form form-search">
+		<input type="text" class="query" name="query" placeholder="Start typing...">
+		<input type="submit" class="btn btn-primary" value="Search">
+		<p class="help-block">Your query is <strong>case-sensitive</strong>,
+							  and searches username, first name and last name</p>
+	</form>
+	<div class="results">
+		<h2 class="query"></h2>
+		<div class="user-list"></div>
+	</div>
+</body>
+</html>

@@ -10,9 +10,7 @@
 				'/public/gf-style.css',
 				'/public/user-friends.css'
 			],
-			scripts: [
-				'/public/lib/jquery/jquery.min.js'
-			]
+			scripts: []
 		}) %>
 	<%- partial('partials/header/header-end.ejs') %>
 </head>
@@ -33,6 +31,9 @@
 			<div class="main-content span9">
 				<div class="section">
 					<h2>Friend requests</h2>
+					<label>
+						<strong>Search</strong> through users for friends <a href="/friends/search">here</a>
+					</label>
 					<label>
 						These people have requested you as a friend. Once you accept, you can
 						invite each other to your groups. If you decline, they will not be notified

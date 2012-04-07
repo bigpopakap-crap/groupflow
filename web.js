@@ -140,6 +140,12 @@ app.post('/friends', function(req, res, next) {
 	else return next();
 });
 
+//search users for friends page
+app.get('/friends/search', function(req, res, next) {
+	if (req.session.user) gen_utils.render(req, res, 'user-friends-search.ejs');
+	else return next();
+});
+
 //account settings page
 app.get('/settings', function(req, res, next) {
 	//make sure there is an auth'd user
