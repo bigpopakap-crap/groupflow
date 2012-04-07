@@ -7,6 +7,7 @@ FEATURES FOR WEB APPS
 - api for group posts
 - interface for group posts
 - load more results in friends list and friend requests list
+- create back button image in /public/images/icons/back.png
 
 FEATURES AFTER WEB APPS
 - unfriending people
