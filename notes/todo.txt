@@ -8,6 +8,7 @@ FEATURES FOR WEB APPS
 - interface for group posts
 - load more results in friends list and friend requests list
 - create back button image in /public/images/icons/back.png
+- reformat the "Check availability" button
 
 FEATURES AFTER WEB APPS
 - unfriending people

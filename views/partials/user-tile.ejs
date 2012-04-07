@@ -28,20 +28,17 @@
 		<div class="user-tile alert <%= alert_class %>">
 			<div class="actions pull-right">
 				<% if (friend_status == 'incoming') { %>
-					<form class="action" method="post">
-						<input type="hidden" name="action" value="accept-request">
+					<form class="action" method="get" action="/api/friends/requests/accept">
 						<input type="hidden" name="username" value="<%= userObj.username %>">
 						<input type="submit" class="btn btn-primary" value="Accept">
 					</form>
-					<form class="action" method="post">
-						<input type="hidden" name="action" value="decline-request">
+					<form class="action" method="get" action="/api/friends/requests/reject">
 						<input type="hidden" name="username" value="<%= userObj.username %>">
 						<input type="submit" class="btn" value="Decline">
 					</form>
 				<% } %>
 				<% if (friend_status == 'none') { %>
-					<form class="action" method="post">
-						<input type="hidden" name="action" value="create-request">
+					<form class="action" method="post" action="/api/friends/requests/create">
 						<input type="hidden" name="username" value="<%= userObj.username %>">
 						<input type="submit" class="btn btn-primary" value="Add friend">
 					</form>
