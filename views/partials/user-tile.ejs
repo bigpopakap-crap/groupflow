@@ -4,9 +4,9 @@
 		userObj - the user object to display
 		alert_class - one of "", "alert-info", "alert-warning", "alert-error"
 		friend_status - if known, a string indicating the relationship the auth'd user
-						has with the user whose tile this is, or a falsy value if unknown
-						(it will be looked up dynamically)
+						has with the user whose tile this is
 
+						"" - unknown tile state, will be looked up via ajax
 						"friends" - they are friends
 						"incoming" - there is an incoming friend request from this person
 						"outgoing" - there is an outgoing friend request to this person
@@ -18,31 +18,39 @@
 			stylesheets: [
 				'/public/lib/bootstrap/css/bootstrap.min.css',
 				'/public/gf-style.css',
-				'/public/user-tile.css'
+				'/public/user-tile/user-tile.css'
 			],
-			scripts: []
+			scripts: [
+				'/public/lib/jquery/jquery.min.js',
+				'/public/user-tile/user-tile-state.js',
+				'/public/user-tile/user-tile-ajax.js'
+			]
 		}) %>
 </head>
 <body>
-	<div class="user-tile-partial">
+	<div class="user-tile-partial" data-user-tile-state="<%= friend_status %>">
 		<div class="user-tile alert <%= alert_class %>">
 			<div class="actions pull-right">
-				<% if (friend_status == 'incoming') { %>
-					<form class="action" method="get" action="/api/friends/requests/accept">
-						<input type="hidden" name="username" value="<%= userObj.username %>">
-						<input type="submit" class="btn btn-primary" value="Accept">
-					</form>
-					<form class="action" method="get" action="/api/friends/requests/reject">
-						<input type="hidden" name="username" value="<%= userObj.username %>">
-						<input type="submit" class="btn" value="Decline">
-					</form>
-				<% } %>
-				<% if (friend_status == 'none') { %>
-					<form class="action" method="post" action="/api/friends/requests/create">
-						<input type="hidden" name="username" value="<%= userObj.username %>">
-						<input type="submit" class="btn btn-primary" value="Add friend">
-					</form>
-				<% } %>
+				<p data-user-tile-state="friends">(friend)</p>
+
+				<!-- incoming friend state: accept request -->
+				<form class="action form-ajax" method="get" data-user-tile-state="incoming" style="display: none"
+					  action="/api/friends/requests/accept" data-gf-ajax-form-action="accept-request">
+					<input type="hidden" name="username" value="<%= userObj.username %>">
+					<input type="submit" class="btn btn-primary" value="Accept">
+				</form>
+				<!-- incoming friend state: reject request -->
+				<form class="action form-ajax" method="get" data-user-tile-state="incoming" style="display: none"
+					  action="/api/friends/requests/reject" data-gf-ajax-form-action="reject-request">
+					<input type="hidden" name="username" value="<%= userObj.username %>">
+					<input type="submit" class="btn" value="Decline">
+				</form>
+				<!-- none friend state: create request -->
+				<form class="action form-ajax" method="post" data-user-tile-state="none" style="display: none"
+					  action="/api/friends/requests/create" data-gf-ajax-form-action="create-request">
+					<input type="hidden" name="username" value="<%= userObj.username %>">
+					<input type="submit" class="btn btn-primary" value="Add friend">
+				</form>
 			</div>
 
 			<div class="pull-left">

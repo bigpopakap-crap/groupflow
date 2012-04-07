@@ -110,35 +110,6 @@ app.get('/friends', function(req, res, next) {
 	}
 	else return next();
 });
-//actions on the friend page
-app.post('/friends', function(req, res, next) {
-	if (req.session.user) {
-		function afterAction(data) {
-			if (data.response.success) {
-				//redirect to the same page
-				res.redirect('/friends');
-			}
-			else {
-				//TODO show some sort of error
-			}
-		}
-
-		//get the action parameter
-		var action = req.param('action');
-		if (action == 'accept-request') {
-			var username = req.param('username');
-			api.friends.requests.accept(req, { username: username }, afterAction);
-		}
-		else if (action == 'decline-request') {
-			var username = req.param('username');
-			api.friends.requests.reject(req, { username: username }, afterAction);
-		}
-		else {
-			return next();
-		}
-	}
-	else return next();
-});
 
 //search users for friends page
 app.get('/friends/search', function(req, res, next) {

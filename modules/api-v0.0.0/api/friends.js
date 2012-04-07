@@ -97,7 +97,8 @@ function list(req, params, callback) {
 						else if (response.success) {
 							//sort the array by firstname
 							response.success = response.success.sort(function(a, b) {
-								return a.firstName.localeCompare(b.firstName);
+								//TODO what changed? a.firstName worked and then it suddenly didn't
+								return a.name.full.localeCompare(b.name.full);
 							});
 
 							//successful! return the array
