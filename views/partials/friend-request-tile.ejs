@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<%/*
+	Expects variables:
+		request - the user object to display
+*/%>
+<html>
+<head>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/gf-style.css',
+				'/public/friend-request-tile.css'
+			],
+			scripts: []
+		}) %>
+</head>
+<body>
+	<div class="friend-request-tile-partial">
+		<div class="friend-request-tile alert alert-warning">
+			<div class="actions pull-right">
+				<form class="action" method="post" action="">
+					<input type="hidden" name="action" value="accept-request">
+					<input type="hidden" name="username" value="<%= request.username %>">
+					<input type="submit" class="btn btn-primary" value="Accept">
+				</form>
+				<form class="action" method="post" action="">
+					<input type="hidden" name="action" value="decline-request">
+					<input type="hidden" name="username" value="<%= request.username %>">
+					<input type="submit" class="btn" value="Decline">
+				</form>
+			</div>
+			<div class="pull-left">
+				<img src="/api/users/picture/get?username=<%= request.username %>?type=normal">
+			</div>
+			<div class="user-info">
+				<strong><%= request.name.full %></strong>
+				<div><%= request.username %></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

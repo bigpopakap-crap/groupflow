@@ -1,0 +1,11 @@
+.friend-request-list-partial .user-tile-cell {
+	width: 70%;
+}
+
+.friend-request-list-partial .user-tile {
+	width: 100%;
+}
+
+.friend-request-list-partial .actions .action {
+	display: inline;
+}

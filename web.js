@@ -71,25 +71,71 @@ app.post('/register', function(req, res) {
 	});
 });
 
+//notifications page (same as home)
+app.get('/notifications', function(req, res) {
+	res.redirect('/');
+});
+
 //view friends page
 app.get('/friends', function(req, res, next) {
 	//make sure there is an auth'd user
 	if (req.session.user) {
-		api.friends.list(req, {}, function (data) {
-			var response = data.response;
-			var params = data.request.params;
+		api.friends.list(req, {}, function (friend_data) {
+			api.friends.requests.listin(req, {}, function (requests_data) {
+				var friend_response = friend_data.response;
+				var friend_params = friend_data.request.params;
 
-			if (response.success) {
-				gen_utils.render(req, res, 'user-friends.ejs', {
-					friends: response.success,
-					offset: params.offset,
-					maxcount: params.maxcount
-				});
+				var requests_response = requests_data.response;
+				var requests_params = requests_data.request.params;
+
+				if (friend_response.success && requests_response.success) {
+					gen_utils.render(req, res, 'user-friends.ejs', {
+						friends: {
+							list: friend_response.success,
+							offset: friend_params.offset,
+							maxcount: friend_params.maxcount
+						},
+						requests: {
+							list: requests_response.success,
+							offset: requests_params.offset,
+							maxcount: requests_params.maxcount
+						}
+					});
+				}
+				else {
+					//TODO what to do here?
+				}
+			});
+		});
+	}
+	else return next();
+});
+//actions on the friend page
+app.post('/friends', function(req, res, next) {
+	if (req.session.user) {
+		function afterAction(data) {
+			if (data.response.success) {
+				//redirect to the same page
+				res.redirect('/friends');
 			}
 			else {
-				//TODO what to do here?
+				//TODO show some sort of error
 			}
-		});
+		}
+
+		//get the action parameter
+		var action = req.param('action');
+		if (action == 'accept-request') {
+			var username = req.param('username');
+			api.friends.requests.accept(req, { username: username }, afterAction);
+		}
+		else if (action == 'decline-request') {
+			var username = req.param('username');
+			api.friends.requests.reject(req, { username: username }, afterAction);
+		}
+		else {
+			return next();
+		}
 	}
 	else return next();
 });

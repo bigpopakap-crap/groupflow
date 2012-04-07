@@ -1,0 +1,11 @@
+.friend-request-tile-partial .friend-request-tile {
+	min-height: 40px;
+	margin-bottom: 12px;
+}
+
+.friend-request-tile-partial .friend-request-tile img {
+	max-height: 40px;
+	vertical-align: text-top;
+	margin-right: 8px;
+	border: solid 1px #FBEED5;
+}

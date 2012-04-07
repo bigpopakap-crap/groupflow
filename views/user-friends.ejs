@@ -31,17 +31,29 @@
 			</div>
 
 			<div class="main-content span9">
-				<div>
+				<div class="section">
 					<h2>Friend requests</h2>
-					TODO
+					<label>
+						These people have requested you as a friend. Once you accept, you can
+						invite each other to your groups. If you decline, they will not be notified
+					</label>
+					<%- partial('partials/friend-request-list.ejs', {
+							requests: requests.list,
+							offset: requests.offset,
+							maxcount: requests.maxcount
+						}) %>
 				</div>
-				<div>
+				<div class="section">
 					<h2>Your friends</h2>
 					<label>
-						Friends are people that have verified your relationship.
-						You can invite these people to your groups
+						These people have verified your friendship, so you can
+						invite them to your groups. <a href="/groups">Go there now</a>
 					</label>
-					<%- partial('partials/friend-list') %>
+					<%- partial('partials/friend-list.ejs', {
+							friends: friends.list,
+							offset: friends.offset,
+							maxcount: friends.maxcount
+						}) %>
 				</div>
 			</div>
 		</div>

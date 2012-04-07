@@ -244,11 +244,27 @@ function listfun(endpoint, origin) {
 							return entry[endpoint];
 						});
 
-						//return true iff the results array is not empty
-						return callback(api_utils.wrapResponse({
-							params: params,
-							success: results
-						}));
+						//call the users getarr function on that
+						users.getarr(req, { usernames: results }, function(data) {
+							var response = data.response;
+
+							if (response.error) {
+								//relay the error
+								return callback(data);
+							}
+							else if (response.success) {
+								//successful! return the array
+								return callback(api_utils.wrapResponse({
+									params: params,
+									success: response.success
+								}));
+							}
+							else {
+								//some weird case - return internal server error and log it
+								gen_utils.err_log('weird case: H2k02hs');
+								return callback(api_errors.internalServer(req.session.user, params));
+							}
+						});
 					}
 				}
 			);

@@ -109,8 +109,7 @@ function list(req, params, callback) {
 						else {
 							//some weird case - return internal server error and log it
 							gen_utils.err_log('weird case: 2hdlsh2888fhsl');
-							return callback(api_errors.internalServer(req.session.user, params));//weird case, log it
-							
+							return callback(api_errors.internalServer(req.session.user, params));
 						}
 					});
 				}

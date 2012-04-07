@@ -1,4 +1,4 @@
-FEATURES THAT NEED ATTENTION
+FEATURES FOR WEB APPS
 - interface for friending, and listing friends
 - api for group creation
 - interface for group creation
@@ -6,6 +6,9 @@ FEATURES THAT NEED ATTENTION
 - interface for group invitations
 - api for group posts
 - interface for group posts
+
+FEATURES AFTER WEB APPS
+- unfriending people
 - notifications of various events
 - log in with facebook account
 - user fb picture if account is linked
