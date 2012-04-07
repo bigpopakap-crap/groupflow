@@ -150,6 +150,11 @@ app.post('/friends/search', function(req, res, next) {
 	if (req.session.user) {
 		var query = req.param('query');
 
+		//treat an empty query as a GET request
+		if (!query) {
+			return res.redirect('/friends/search');
+		}
+
 		api.users.search(req, { query: query }, function(data) {
 			var response = data.response;
 
