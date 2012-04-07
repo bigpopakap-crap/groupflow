@@ -31,7 +31,8 @@
 				<div class="user-tile-outer pull-left">
 					<%- partial('partials/user-tile.ejs', {
 							user: friends[i],
-							check_if_friends: false
+							alert_class: "alert-info",
+							friend_status: "friends"
 						}) %>
 				</div>
 			<% } %>

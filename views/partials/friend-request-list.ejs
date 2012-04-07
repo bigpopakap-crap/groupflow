@@ -30,8 +30,10 @@
 		<% } else { %>
 			<%  for (var i in requests) { %>
 				<div class="friend-request-tile-outer">
-					<%- partial('partials/friend-request-tile.ejs', {
-							request: requests[i]
+					<%- partial('partials/user-tile.ejs', {
+							user: requests[i],
+							alert_class: "alert-warning",
+							friend_status: "incoming"
 						}) %>
 				</div>
 			<% } %>

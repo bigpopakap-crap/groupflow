@@ -2,9 +2,16 @@
 <%/*
 	Expects variables:
 		user - the user object to display
-		check_if_friends - if true, the tile will send a request to determine if
-							the auth'd user is friends, and if not will display an
-							"Add friend" button
+		alert_class - one of "", "alert-info", "alert-warning", "alert-error"
+		friend_status - if known, a string indicating the relationship the auth'd user
+						has with the user whose tile this is, or a falsy value if unknown
+						(it will be looked up dynamically)
+
+						"is" - it is the auth'd user
+						"friends" - they are friends
+						"incoming" - there is an incoming friend request from this person
+						"outgoing" - there is an outgoing friend request to this person
+						"none" - none of the above is true
 */%>
 <html>
 <head>
@@ -19,13 +26,27 @@
 </head>
 <body>
 	<div class="user-tile-partial">
-		<div class="user-tile alert alert-info">
+		<div class="user-tile alert <%= alert_class %>">
+			<div class="actions pull-right">
+				<% if (friend_status == "incoming") { %>
+					<form class="action" method="post" action="">
+						<input type="hidden" name="action" value="accept-request">
+						<input type="hidden" name="username" value="<%= user.username %>">
+						<input type="submit" class="btn btn-primary" value="Accept">
+					</form>
+					<form class="action" method="post" action="">
+						<input type="hidden" name="action" value="decline-request">
+						<input type="hidden" name="username" value="<%= user.username %>">
+						<input type="submit" class="btn" value="Decline">
+					</form>
+				<% } %>
+			</div>
 			<div class="pull-left">
 				<img src="/api/users/picture/get?username=<%= user.username %>?type=normal">
 			</div>
 			<div class="user-info">
-				<strong><%= user.name.full %></strong>
-				<div><%= user.username %></div>
+				<strong><%= user.name.full %></strong> (<%= user.username %>)
+				<div class="user-blurb nowrap">"<%= user.blurb %>"</div>
 			</div>
 		</div>
 	</div>

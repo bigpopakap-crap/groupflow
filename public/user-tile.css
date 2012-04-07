@@ -10,3 +10,13 @@
 	margin-right: 8px;
 	border: solid 1px #999999;
 }
+.user-tile-partial .user-tile.alert-warning img {
+	border-color: #C09853;
+}
+.user-tile-partial .user-tile.alert-error img {
+	border-color: #EED3D7;
+}
+
+.user-tile-partial .user-tile .user-blurb {
+	font-style: italic;
+}
