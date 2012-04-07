@@ -74,7 +74,23 @@ app.post('/register', function(req, res) {
 //view friends page
 app.get('/friends', function(req, res, next) {
 	//make sure there is an auth'd user
-	if (req.session.user) gen_utils.render(req, res, 'user-friends.ejs');
+	if (req.session.user) {
+		api.friends.list(req, {}, function (data) {
+			var response = data.response;
+			var params = data.request.params;
+
+			if (response.success) {
+				gen_utils.render(req, res, 'user-friends.ejs', {
+					friends: response.success,
+					offset: params.offset,
+					maxcount: params.maxcount
+				});
+			}
+			else {
+				//TODO what to do here?
+			}
+		});
+	}
 	else return next();
 });
 

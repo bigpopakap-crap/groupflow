@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<%/*
+	Expects variables:
+		friends - an array of user objects to populate the initial list
+		offset - the offset of the current view
+		maxcount - the maxcount of the current view
+*/%>
+<html>
+<head>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/gf-style.css',
+				'/public/friend-list/friend-list.css'
+			],
+			scripts: [
+				'/public/lib/jquery/jquery.min.js',
+				'/public/friend-list/friend-list.js'
+			]
+		}) %>
+</head>
+<body>
+	
+</body>
+</html>
