@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+<%/*
+	Expects variables:
+		- query_submitted: boolean to indicate whether this is the first time the page was
+							loaded or not
+		- query: the query that was submitted
+		- users: the array of user objects
+		- error: the string to display if there was an error (or empty if no error)
+*/%>
 <html>
 <head>
 	<%- partial('partials/header/header-start.ejs', {
@@ -7,7 +15,8 @@
 	<%- partial('partials/resources.ejs', {
 			stylesheets: [
 				'/public/lib/bootstrap/css/bootstrap.min.css',
-				'/public/gf-style.css'
+				'/public/gf-style.css',
+				'/public/user-friends-search.css'
 			],
 			scripts: []
 		}) %>
@@ -32,17 +41,44 @@
 					<h2>Search users</h2>
 					<label>Search through Groupflow users for people you know</label>
 
-					<form class="search-form form-search">
-						<input type="text" class="query" name="query" placeholder="Start typing...">
+					<form method="post" class="search-form form-search">
+						<input type="text" class="query" name="query" autofocus="autofocus"
+								placeholder="Start typing..."
+								<% if (query_submitted) { %>value="<%= query %>"<% } %>>
 						<input type="submit" class="btn btn-primary" value="Search">
 						<p class="help-block">Your query is <strong>case-sensitive</strong>,
 											  and searches username, first name and last name</p>
 					</form>
 
-					<div class="results">
-						<h2 class="query"></h2>
-						<div class="user-list"></div>
-					</div>
+					<% if (query_submitted) { %>
+						<div class="results">
+							<h3 class="query">Results for: <%= query %></h3>
+
+							<% if (error) { %>
+								<!-- a server error occured! -->
+								<div class="alert alert-error">
+									<%= error %>
+								</div>
+							<% } else if (users.length == 0) { %>
+								<!-- no results to display -->
+								<div class="alert alert-warning">
+									No results to display
+								</div>
+							<% } else { %>
+								<!-- there are results to display -->
+								<div class="user-list">
+									<% for (var i in users) { %>
+										<div class="user-tile-outer pull-left">
+											<%- partial('partials/user-tile.ejs', {
+													user: users[i],
+													check_if_friends: true
+												}) %>
+										</div>
+									<% } %>
+								</div>
+							<% } %>
+						</div>
+					<% } %>
 				</div>
 			</div>
 		</div>

@@ -147,6 +147,7 @@ function search(req, params, callback) {
 					 SEARCH_QUERY_STRING,
 					 [ params.query, params.query, params.query ]);
 }
+exports.search = search;
 
 /*
 	gets the username of the auth'd user and passes it to the get function

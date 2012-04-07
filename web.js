@@ -142,7 +142,47 @@ app.post('/friends', function(req, res, next) {
 
 //search users for friends page
 app.get('/friends/search', function(req, res, next) {
-	if (req.session.user) gen_utils.render(req, res, 'user-friends-search.ejs');
+	if (req.session.user) gen_utils.render(req, res, 'user-friends-search.ejs', { query_submitted: false });
+	else return next();
+});
+//handle the actual search query
+app.post('/friends/search', function(req, res, next) {
+	if (req.session.user) {
+		var query = req.param('query');
+
+		api.users.search(req, { query: query }, function(data) {
+			var response = data.response;
+
+			if (response.success) {
+				//there were results returned (or maybe an empty list)
+				gen_utils.render(req, res, 'user-friends-search.ejs', {
+					query_submitted: true,
+					query: query,
+					users: response.success,
+					error: ""
+				});
+			}
+			else if (response.error) {
+				//some error occurred
+				gen_utils.render(req, res, 'user-friends-search.ejs', {
+					query_submitted: true,
+					query: query,
+					users: [],
+					error: response.error.userMsg
+				});
+			}
+			else {
+				//this should no happen, but it should be handled as an error
+				gen_utils.err_log('weird case: l02hsaaah29335hG'); //log that this happened
+				gen_utils.render(req, res, 'user-friends-search.ejs', {
+					query_submitted: true,
+					query: query,
+					users: [],
+					error: 'Uh oh! Something went wrong while processing your request'
+				});
+			}
+		});
+	}
 	else return next();
 });
 
