@@ -17,6 +17,10 @@
 	border-color: #EED3D7;
 }
 
+.user-tile-partial .actions .action {
+	display: inline;
+}
+
 .user-tile-partial .user-tile .user-blurb {
 	font-style: italic;
 }

@@ -4,12 +4,15 @@
 
 	REST functions:
 		list - lists the friends of the auth'd user
+		is - determines whether the auth'd user is friends with a given user
+		state - gets the relationship the auth'd user has with the given user
 	
 	Internal-only functions:
 		(none)
 
 	Directly touches database tables:
 		Friendships (read/write)
+		FriendRequests (read)
 
 	Directly touches session variables:
 		session.user
@@ -34,6 +37,7 @@ function configure(app, url_prefix) {
 	//actions in this api domain
 	app.get(url_prefix + '/list', api_utils.restHandler(list));
 	app.get(url_prefix + '/is', api_utils.restHandler(is));
+	app.get(url_prefix + '/state', api_utils.restHandler(state));
 }
 exports.configure = configure;
 
@@ -170,6 +174,106 @@ function is(req, params, callback) {
 }
 exports.is = is;
 
+/*
+	Inputs: username
+
+	Cases:
+		Error: database, no such user
+		Success: returns a string representing the relationship
+			is - this is the auth'd user
+			incoming - there is a pending request from the given user
+			outgoing - there is a pending request TO the given user
+			friends - they are friends
+			none - none of the above
+*/
+function state(req, params, callback) {
+	var paramErrors = api_validate.validate(params, {
+		username: { required: true }
+	});
+
+	if (!req.session.user) {
+		//no auth'd user
+		return callback(api_errors.noAuth(req.session.user, params));
+	}
+	else {
+		var user = req.session.user;
+
+		//check if it is the auth'd user
+		if (user.username == params.username) {
+			return callback(api_utils.wrapResponse({
+				params: params,
+				success: 'is'
+			}));
+		}
+
+		//check whether the user exists
+		users.get(req, params, function (data) {
+			var response = data.response;
+
+			if (response.success) {
+				//user exists, now check whether they're friends
+				is(req, params, function (data) {
+					var response = data.response;
+
+					if (response.success === true) {
+						//they're friends, return that state
+						return callback(api_utils.wrapResponse({
+							params: params,
+							success: 'friends'
+						}));
+					}
+					else if (response.success === false) {
+						//not friends, check if there's a friend request
+						db.query('select * from FriendRequests where (requester=? and recipient=?) or (requester=? and recipient=?)',
+								[ user.username, params.username, params.username, user.username ],
+								function (err, results) {
+							//there will be at most 1 result
+							if (err) {
+								//database error
+								return callback(api_errors.database(req.session.user, params, err));
+							}
+							else if (results.length == 0) {
+								//no friend requests pending
+								return callback(api_utils.wrapResponse({
+									params: params,
+									success: 'none'
+								}));
+							}
+							else if (results[0].requester == user.username) {
+								//outgoing request
+								return callback(api_utils.wrapResponse({
+									params: params,
+									success: 'outgoing'
+								}));
+							}
+							else {
+								//incoming request
+								return callback(api_utils.wrapResponse({
+									params: params,
+									success: 'incoming'
+								}));
+							}
+						});
+					}
+					else if (response.error) callback(data); //relay the error
+					else {
+						//some weird case - return internal server error and log it
+						gen_utils.err_log('weird case: O02HFHSLhss');
+						return callback(api_errors.internalServer(req.session.user, params));
+					}
+				}); //end lookup friendship
+			}
+			else if (response.warning) return callback(api_errors.noSuchUsername(req.session.user, params, username)); //no such user error
+			else if (response.error) return callback(data); //relay the error
+			else {
+				//some weird case - return internal server error and log it
+				gen_utils.err_log('weird case: 457ahwlh hsHF');
+				return callback(api_errors.internalServer(req.session.user, params));
+			}
+		}); //end look up user
+	}
+}
+exports.state = state;
 
 //subdomains of the api
 exports.requests = requests;

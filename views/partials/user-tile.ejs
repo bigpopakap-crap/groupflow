@@ -28,10 +28,11 @@
 		}) %>
 </head>
 <body>
-	<div class="user-tile-partial" data-user-tile-state="<%= friend_status %>">
+	<div class="user-tile-partial" data-user-tile-state="<%= friend_status %>"
+									data-username="<%= userObj.username %>">
 		<div class="user-tile alert <%= alert_class %>">
 			<div class="actions pull-right">
-				<p data-user-tile-state="friends">(friend)</p>
+				<p data-user-tile-state="friends" style="display: none">(friend)</p>
 
 				<!-- incoming friend state: accept request -->
 				<form class="action form-ajax" method="get" data-user-tile-state="incoming" style="display: none"

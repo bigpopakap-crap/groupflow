@@ -2,9 +2,11 @@
 
 	var user_tile_sel = '.user-tile-partial';
 	var tile_state_attr = 'data-user-tile-state';
+	var tile_username_attr = 'data-username';
 
 	var accepted_states = {
 		'': true,
+		'is': true,
 		'none': true,
 		'incoming': true,
 		'outgoing': true,
@@ -22,7 +24,16 @@
 			else {
 				//hide all the fields and figure out the actual tile state via AJAX call
 				jelem.setTileState('');
-				//TODO get the tile state via AJAX
+
+				//get the tile state via AJAX
+				var username = jelem.attr(tile_username_attr);
+				$.get('/api/friends/state', { username: username }, function (data) {
+					data = JSON.parse(data);
+
+					if (data.response.success) {
+						jelem.setTileState(data.response.success);
+					}
+				});
 			}
 		});
 	});
