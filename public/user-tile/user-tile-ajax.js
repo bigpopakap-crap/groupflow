@@ -41,9 +41,9 @@
 				if (data.response.success && callbacks.success)
 					return callbacks.success(data);
 				else if (data.response.warning && callbacks.warning)
-					return callbacks.success(data);
+					return callbacks.warning(data);
 				else if (data.response.error && callbacks.error)
-					return callbacks.success(data);
+					return callbacks.error(data);
 			},
 			error: function(data) {
 				if (callbacks.error) callbacks.error(JSON.parse(data));
