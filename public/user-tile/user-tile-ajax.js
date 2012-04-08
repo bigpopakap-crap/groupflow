@@ -18,7 +18,8 @@
 			var handler = ({
 				'accept-request': acceptRequest,
 				'reject-request': rejectRequest,
-				'create-request': createRequest
+				'create-request': createRequest,
+				'cancel-request': cancelRequest
 			})[jform.attr(ajax_form_action_attr)];
 			handler(jform, jpartial);
 
@@ -82,6 +83,19 @@
 			success: function(data) {
 				//do nothing except change the tile state to outgoing
 				jpartial.setTileState('outgoing');
+			},
+			error: function(data) {
+				//TODO show some sort of error
+			}
+		});
+	}
+
+	//cancel a friend request
+	function cancelRequest(jform, jpartial) {
+		submitForm(jform, {
+			success: function(data) {
+				//do nothing except change the tile state to none
+				jpartial.setTileState('none');
 			},
 			error: function(data) {
 				//TODO show some sort of error

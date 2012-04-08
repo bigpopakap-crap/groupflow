@@ -1,5 +1,4 @@
 FEATURES FOR WEB APPS
-- do ajax friend state function to show "add friend" button, and make it work
 - api for group creation
 - interface for group creation
 - api for group invitations
