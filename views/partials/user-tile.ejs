@@ -56,7 +56,7 @@
 				</form>
 
 				<!-- outgoing friend state: cancel request -->
-				<form class="action form-ajax" method="post" data-user-tile-state="outgoing" style="display: none"
+				<form class="action form-ajax" method="get" data-user-tile-state="outgoing" style="display: none"
 					  action="/api/friends/requests/cancel" data-gf-ajax-form-action="cancel-request">
 					<input type="hidden" name="username" value="<%= userObj.username %>">
 					<input type="submit" class="btn" value="Cancel request">
