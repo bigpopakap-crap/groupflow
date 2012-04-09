@@ -4,6 +4,10 @@
 	margin-bottom: 12px;
 }
 
+.user-tile-partial .black-text {
+	color: #222222;
+}
+
 .user-tile-partial .user-tile img {
 	max-height: 40px;
 	vertical-align: text-top;
