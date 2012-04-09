@@ -13,9 +13,11 @@
 		minlen (int) - enforces a min # of characters (0 means that no min-length is enforced)
 		maxlen (int) - enforces max # of characters	(0 means that no max-length is enforced. the "required" constraint will catch that case)
 		isnum (bool) - requires that the field can be converted to a number
+		isbool (bool) - requires that the field can be converted to a boolean ('true' or 'false')
 		isalpha (bool) - requires that the field only contains a-zA-Z and spaces
 		isword (bool) - requires that the field consists of only word characters (letters, nums, and _ )
-		isname (bool) - requires that the field only has a-zA-Z, spaces, dashes and periods		
+		isname (bool) - requires that the field only has a-zA-Z, spaces, dashes and periods
+		isname2 (bool) - requires that the field only has a-zA-Z, spaces, dashes, periods and numbers		
 		startletter (bool) requires that the field starts with a-zA-Z	
 		startcapletter (bool) - requires that the field starts with A-Z	
 		singlespaces (bool) - requires that the field doesn't have any spaces next to each other
@@ -45,9 +47,11 @@ exports.validate = function(params, constraints) {
 		var minlen = constraints[field].minlen;
 		var maxlen = constraints[field].maxlen;
 		var isnum = constraints[field].isnum;
+		var isbool = constraints[field].isbool;
 		var isalpha = constraints[field].isalpha;
 		var isword = constraints[field].isword;
 		var isname = constraints[field].isname;
+		var isname2 = constraints[field].isname2;
 		var startletter = constraints[field].startletter;
 		var startcapletter = constraints[field].startcapletter;
 		var singlespaces = constraints[field].singlespaces;
@@ -84,6 +88,10 @@ exports.validate = function(params, constraints) {
 			//not a number
 			paramErrors[field] = not_number_error(field);
 
+		else if (isbool && !isBool(value))
+			//not a boolean
+			paramErrors[field] = not_bool_error(field);
+
 		else if (isalpha && !isAlpha(value))
 			//not only letters and spaces
 			paramErrors[field] = not_alpha_error(field);
@@ -95,6 +103,10 @@ exports.validate = function(params, constraints) {
 		else if (isname && !isName(value))
 			//not a name field
 			paramErrors[field] = not_name_error(field);
+
+		else if (isname2 && !isName2(value))
+			//not a group name field
+			paramErrors[field] = not_name2_error(field);
 
 		else if (startletter && !startsLetter(value))
 			//doesn't start with a letter
@@ -158,6 +170,10 @@ function isNumber(str) {
 	else return !isNaN(str);						//if it is NOT NaN, return true
 }
 
+function isBool(str) {
+	return (typeof str != undefined) && ((str == 'true') || (str == 'false'));
+}
+
 //helper to determine if the words has only spaces and letters
 function isAlpha(str) {
 	return /^[a-zA-Z ]*$/.test(str);
@@ -171,6 +187,11 @@ function isWord(str) {
 //helper to determine if there are only letters, spaces, dashes and dots
 function isName(str) {
 	return /^[a-zA-Z\.\- ]*$/.test(str);
+}
+
+//helper to determine if there are only letters, numbers, spaces, dashes and dots
+function isName2(str) {
+	return /^[a-zA-Z0-9\.\- ]*$/.test(str);
 }
 
 //helper to determine if the string starts with a letter
@@ -283,6 +304,14 @@ function not_number_error(field) {
 	}
 }
 
+function not_bool_error(field) {
+	return {
+		devMsg: 'The ' + field + ' param must represent a boolean (must be either' +
+				'the string "true" or the string "false")',
+		userMsg: 'Please choose an option'
+	}
+}
+
 function not_alpha_error(field) {
 	return {
 		devMsg: 'The ' + field + ' param can only have letters and spaces',
@@ -301,6 +330,13 @@ function not_name_error(field) {
 	return {
 		devMsg: 'The ' + field + ' param can only have letters, spaces, dashes and periods',
 		userMsg: 'Must only contain letters, spaces, dashes and periods'
+	}
+}
+
+function not_name2_error(field) {
+	return {
+		devMsg: 'The ' + field + ' param can only have letters, numbers, spaces, dashes and periods',
+		userMsg: 'Must only contain letters, numbers, spaces, dashes and periods'
 	}
 }
 

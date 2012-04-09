@@ -1,17 +1,22 @@
-Groups			groupid (id),
-				name (str),
-				description (str),
-				memberpost (boolean),
-				memberinvite (boolean)
+Groups			groupid varchar(60) not null primary key (using UUID()),
+				name varchar(24) not null,
+				description varchar(240) not null
 
-GroupMembers	username
-				groupid
-				status('member', 'admin', 'owner')
+GroupFlags
+				groupid varchar(60) not null, primary key
+				memberpost tinyint(1) not null,
+				memberinvite tinyint(1) not null
 
-GroupInvitations	requester
-					recipient
-					groupid
-					status
+GroupMembers	username varchar(40) not null
+				groupid varchar(60) not null
+				status enum('member', 'admin', 'owner') not null
+				UNIQUE(username, groupid)
+
+GroupInvitations	requester varchar(40) not null
+					recipient varchar(40) not null
+					groupid varchar(60) not null
+					status enum('member', 'admin')
+					UNIQUE(requester, recipient, groupid)
 
 PERMISSIONS
 	'member'	'admin'	'owner'		status ('member', 'admin', 'owner')

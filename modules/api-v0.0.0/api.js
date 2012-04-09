@@ -7,6 +7,7 @@ var accounts = require('./api/accounts.js');
 var users = require('./api/users.js');
 var friends = require('./api/friends.js');
 var notifications = require('./api/notifications.js');
+var groups = require('./api/groups.js');
 
 //function to configure the app
 function configure(app) {
@@ -18,6 +19,7 @@ function configure(app) {
 	users.configure(app, url_prefix);
 	friends.configure(app, url_prefix);
 	notifications.configure(app, url_prefix);
+	groups.configure(app, url_prefix);
 	require('./api/devtools.js').configure(app, url_prefix);
 
 	//if the requested path wasn't handled, return a bad-path error
@@ -39,4 +41,5 @@ exports.accounts = accounts;
 exports.users = users;
 exports.friends = friends;
 exports.notifications = notifications;
+exports.groups = groups;
 
