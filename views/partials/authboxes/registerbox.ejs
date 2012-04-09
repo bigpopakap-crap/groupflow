@@ -8,7 +8,8 @@
 				'/public/authboxes/registerbox.css'
 			],
 			scripts: [
-				'/public/lib/jquery/jquery.min.js'
+				'/public/lib/jquery/jquery.min.js',
+				'/public/authboxes/registerbox.js'
 			]
 		}) %>
 </head>
@@ -36,31 +37,16 @@
 
 							<!-- username availability check -->
 							<span class="help-block">
+								<div class="username-availability-text"></div>
 								<a href="#" class="username-availability-button btn disabled">
 									Check availability
 								</a>
-								<span class="username-availability-text"></span>
 								<script type="text/javascript">
-									$(document).ready(function() {
-										var usernameField = $('<%= parent %> input[name=username]');
-										var availButton = $('<%= parent %> a.username-availability-button');
-										var availText = $('<%= parent %> a.username-availability-text');
-										
-										availButton.removeClass('disabled');
-
-										availButton.click(function() {
-											//TODO complete this
-											availText.text('checking...');
-											$.ajax({
-												type: 'GET',
-												url: '/api/users/get',
-												data: { username: usernameField.val() },
-												success: function(data) {
-													alert(JSON.stringify(data));
-												}
-											});
-										});
-									});
+									registerbox(
+										'<%= parent %> input[name=username]',
+										'<%= parent %> .username-availability-button',
+										'<%= parent %> .username-availability-text'
+									);
 								</script>
 							<span>				
 						</div>

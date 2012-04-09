@@ -56,7 +56,10 @@ function register(req, params, callback) {
 	var paramErrors = api_validate.validate(params, {
 		username: { required: true, minlen: 4, maxlen: 40, isword: true,
 					singleunderscores: true, nowhite: true, startletter: true,
-					notlike: [{ val: 'Groupflow', tol: 4, ignorecase: true }] },
+					notlike: [
+						{ val: 'Groupflow', tol: 4, ignorecase: true },
+						{ val: 'You', tol: 1, ignorecase: true }
+					] },
 		password: { required: true, minlen: 6, maxlen: 30, nowhite: true },
 		password2: { required: true, custom: function(val, params) {
 						if (val !== params.password)
