@@ -11,6 +11,8 @@
 
 	Directly touches database tables:
 		Groups (read/write)
+		GroupFlags (read/write)
+		GroupMembers (read/write)
 
 	Directly touches session variables:
 		req.session.user (read)
@@ -87,13 +89,16 @@ function create(req, params, callback) {
 			else {
 				var uuid = results[0].uuid;
 
-				//now enter values into: Groups, GroupFlags
+				//now enter values into: Groups, GroupFlags, GroupMembers
+				//the user who created the group is set as the owner
 				db.insertTransaction(
 					[
 						{ query: 'insert into Groups (groupid, name, description) values(?, ?, ?)',
 						  params: [ uuid, params.name, params.description ] },
 						{ query: 'insert into GroupFlags (groupid, memberpost, memberinvite) values(?, ?, ?)',
 						  params: [ uuid, (params.memberpost ? 1 : 0), (params.memberinvite ? 1 : 0) ] },
+						{ query: 'insert into GroupMembers (groupid, username, status) values (?, ?, ?)',
+						  params: [ uuid, req.session.user.username, 'owner'] },
 						{ query: 'select * from Groups where groupid=?',
 						  params: [ uuid ] }
 					],
@@ -120,10 +125,35 @@ function create(req, params, callback) {
 exports.create = create;
 
 /*
-	TODO
+	Inputs:
+		myrole - (optional) one of 'any', 'member', 'admin', 'owner'
+				 defaults to 'any'
+		sort - (optional) either 'name' or 'role'
+				defaults to 'role'
+				if 'role', shows 'owner' groups, then 'admin' groups, then 'member' groups
+		
 */
 function list(req, params, callback) {
-	//TODO
+	var paramErrors = api_validate.validate(params, {
+		myrole: { inrange: [ 'any', 'member', 'admin', 'owner' ] },
+		sort: { inrange: [ 'name', 'role' ] }
+	});
+
+	//set default values
+	if (!params.myrole) params.myrole = 'any';
+	if (!params.sort) params.sort = 'role';
+
+	if (!req.session.user) {
+		//make sure there is an auth'd user
+		return callback(api_errors.noAuth(req.session.user, params));
+	}
+	else if (paramErrors) {
+		//something wrong with the given parameters
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+	}
+	else {
+		//TODO
+	}
 }
 exports.list = list;
 

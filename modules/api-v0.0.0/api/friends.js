@@ -47,6 +47,9 @@ exports.configure = configure;
 		maxcount (optional, default to the max of 50) - the max number of friends to return
 		(NOT YET) sort (optional, defaults to 'username') - how the results should be sorted
 			'username', 'name', 'length'
+	
+	NOTE: sort is not not yet an option, currently doesn't sort globally, but each
+		batch of results is sorted by full name
 
 	Note that this function does adjust the returned input parameters to the maxcount
 		and offset that were actually used. If maxcount was not given, it will be returned
