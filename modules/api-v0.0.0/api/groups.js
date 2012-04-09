@@ -104,6 +104,7 @@ function create(req, params, callback) {
 						}
 						else {
 							//there is exactly one entry, return it as success
+							//TODO need to ensure that results.length == 1
 							var group = dbToApiGroup(results[0]);
 							return callback(api_utils.wrapResponse({
 								params: params,
