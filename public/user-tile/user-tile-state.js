@@ -22,9 +22,6 @@
 				jelem.setTileState(init_state);
 			}
 			else {
-				//hide all the fields and figure out the actual tile state via AJAX call
-				jelem.setTileState('');
-
 				//get the tile state via AJAX
 				var username = jelem.attr(tile_username_attr);
 				$.get('/api/friends/state', { username: username }, function (data) {
@@ -40,9 +37,20 @@
 
 	//sets the tile state
 	$.fn.setTileState = function(state) {
+		var jtile = this;
+
 		if (accepted_states[state]) {
-			this.find('[' + tile_state_attr + ']').hide();
-			this.find('[' + tile_state_attr + '="' + state + '"]').show();
+			var allElems = jtile.find('[' + tile_state_attr + ']');
+			var inElems = jtile.find('[' + tile_state_attr + '="' + state + '"]');
+			var outElems = allElems.not(inElems);
+
+			//fade in/out times
+			var fadeOutTime = 800;
+			var fadeInTime = 400;
+
+			//fade out and fade in the buttons
+			outElems.stop().fadeOut(fadeOutTime);
+			inElems.stop().delay(fadeOutTime).fadeIn(fadeInTime);
 		}
 	}
 
