@@ -47,10 +47,16 @@
 			//fade in/out times
 			var fadeOutTime = 800;
 			var fadeInTime = 400;
+			var fastFadeInTime = fadeInTime / 2;
 
 			//fade out and fade in the buttons
-			outElems.stop().fadeOut(fadeOutTime);
-			inElems.stop().delay(fadeOutTime).fadeIn(fadeInTime);
+			if (outElems.length == 0) {
+				outElems.stop().fadeOut(fadeOutTime);
+				inElems.stop().delay(fadeOutTime).fadeIn(fadeInTime);
+			}
+			else {
+				inElems.stop().fadeIn(fastFadeInTime);
+			}
 		}
 	}
 
