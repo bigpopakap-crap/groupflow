@@ -6,8 +6,8 @@ var auth = require('./api/auth.js');
 var accounts = require('./api/accounts.js');
 var users = require('./api/users.js');
 var friends = require('./api/friends.js');
-var notifications = require('./api/notifications.js');
 var groups = require('./api/groups.js');
+var notifications = require('./api/notifications.js');
 
 //function to configure the app
 function configure(app) {
@@ -18,15 +18,15 @@ function configure(app) {
 	accounts.configure(app, url_prefix);
 	users.configure(app, url_prefix);
 	friends.configure(app, url_prefix);
-	notifications.configure(app, url_prefix);
 	groups.configure(app, url_prefix);
+	notifications.configure(app, url_prefix);
 	require('./api/devtools.js').configure(app, url_prefix);
 
 	//if the requested path wasn't handled, return a bad-path error
-	app.get(url_prefix, api_utils.restHandler(uncaughtApiCall));
-	app.post(url_prefix, api_utils.restHandler(uncaughtApiCall));
-	app.get(url_prefix + '/*', api_utils.restHandler(uncaughtApiCall));
-	app.post(url_prefix + '/*', api_utils.restHandler(uncaughtApiCall));
+	api_utils.restHandler(app, 'get', url_prefix, uncaughtApiCall);
+	api_utils.restHandler(app, 'post', url_prefix, uncaughtApiCall);
+	api_utils.restHandler(app, 'get', url_prefix + '/*', uncaughtApiCall);
+	api_utils.restHandler(app, 'post', url_prefix + '/*', uncaughtApiCall);
 }
 exports.configure = configure;
 
@@ -40,6 +40,6 @@ exports.auth = auth;
 exports.accounts = accounts;
 exports.users = users;
 exports.friends = friends;
-exports.notifications = notifications;
 exports.groups = groups;
+exports.notifications = notifications;
 

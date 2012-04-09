@@ -35,9 +35,9 @@ function configure(app, url_prefix) {
 	requests.configure(app, url_prefix);
 
 	//actions in this api domain
-	app.get(url_prefix + '/list', api_utils.restHandler(list));
-	app.get(url_prefix + '/is', api_utils.restHandler(is));
-	app.get(url_prefix + '/state', api_utils.restHandler(state));
+	api_utils.restHandler(app, 'get', url_prefix + '/list', list);
+	api_utils.restHandler(app, 'get', url_prefix + '/is', is);
+	api_utils.restHandler(app, 'get', url_prefix + '/state', state);
 }
 exports.configure = configure;
 

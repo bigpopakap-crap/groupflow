@@ -43,9 +43,9 @@ function configure(app, url_prefix) {
 	picture.configure(app, url_prefix);
 	
 	//configure this api domain
-	app.get(url_prefix + '/get', api_utils.restHandler(get));
-	app.get(url_prefix + '/me', api_utils.restHandler(me));
-	app.get(url_prefix + '/search', api_utils.restHandler(search));
+	api_utils.restHandler(app, 'get', url_prefix + '/get', get);
+	api_utils.restHandler(app, 'get', url_prefix + '/me', me);
+	api_utils.restHandler(app, 'get', url_prefix + '/search', search);
 }
 exports.configure = configure;
 

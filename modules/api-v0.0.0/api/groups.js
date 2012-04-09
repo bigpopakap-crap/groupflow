@@ -34,8 +34,8 @@ function configure(app, url_prefix) {
 	//TODO
 	
 	//configure this api domain
-	app.post(url_prefix + '/create', api_utils.restHandler(create));
-	app.get(url_prefix + '/list', api_utils.restHandler(list));
+	api_utils.restHandler(app, 'post', url_prefix + '/create', create);
+	api_utils.restHandler(app, 'get', url_prefix + '/list', list);
 	//TODO
 }
 exports.configure = configure;

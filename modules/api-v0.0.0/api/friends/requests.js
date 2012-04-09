@@ -36,14 +36,14 @@ function configure(app, url_prefix) {
 	url_prefix += '/requests';
 
 	//configure this api domain
-	app.post(url_prefix + '/create', api_utils.restHandler(create));
-	app.get(url_prefix + '/listin', api_utils.restHandler(listin));
-	app.get(url_prefix + '/listout', api_utils.restHandler(listout));
-	app.get(url_prefix + '/isin', api_utils.restHandler(isin));
-	app.get(url_prefix + '/isout', api_utils.restHandler(isout));
-	app.get(url_prefix + '/accept', api_utils.restHandler(accept));
-	app.get(url_prefix + '/reject', api_utils.restHandler(reject));
-	app.get(url_prefix + '/cancel', api_utils.restHandler(cancel));
+	api_utils.restHandler(app, 'post', url_prefix + '/create', create);
+	api_utils.restHandler(app, 'get', url_prefix + '/listin', listin);
+	api_utils.restHandler(app, 'get', url_prefix + '/listout', listout);
+	api_utils.restHandler(app, 'get', url_prefix + '/isin', isin);
+	api_utils.restHandler(app, 'get', url_prefix + '/isout', isout);
+	api_utils.restHandler(app, 'get', url_prefix + '/accept', accept);
+	api_utils.restHandler(app, 'get', url_prefix + '/reject', reject);
+	api_utils.restHandler(app, 'get', url_prefix + '/cancel', cancel);
 }
 exports.configure = configure;
 

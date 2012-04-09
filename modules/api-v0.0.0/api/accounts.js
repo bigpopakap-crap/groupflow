@@ -29,9 +29,9 @@ function configure(app, url_prefix) {
 	url_prefix += '/accounts';
 
 	//configure the actions in this api domain
-	app.get(url_prefix + '/supported', api_utils.restHandler(supported));
-	app.post(url_prefix + '/linkfacebook', api_utils.restHandler(linkfacebook));
-	app.post(url_prefix + '/unlink', api_utils.restHandler(unlink));
+	api_utils.restHandler(app, 'get', url_prefix + '/supported', supported);
+	api_utils.restHandler(app, 'post', url_prefix + '/linkfacebook', linkfacebook);
+	api_utils.restHandler(app, 'post', url_prefix + '/unlink', unlink);
 }
 exports.configure = configure;
 

@@ -22,8 +22,8 @@ function configure(app, url_prefix) {
 	url_prefix += '/notifications';
 
 	//configure this api domain
-	app.get(url_prefix + '/num', api_utils.restHandler(num));
-	app.get(url_prefix + '/list', api_utils.restHandler(list));
+	api_utils.restHandler(app, 'get', url_prefix + '/num', num);
+	api_utils.restHandler(app, 'get', url_prefix + '/list', list);
 }
 exports.configure = configure;
 

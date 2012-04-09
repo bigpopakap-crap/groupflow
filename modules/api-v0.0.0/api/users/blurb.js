@@ -23,7 +23,7 @@ function configure(app, url_prefix) {
 	url_prefix += '/blurb';
 
 	//configure this domain
-	app.post(url_prefix + '/set', api_utils.restHandler(set));
+	api_utils.restHandler(app, 'post', url_prefix + '/set', set);
 }
 exports.configure = configure;
 

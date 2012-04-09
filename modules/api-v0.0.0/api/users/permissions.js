@@ -23,7 +23,7 @@ function configure(app, url_prefix) {
 	url_prefix += '/permissions';
 
 	//configure get function
-	app.get(url_prefix + '/get', api_utils.restHandler(get));
+	api_utils.restHandler(app, 'get', url_prefix + '/get', get);
 }
 exports.configure = configure;
 

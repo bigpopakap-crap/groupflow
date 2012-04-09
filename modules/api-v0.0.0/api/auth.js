@@ -36,9 +36,9 @@ function configure(app, url_prefix) {
 	facebook.configure(app, url_prefix);
 
 	//configure the actions in this domain
-	app.post(url_prefix + '/register', api_utils.restHandler(register));
-	app.post(url_prefix + '/login', api_utils.restHandler(login));
-	app.get(url_prefix + '/logout', api_utils.restHandler(logout));
+	api_utils.restHandler(app, 'post', url_prefix + '/register', register);
+	api_utils.restHandler(app, 'post', url_prefix + '/login', login);
+	api_utils.restHandler(app, 'get', url_prefix + '/logout', logout);
 }
 exports.configure = configure;
 

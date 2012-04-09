@@ -1,20 +1,41 @@
 var gen_utils = require('../../../gen-utils.js');
 
-/* converts an internal api function to one accessible from a GET or POST
+/* set an internal api function to one accessible from a GET or POST
 
 	handler(req, params, callback)
 		req - the request object
 		params - the REST params passed to the function
 		callback - takes the JSON response
 */
-exports.restHandler = function(handler) {
-	return function(req, res) {
-		handler(req, gen_utils.getParams(req), function(json) {
-			res.writeHead(200, {'Content-Type': 'text/plain'});
-			res.write(JSON.stringify(json, null, 4));
-			res.end();
-		});
+exports.restHandler = function(app, method, path, handler) {
+	//make the method uppercase
+	method = method.toUpperCase();
+
+	//print out the path if there is one
+	if (method && path) console.log('API: ' + method + (method == 'GET' ? '  ' : ' ') + path);
+
+	//get the correct function to set the handler
+	var setfun;
+	switch (method) {
+		case 'GET': setfun = app.get;
+					break;
+		case 'POST': setfun = app.post;
+					break;
+		default: console.log('setfun not set in api-utils.restHandler!');
+					return;
 	}
+
+	setfun.call(
+		app,
+		path,
+		function(req, res) {
+			handler(req, gen_utils.getParams(req), function(json) {
+				res.writeHead(200, {'Content-Type': 'text/plain'});
+				res.write(JSON.stringify(json, null, 4));
+				res.end();
+			});
+		}
+	)
 }
 
 /* wraps the response data into the correct structure
