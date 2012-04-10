@@ -33,7 +33,7 @@ exports.friendRequestAlreadySent = function (user, params, username) {
 }
 
 /* no such group warning */
-exports.noSuchUser = function (user, params, groupid) {
+exports.noSuchGroup = function (user, params, groupid) {
 	return wrapWarning(params, {
 		statusCode: 404,
 		errorCode: 'NO_SUCH_GROUP',

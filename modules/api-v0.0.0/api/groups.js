@@ -46,7 +46,7 @@ exports.configure = configure;
 		groupid (required) - a string id of the group to fetch
 
 	Cases:
-		error: database error, missing groupid param
+		error: database error, missing groupid param, no auth
 		warning: no such group
 		success: the group object
 
@@ -58,7 +58,26 @@ exports.configure = configure;
 	}
 */
 function get(req, params, callback) {
-	//TODO implements
+	var paramErrors = api_validate.validate(params, {
+		groupid: { required: true }
+	});
+
+	if (!req.session.user) {
+		//make sure there is an auth'd user
+		return callback(api_errors.noAuth(req.session.user, params));
+	}
+	else if (paramErrors) {
+		//something wrong with the given parameters
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+	}
+	else {
+		//get the group if the user is in it
+		db.query(
+			'select g.* from (Groups g, GroupMembers m) where m.username=? and m.groupid=? and m.groupid=g.groupid',
+			[ req.session.user.username, params.groupid ],
+			getGroupCallback(req, params, callback)
+		);
+	}
 }
 exports.get = get;
 
