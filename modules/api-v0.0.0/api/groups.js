@@ -7,7 +7,7 @@
 		list - lists the group the auth'd user is a part of
 	
 	Internal-only functions:
-		(none) - todo
+		getarr - converts an array of usernames of groups to an array of group objects
 
 	Directly touches database tables:
 		Groups (read/write)
@@ -34,15 +34,71 @@ function configure(app, url_prefix) {
 	//TODO
 	
 	//configure this api domain
+	api_utils.restHandler(app, 'get', url_prefix + '/get', get);
 	api_utils.restHandler(app, 'post', url_prefix + '/create', create);
 	api_utils.restHandler(app, 'get', url_prefix + '/list', list);
 	//TODO
 }
 exports.configure = configure;
 
-//TODO get()
+/*
+	Inputs
+		groupid (required) - a string id of the group to fetch
 
-//TODO getarr()
+	Cases:
+		error: database error, missing groupid param
+		warning: no such group
+		success: the group object
+
+	the group object looks like:
+	{
+		groupid: (str),
+		name: (str),
+		description: (str)
+	}
+*/
+function get(req, params, callback) {
+	//TODO implements
+}
+exports.get = get;
+
+/*
+	Inputs:
+		groupids: an array of group ids
+
+	Note that if any of these group ids doesn't exist, it will just silently
+		be dropped from the array
+
+	Cases:
+		Error: database error, no groupids param
+		Success: the array of group objects
+*/
+function getarr(req, params, callback) {
+	//make sure the groupid is there
+	var paramErrors = api_validate.validate(params, {
+		groupids: { required: true, isarray: true }
+	});
+
+	//TODO convert groupids to array (what if it is an array already?)
+
+	//check errors on the input
+	if (paramErrors) {
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+	}
+	//if array is empty, return an empty array
+	else if (params.groupids.length == 0) {
+		return callback(api_utils.wrapResponse({
+			params: params,
+			success: []
+		}));
+	}
+	else {
+		dbReqGroupObjList(req, params, callback,
+						  ARR_QUERY_STRING(params.groupids),
+						  params.groupids.concat(params.groupids));
+	}
+}
+exports.getarr = getarr;
 
 /*
 	Inputs:
@@ -54,14 +110,6 @@ exports.configure = configure;
 	Cases:
 		error: database error or input params error
 		success: the group object
-
-	Group object looks like:
-	{
-		groupid: (str),
-		name: (str),
-		description: (str)
-	}
-	
 */
 function create(req, params, callback) {
 	var paramErrors = api_validate.validate(params, {
@@ -72,6 +120,7 @@ function create(req, params, callback) {
 	});
 
 	//convert the booleans to actual booleans
+	//TODO what if they are booleans already?
 	params.memberpost = (params.memberpost === 'true');
 	params.memberinvite = (params.memberinvite === 'true');
 
@@ -251,6 +300,47 @@ function getGroupCallback(req, params, callback) {
 			}));
 		}
 	}
+}
+
+function ARR_QUERY_STRING(groupids) {
+	var questions = '';
+	for (i = 0; i < groupids.length; i++) {
+		if (i == 0) questions += '?';
+		else questions += ',?';
+	}
+
+	return 'select * ' +
+			'from Groups ' +
+			'where groupid in (' + questions + ') ' +
+			'order by field(groupid, ' + questions + ')';
+}
+
+/*
+	Makes a database call for a list of user objects
+		querystr - the string of SQL to use
+		queryparams - the array of params in the SQL query
+*/
+function dbReqGroupObjList(req, params, callback, querystr, queryparams) {
+	db.query(
+		querystr,
+		queryparams,
+		function(err, results) {
+			if (err) {
+				//return a database error
+				return callback(api_errors.database(req.session.user, params, err));
+			}
+			else {
+				//map the returned objects to api user objects and return them
+				results = results.map(function(user) {
+					return dbToApiGroup(user);
+				});
+				return callback(api_utils.wrapResponse({
+					params: params,
+					success: results
+				}));
+			}
+		}
+	);
 }
 
 //converts a row of the Groups table to a JSON object

@@ -99,27 +99,26 @@ exports.get = get;
 
 	Cases:
 		Error: database error, no usernames param
-		Success: the array of userobjects
+		Success: the array of user objects
 */
 function getarr(req, params, callback) {
 	//make sure the username is there
 	var paramErrors = api_validate.validate(params, {
-		usernames: { required: true }
+		usernames: { required: true, isarray: true }
 	});
 
-	//TODO don't assume usernames parameter is an array, check for that
-
-	//if array is empty, just return an empty array
-	if (params.usernames.length == 0) {
-		return callback(api_utils.wrapResponse({
-			params: params,
-			success: []
-		}));
-	}
+	//TODO convert usernames to array (what if it is an array already?)
 
 	//check for errors on the input
 	if (paramErrors) {
 		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+	}
+	//if array is empty, just return an empty array
+	else if (params.usernames.length == 0) {
+		return callback(api_utils.wrapResponse({
+			params: params,
+			success: []
+		}));
 	}
 	else {
 		dbReqUserObjList(req, params, callback,
@@ -304,8 +303,8 @@ function getUserCallback(req, params, callback) {
 
 /*
 	Makes a database call for a list of user objects
-	querystr - the string of SQL to use
-	queryparams - the array of params in the SQL query
+		querystr - the string of SQL to use
+		queryparams - the array of params in the SQL query
 */
 function dbReqUserObjList(req, params, callback, querystr, queryparams) {
 	db.query(

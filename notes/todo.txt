@@ -7,7 +7,10 @@ FEATURES FOR WEB APPS
 - interface for group posts
 - load more results in friends list and friend requests list
 - create back button image in /public/images/icons/back.png
-- reformat the "Check availability" button
+
+- TODO problem: when checking that an input parameter is a boolean or array,
+			the values should be converted somewhere (because they could be
+			strings representing those types, or values of those types)
 
 FEATURES AFTER WEB APPS
 - unfriending people

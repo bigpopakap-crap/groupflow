@@ -14,6 +14,7 @@
 		maxlen (int) - enforces max # of characters	(0 means that no max-length is enforced. the "required" constraint will catch that case)
 		isnum (bool) - requires that the field can be converted to a number
 		isbool (bool) - requires that the field can be converted to a boolean ('true' or 'false')
+		isarray (bool) - requires that the field is an array
 		isalpha (bool) - requires that the field only contains a-zA-Z and spaces
 		isword (bool) - requires that the field consists of only word characters (letters, nums, and _ )
 		isname (bool) - requires that the field only has a-zA-Z, spaces, dashes and periods
@@ -48,6 +49,7 @@ exports.validate = function(params, constraints) {
 		var maxlen = constraints[field].maxlen;
 		var isnum = constraints[field].isnum;
 		var isbool = constraints[field].isbool;
+		var isarray = constraints[field].isarray;
 		var isalpha = constraints[field].isalpha;
 		var isword = constraints[field].isword;
 		var isname = constraints[field].isname;
@@ -91,6 +93,10 @@ exports.validate = function(params, constraints) {
 		else if (isbool && !isBool(value))
 			//not a boolean
 			paramErrors[field] = not_bool_error(field);
+
+		else if (isarray && !isArray(value))
+			//not an array
+			paramErrors[field] = not_array_error(field);
 
 		else if (isalpha && !isAlpha(value))
 			//not only letters and spaces
@@ -171,7 +177,13 @@ function isNumber(str) {
 }
 
 function isBool(str) {
+	//TODO check if it is actually a boolean or a string representing a boolean
 	return (typeof str != undefined) && ((str == 'true') || (str == 'false'));
+}
+
+function isArray(str) {
+	//TODO check if it is actually an array or a string representing an array
+	return true;
 }
 
 //helper to determine if the words has only spaces and letters
@@ -309,6 +321,14 @@ function not_bool_error(field) {
 		devMsg: 'The ' + field + ' param must represent a boolean (must be either' +
 				'the string "true" or the string "false")',
 		userMsg: 'Please choose an option'
+	}
+}
+
+function not_array_error(field) {
+	return {
+		devMsg: 'The ' + field + ' param must represent a boolean (must be either' +
+				'the string "true" or the string "false")',
+		userMsg: 'An error occurred with this field, please contact the application developer'
 	}
 }
 
