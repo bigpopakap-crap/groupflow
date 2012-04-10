@@ -40,6 +40,10 @@ function configure(app, url_prefix) {
 }
 exports.configure = configure;
 
+//TODO get()
+
+//TODO getarr()
+
 /*
 	Inputs:
 		name - string, required, no weird chars, min 4 chars, max 24 chars
@@ -102,21 +106,7 @@ function create(req, params, callback) {
 						{ query: 'select * from Groups where groupid=?',
 						  params: [ uuid ] }
 					],
-					function (err, results) {
-						if (err) {
-							//database error
-							return callback(api_errors.database(req.session.user, params, err));
-						}
-						else {
-							//there is exactly one entry, return it as success
-							//TODO need to ensure that results.length == 1
-							var group = dbToApiGroup(results[0]);
-							return callback(api_utils.wrapResponse({
-								params: params,
-								success: group
-							}));
-						}
-					}
+					getGroupCallback(req, params, callback)
 				);
 			}
 		});
@@ -128,20 +118,33 @@ exports.create = create;
 	Inputs:
 		myrole - (optional) one of 'any', 'member', 'admin', 'owner'
 				 defaults to 'any'
-		sort - (optional) either 'name' or 'role'
-				defaults to 'role'
-				if 'role', shows 'owner' groups, then 'admin' groups, then 'member' groups
+		offset (optional, default 0) - the offset of the list of friends
+		maxcount (optional, default to the max of 50) - the max number of friends to return
+
+	Note: sorts results by the users role. First 'owner', then 'admin', then 'member'
+
+	Note that this function does adjust the returned input parameters to the maxcount
+		and offset that were actually used. If maxcount was not given, it will be returned
+		as set to 50. If one of them is negative, it will return as set to 0
 		
 */
 function list(req, params, callback) {
 	var paramErrors = api_validate.validate(params, {
 		myrole: { inrange: [ 'any', 'member', 'admin', 'owner' ] },
-		sort: { inrange: [ 'name', 'role' ] }
+		offset: { isnum: true },
+		maxcount: { isnum: true }
 	});
 
 	//set default values
 	if (!params.myrole) params.myrole = 'any';
-	if (!params.sort) params.sort = 'role';
+
+	//correct the maxcount and offset
+	if (typeof params.offset == 'undefined') params.offset = 0;			//default values
+	if (typeof params.maxcount == 'undefined') params.maxcount = 50;
+	params.offset = parseInt(params.offset);							//convert to ints
+	params.maxcount = parseInt(params.maxcount);
+	params.offset = Math.max(params.offset, 0);							//offset is at least 0
+	params.maxcount = Math.min(Math.max(params.maxcount, 0), 50);		//maxcount between 0 and 50
 
 	if (!req.session.user) {
 		//make sure there is an auth'd user
@@ -152,11 +155,105 @@ function list(req, params, callback) {
 		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
 	}
 	else {
-		//TODO
+		//set the query string based on the params.myrole parameter
+		var querystr = 'select groupid from GroupMembers where username=?';
+		var queryparams = [ req.session.user.username ];
+		switch (params.myrole) {
+			case 'member': 	querystr += ' and status=?';
+							queryparams.push(params.myrole);
+							break;
+			case 'admin':	querystr +=  ' and status=?';
+							queryparams.push(params.myrole);
+							break;
+			case 'owner':	querystr += ' and status=?';
+							queryparams.push(params.myrole);
+							break;
+			case 'any': 	//do nothing, fall through to default
+			default:		break; //no extra filters needed
+		}
+
+		//do the sorting
+		querystr += ' order by field(status, ?, ?, ?)';
+		queryparams.push('owner');
+		queryparams.push('admin');
+		queryparams.push('member');
+
+		//do the limiting
+		querystr += ' limit ?, ?';
+		queryparams.push(params.offset);
+		queryparams.push(params.maxcount);
+
+		//make the query!
+		db.query(
+			querystr,
+			queryparams,
+			function (err, results) {
+				if (err) {
+					//return a database error
+					return callback(api_errors.database(req.session.user, params, err));
+				}
+				else {
+					//create an array of just the group id's
+					var groups = results.map(function(entry) {
+						return entry.groupid;
+					});
+
+					//call the getarr function on that array
+					getarr(req, { groupids: groups }, function (data) {
+						var response = data.response;
+
+						if (response.error) {
+							//relay the error
+							return callback(data);
+						}
+						else if (response.success) {
+							//successful! return the array
+							return callback(api_utils.wrapResponse({
+								params: params,
+								success: response.success
+							}));
+						}
+						else {
+							//some weird case - return internal server error and log it
+							gen_utils.err_log('weird case: uyyyt92yg0058$2z');
+							return callback(api_errors.internalServer(req.session.user, params));
+						}
+					});
+				}
+			}
+		);
 	}
 }
 exports.list = list;
 
+//handles when the database returns the group data
+function getGroupCallback(req, params, callback) {
+	return function (err, results) {
+		if (err) {
+			//database error
+			return callback(api_errors.database(req.session.user, params, err));
+		}
+		else if (results.length < 1) {
+			//return a warning that the group doesn't exist
+			return callback(api_warnings.noSuchGroup(req.session.user, params, params.groupid));
+		}
+		else if (results.length > 1) {
+			//this shouldn't happen, return an internal server error
+			gen_utils.err_log('Group ID ' + params.groupid + ' is not unique');
+			return callback(api_errors.internalServer(req.session.user, params));
+		}
+		else {
+			//there is exactly one entry, return it as success
+			var group = dbToApiGroup(results[0]);
+			return callback(api_utils.wrapResponse({
+				params: params,
+				success: group
+			}));
+		}
+	}
+}
+
+//converts a row of the Groups table to a JSON object
 function dbToApiGroup(group) {
 	return {
 		groupid: group.groupid,

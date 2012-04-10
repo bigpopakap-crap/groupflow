@@ -287,14 +287,9 @@ function getUserCallback(req, params, callback) {
 			return callback(api_warnings.noSuchUser(req.session.user, params, params.username));
 		}
 		else if (results.length > 1) {
-			//return the first element of the array to the caller, but log an error
-			//TODO probably don't want to return the user to the caller
+			//this shouldn't happen, return an internal server error
 			gen_utils.err_log('Username ' + params.username + ' is not unique');
-			var user = dbToApiUser(results[0]);
-			return callback(api_utils.wrapResponse({
-				params: params,
-				success: user
-			}));
+			return callback(api_errors.internalServer(req.session.user, params));
 		}
 		else {
 			//return the first element of the array to the caller

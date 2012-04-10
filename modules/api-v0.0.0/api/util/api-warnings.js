@@ -8,7 +8,7 @@ function wrapWarning(params, warning) {
 	});
 }
 
-/* an error when the api call did not match any valid paths */
+/* no such user warning */
 exports.noSuchUser = function (user, params, username) {
 	return wrapWarning(params, {
 		statusCode: 404,
@@ -27,6 +27,18 @@ exports.friendRequestAlreadySent = function (user, params, username) {
 		errorCode: 'FRIEND_REQUEST_ALREADY_SENT',
 		devMsg: 'The authenticated user already has a friend request pending with ' + username,
 		userMsg: 'You already have a friend request pending with ' + username,
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
+/* no such group warning */
+exports.noSuchUser = function (user, params, groupid) {
+	return wrapWarning(params, {
+		statusCode: 404,
+		errorCode: 'NO_SUCH_GROUP',
+		devMsg: 'There is no groupd with the id ' + groupid,
+		userMsg: 'No group with id ' + groupid + ' could be found',
 		paramErrors: {},
 		nestedError: null
 	});

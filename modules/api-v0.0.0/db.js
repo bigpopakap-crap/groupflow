@@ -11,6 +11,7 @@ require('mysql-queues')(client, (process.env.NODE_ENV === 'testing'));
 
 //does the same thing as the client query
 function query(querystr, params, callback) {
+	console.log('SQL: ' + querystr + ' :: [' + params + ']');
 	return client.query(querystr, params, callback);
 }
 exports.query = query;
