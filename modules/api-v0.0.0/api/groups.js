@@ -3,6 +3,7 @@
 		/api/groups, api.groups
 
 	REST functions:
+		get - gets a group object from its id
 		create - creates a new group
 		list - lists the group the auth'd user is a part of
 	
@@ -24,13 +25,17 @@ var api_validate = require('./util/api-validate.js');
 var db = require('../db.js');
 
 //subdomain modules
-//TODO
+var invitations = require('./groups/invitations.js');
+var members = require('./groups/members.js');
+//TODO add more
 
 //function to configure the app
 function configure(app, url_prefix) {
 	url_prefix += '/groups';	
 
 	//configure each of the domains
+	invitations.configure(app, url_prefix);
+	members.configure(app, url_prefix);
 	//TODO
 	
 	//configure this api domain
@@ -372,5 +377,7 @@ function dbToApiGroup(group) {
 }
 
 //subdomains of the api
+exports.invitations = invitations;
+exports.members = members;
 //TODO
 
