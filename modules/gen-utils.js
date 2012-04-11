@@ -23,6 +23,7 @@ function getParams(req) {
 	else if (!req.method) {
 		console.log('getParams() called on request with no method: ');
 		console.log(req);
+		return {};
 	}
 	else if (req.method == 'GET') return req.query;
 	else if (req.method == 'POST') return req.body;

@@ -141,6 +141,18 @@ exports.noSuchUsername = function(user, params, username) {
 	});
 }
 
+/* no such group error */
+exports.noSuchGroup = function (user, params, groupid) {
+	return wrapError(params, {
+		statusCode: 404,
+		errorCode: 'NO_SUCH_GROUP',
+		devMsg: 'There is no groupd with the id ' + groupid,
+		userMsg: 'No group with id ' + groupid + ' could be found',
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
 /*  users are already friends
 
 	if username2 is a falsy value, then it is assumed to be the auth'd user

@@ -85,7 +85,7 @@ function register(req, params, callback) {
 	else {
 		//hash the password and make sure its not too long for the database
 		params.password = hashPassword(params.password);
-		if (params.password.length > 80) { //TODO: make this 80 into a constant?
+		if (params.password.length > 80) {
 			gen_utils.err_log('hashed password was too long for the database!');
 			return callback(api_errors.internalServer(req.session.user, params));
 		}
