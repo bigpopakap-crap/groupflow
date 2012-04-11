@@ -41,9 +41,9 @@ function configure(app, url_prefix) {
 	api_utils.restHandler(app, 'get', url_prefix + '/listout', listout);
 	api_utils.restHandler(app, 'get', url_prefix + '/isin', isin);
 	api_utils.restHandler(app, 'get', url_prefix + '/isout', isout);
-	api_utils.restHandler(app, 'get', url_prefix + '/accept', accept);
-	api_utils.restHandler(app, 'get', url_prefix + '/reject', reject);
-	api_utils.restHandler(app, 'get', url_prefix + '/cancel', cancel);
+	api_utils.restHandler(app, 'post', url_prefix + '/accept', accept);
+	api_utils.restHandler(app, 'post', url_prefix + '/reject', reject);
+	api_utils.restHandler(app, 'post', url_prefix + '/cancel', cancel);
 }
 exports.configure = configure;
 

@@ -35,14 +35,14 @@
 				<p data-user-tile-state="friends" style="display: none">(friend)</p>
 
 				<!-- incoming friend state: accept request -->
-				<form class="action form-ajax" method="get" data-user-tile-state="incoming" style="display: none"
+				<form class="action form-ajax" method="post" data-user-tile-state="incoming" style="display: none"
 					  action="/api/friends/requests/accept" data-gf-ajax-form-action="accept-request">
 					<input type="hidden" name="username" value="<%= userObj.username %>">
 					<input type="submit" class="btn btn-primary" value="Accept">
 				</form>
 
 				<!-- incoming friend state: reject request -->
-				<form class="action form-ajax" method="get" data-user-tile-state="incoming" style="display: none"
+				<form class="action form-ajax" method="post" data-user-tile-state="incoming" style="display: none"
 					  action="/api/friends/requests/reject" data-gf-ajax-form-action="reject-request">
 					<input type="hidden" name="username" value="<%= userObj.username %>">
 					<input type="submit" class="btn" value="Decline">
@@ -56,7 +56,7 @@
 				</form>
 
 				<!-- outgoing friend state: cancel request -->
-				<form class="action form-ajax" method="get" data-user-tile-state="outgoing" style="display: none"
+				<form class="action form-ajax" method="post" data-user-tile-state="outgoing" style="display: none"
 					  action="/api/friends/requests/cancel" data-gf-ajax-form-action="cancel-request">
 					<input type="hidden" name="username" value="<%= userObj.username %>">
 					<input type="submit" class="btn" value="Cancel request">
