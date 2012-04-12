@@ -27,7 +27,8 @@ function configure(app, url_prefix) {
 	url_prefix += '/permissions';
 
 	//configure this api domain
-	//TODO
+	api_utils.restHandler(app, 'get', url_prefix + '/my', my);
+	api_utils.restHandler(app, 'get', url_prefix + '/list', list);
 }
 exports.configure = configure;
 
