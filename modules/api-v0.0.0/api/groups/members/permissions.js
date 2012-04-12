@@ -3,16 +3,19 @@
 		/api/groups/members/permissions, api.groups.members.permissions
 
 	REST functions:
-		//TODO
+		my - gets the auth'd users permissions for a group they are in
+		list - gets a list of users and their permissions for a group that
+				the auth'd user is an admin or owner of
 	
 	Internal-only functions:
-		//TODO
+		none
 
 	Directly touches database tables:
-		//TODO
+		GroupMembers (read)
+		GroupFlags (read)
 
 	Directly touches session variables:
-		//TODO
+		req.session.user
 */
 var api_utils = require('../../util/api-utils.js');
 var api_errors = require('../../util/api-errors.js');
@@ -27,4 +30,14 @@ function configure(app, url_prefix) {
 	//TODO
 }
 exports.configure = configure;
+
+function my(req, params, callback) {
+	//TODO
+}
+exports.my = my;
+
+function list(req, params, callback) {
+	//TODO
+}
+exports.list = list;
 

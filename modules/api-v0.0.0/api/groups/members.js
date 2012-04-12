@@ -103,9 +103,9 @@ function list(req, params, callback) {
 				var filterparams = (params.status != 'any' ? [ params.status ] : []);
 
 				db.query(
-					'select username from GroupMembers where groupid=? and username=?' + filterstr +
+					'select username from GroupMembers where groupid=?' + filterstr +
 						' order by field(status, ?, ?, ?)',
-					[ params.groupid, req.session.user.username ].concat(filterparams, ['owner', 'admin', 'member']),
+					[ params.groupid ].concat(filterparams, ['owner', 'admin', 'member']),
 					function (err, results) {
 						if (err) {
 							//return a database error
