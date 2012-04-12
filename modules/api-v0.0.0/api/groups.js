@@ -186,12 +186,12 @@ exports.create = create;
 
 /*
 	Inputs:
-		myrole - (optional) one of 'any', 'member', 'admin', 'owner'
+		mystatus - (optional) one of 'any', 'member', 'admin', 'owner'
 				 defaults to 'any'
 		offset (optional, default 0) - the offset of the list of friends
 		maxcount (optional, default to the max of 50) - the max number of friends to return
 
-	Note: sorts results by the users role. First 'owner', then 'admin', then 'member'
+	Note: sorts results by the user's status. First 'owner', then 'admin', then 'member'
 
 	Note that this function does adjust the returned input parameters to the maxcount
 		and offset that were actually used. If maxcount was not given, it will be returned
@@ -200,13 +200,13 @@ exports.create = create;
 */
 function list(req, params, callback) {
 	var paramErrors = api_validate.validate(params, {
-		myrole: { inrange: [ 'any', 'member', 'admin', 'owner' ] },
+		mystatus: { inrange: [ 'any', 'member', 'admin', 'owner' ] },
 		offset: { isnum: true },
 		maxcount: { isnum: true }
 	});
 
 	//set default values
-	if (!params.myrole) params.myrole = 'any';
+	if (!params.mystatus) params.mystatus = 'any';
 
 	//correct the maxcount and offset
 	if (typeof params.offset == 'undefined') params.offset = 0;			//default values
@@ -225,18 +225,18 @@ function list(req, params, callback) {
 		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
 	}
 	else {
-		//set the query string based on the params.myrole parameter
+		//set the query string based on the params.mystatus parameter
 		var querystr = 'select groupid from GroupMembers where username=?';
 		var queryparams = [ req.session.user.username ];
-		switch (params.myrole) {
+		switch (params.mystatus) {
 			case 'member': 	querystr += ' and status=?';
-							queryparams.push(params.myrole);
+							queryparams.push(params.mystatus);
 							break;
 			case 'admin':	querystr +=  ' and status=?';
-							queryparams.push(params.myrole);
+							queryparams.push(params.mystatus);
 							break;
 			case 'owner':	querystr += ' and status=?';
-							queryparams.push(params.myrole);
+							queryparams.push(params.mystatus);
 							break;
 			case 'any': 	//do nothing, fall through to default
 			default:		break; //no extra filters needed

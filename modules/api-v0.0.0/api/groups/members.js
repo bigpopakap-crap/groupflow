@@ -25,6 +25,7 @@ var permissions = require('./members/permissions.js');
 
 //other modules
 var groups = require('../groups.js');
+var users = require('../users.js');
 
 function configure(app, url_prefix) {
 	url_prefix += '/members';
@@ -40,11 +41,11 @@ exports.configure = configure;
 /*
 	Inputs:
 		groupid (required)
-		role (optional) - one of 'owner', 'admin', 'member'
+		status (optional) - one of 'owner', 'admin', 'member'
 		offset (optional, default 0) - the offset of the list of friends
 		maxcount (optional, default to the max of 50) - the max number of friends to return
 
-	Note: sorts results by the users role. First 'owner', then 'admin', then 'member'
+	Note: sorts results by the user's status. First 'owner', then 'admin', then 'member'
 
 	Note that this function does adjust the returned input parameters to the maxcount
 		and offset that were actually used. If maxcount was not given, it will be returned
@@ -57,13 +58,13 @@ exports.configure = configure;
 function list(req, params, callback) {
 	var paramErrors = api_validate.validate(params, {
 		groupid: { required: true },
-		role: { inrange: [ 'any', 'member', 'admin', 'owner' ] },
+		status: { inrange: [ 'any', 'member', 'admin', 'owner' ] },
 		offset: { isnum: true },
 		maxcount: { isnum: true }
 	});
 
 	//set default values
-	if (!params.role) params.role = 'any';
+	if (!params.status) params.status = 'any';
 
 	//correct the maxcount and offset
 	if (typeof params.offset == 'undefined') params.offset = 0;			//default values
@@ -96,7 +97,50 @@ function list(req, params, callback) {
 			}
 			else if (response.success) {
 				//the group exists! now get members of the group
-				//TODO
+
+				//if status isn't 'any', filter results for that status
+				var filterstr = (params.status != 'any' ? ' and status=?' : '');
+				var filterparams = (params.status != 'any' ? [ params.status ] : []);
+
+				db.query(
+					'select username from GroupMembers where groupid=? and username=?' + filterstr +
+						' order by field(status, ?, ?, ?)',
+					[ params.groupid, req.session.user.username ].concat(filterparams, ['owner', 'admin', 'member']),
+					function (err, results) {
+						if (err) {
+							//return a database error
+							return callback(api_errors.database(req.session.user, params, err));
+						}
+						else {
+							//get a list of usernames of members
+							var members = results.map(function(entry) {
+								return entry.username;
+							});
+
+							//convert this to a list of user objects
+							users.getarr(req, { usernames: members }, function (data) {
+								var response = data.response;
+
+								if (response.error) {
+									//relay the error
+									return callback(data);
+								}
+								else if (response.success) {
+									//successful! return the array
+									return callback(api_utils.wrapResponse({
+										params: params,
+										success: response.success
+									}));
+								}
+								else {
+									//some weird case - return internal server error and log it
+									gen_utils.err_log('weird case: 767629ahshsHIE');
+									return callback(api_errors.internalServer(req.session.user, params));
+								}
+							});
+						}
+					}
+				);
 			}
 			else {
 				//some weird case - return internal server error and log it
