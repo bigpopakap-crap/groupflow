@@ -107,7 +107,46 @@ function create(req, params, callback) {
 							//the user exists! yay!
 							//check whether the user is already a member of the group
 							members.is(req, params, function (data) {
-								//TODO
+								var response = data.response;
+
+								if (response.error) {
+									//relay the error
+									return callback(data);
+								}
+								else if (response.success) {
+									//the user is already part of the group, return that error
+									return callback(api_errors.alreadyInGroup(req.session.user, params, params.username, params.groupid));
+								}
+								else {
+									//try adding the new invitation, return a warning if it was already there
+									db.query(
+										'insert into GroupInvitations (requester, recipient, groupid) values (?, ?, ?)',
+										[ req.session.user.username, params.username, params.groupid ],
+										function (err, results) {
+											if (err && (err.number == 1060 || err.number == 1061 || err.number == 1062)) {
+												//warn that there was already an outgoing request
+												return callback(api_warnings.groupInvitationAlreadySent(req.session.user, params, params.username, params.groupid));
+											}
+											else if (err) {
+												//some other database error
+												return callback(api_errors.database(req.session.user, params, err));
+											}
+											else {
+												//TODO send the recipient a notification of the request
+
+												//successfully sent the request!
+												return callback(api_utils.wrapResponse({
+													params: params,
+													success: {
+														requester: req.session.user.username,
+														recipient: params.username,
+														groupid: params.groupid
+													}
+												}));
+											}
+										}
+									);
+								}
 							});
 						}
 					});

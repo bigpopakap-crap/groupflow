@@ -32,6 +32,18 @@ exports.friendRequestAlreadySent = function (user, params, username) {
 	});
 }
 
+/* group invitation was already sent to that user for that group */
+exports.groupInvitationAlreadySent = function (user, params, username, groupid) {
+	return wrapWarning(params, {
+		statusCode: 400,
+		errorCode: 'GROUP_INVITATION_ALREADY_SENT',
+		devMsg: 'The user ' + username + ' already has a group invitation pending for group ' + groupid,
+		userMsg: username + ' already has a pending invitation to the group',
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
 /* no such group warning */
 exports.noSuchGroup = function (user, params, groupid) {
 	return wrapWarning(params, {

@@ -221,6 +221,18 @@ exports.noPermission = function(user, params) {
 	});
 }
 
+/* can't send group invitation because they are already in the group */
+exports.alreadyInGroup = function(user, params, username, groupid) {
+	return wrapError(params, {
+		statusCode: 403,
+		errorCode: 'ALREADY_IN_GROUP',
+		devMsg: 'The user ' + username + ' is already in the group ' + groupid,
+		userMsg: username + ' is already a member of the group',
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
 /* a general error message with no param errors */
 exports.genError = function(user, params, message, statusCode) {
 	return wrapError(params, {
