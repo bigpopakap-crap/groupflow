@@ -1,5 +1,4 @@
 FEATURES FOR WEB APPS
-- api for group creation
 - interface for group creation
 - api for group invitations
 - interface for group invitations
@@ -13,6 +12,7 @@ FEATURES FOR WEB APPS
 			strings representing those types, or values of those types)
 
 FEATURES AFTER WEB APPS
+- admin/owner view for managing a group and its members
 - unfriending people
 - view for outgoing pending friend requests
 - notifications of various events
@@ -23,11 +23,9 @@ FEATURES AFTER WEB APPS
 - use database table for devtools permissions so they can be
 	added to any arbitrary user (by an already-trusted user)
 - feedback page
-
-. add dependencies to app doc:
-	jquery, bootstrap, shim, other scripts/styles. these can be updated when new versions come out
-. do client-validation on forms
-. log in with facebook
-
-. figure out what is a good session-store to use
-. figure out how to limit RDS access to just local machine and heroku
+- dynamic client validation
+- find a good production-level session store
+- make app documentation
+	add dependencies to app doc:
+		jquery, bootstrap, shim, other scripts/styles. these can be updated when new versions come out
+- figure out how to limit RDS access to just local machine and heroku
