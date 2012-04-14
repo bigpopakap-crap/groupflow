@@ -6,7 +6,7 @@
 		create - creates a new group invitation
 	
 	Internal-only functions:
-		(none)
+		cancelExec - cancels a group invitation without any permissions checking
 
 	Directly touches database tables:
 		(none)
@@ -132,7 +132,7 @@ function create(req, params, callback) {
 												return callback(api_errors.database(req.session.user, params, err));
 											}
 											else {
-												//TODO send the recipient a notification of the request
+												//TODO send the recipient a notification of the invitation
 
 												//successfully sent the request!
 												return callback(api_utils.wrapResponse({
@@ -165,6 +165,14 @@ function create(req, params, callback) {
 	}
 }
 exports.create = create;
+
+/*
+	TODO
+*/
+function cancelExec(req, params, callback) {
+	//TODO
+}
+exports.cancelExec = cancelExec;
 
 //export the subdomains
 exports.group = group;
