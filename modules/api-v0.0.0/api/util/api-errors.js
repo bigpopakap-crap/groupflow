@@ -209,6 +209,18 @@ exports.noSuchOutgoingFriendRequest = function(user, params, username) {
 	});
 }
 
+/* generic no permission error */
+exports.noPermission = function(user, params) {
+	return wrapError(params, {
+		statusCode: 403,
+		errorCode: 'NO_PERMISSION',
+		devMsg: 'The authenticated user does not have permission to complete this request',
+		userMsg: 'Sorry, you do not have permission to complete this action',
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
 /* a general error message with no param errors */
 exports.genError = function(user, params, message, statusCode) {
 	return wrapError(params, {

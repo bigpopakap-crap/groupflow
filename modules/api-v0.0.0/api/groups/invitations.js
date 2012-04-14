@@ -14,6 +14,15 @@
 	Directly touches session variables:
 		(none)
 */
+var api_utils = require('../util/api-utils.js');
+var api_errors = require('../util/api-errors.js');
+var api_warnings = require('../util/api-warnings.js');
+var api_validate = require('../util/api-validate.js');
+var db = require('../../db.js');
+
+//other modules
+var members = require('./members.js');
+var users = require('../users.js');
 
 //subdomain modules
 var group = require('./invitations/group.js');
@@ -34,14 +43,89 @@ exports.configure = configure;
 	Inputs:
 		username (required) - username of the user to invite
 		groupid (required) - the group to invite them to
-		status (optional, defaults to 'member') - the status you want to give them
 
 	Cases:
-	
+		Error:
+				params not passed
+				no auth'd user,
+				group doesn't exist (as seen by auth'd user),
+				auth'd user has no permission to invite,
+				username doesn't exist,
+				username already in group
+
+		Warning:
+				username already has pending invitation
+
+		Success:
+				the invitation object
+				{
+					requester: (username),
+					recipient: (username),
+					groupid: (groupid)
+				}
 */
 function create(req, params, callback) {
-	
+	var paramErrors = api_validate.validate(params, {
+		username: { required: true },
+		groupid: { required: true }
+	});
+
+	if (!req.session.user) {
+		//no auth'd user
+		return callback(api_errors.noAuth(req.session.user, params));
+	}
+	else if (paramErrors) {
+		//errors in passed parameters
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+	}
+	else {
+		//check if the group exists AND whether the auth'd user has permission to invite
+		members.permissions.me(req, params, function (data) {
+			var response = data.response;
+
+			if (response.error) {
+				//relay it, whatever it was
+				return callback(data);
+			}
+			else if (response.success) {
+				//the group exists! do they have invitation permission?
+				if (response.success.invite) {
+					//the user has permission to invite!
+					//now check if the other user exists
+					users.get(req, params, function (data) {
+						var response = data.response;
+
+						if (response.error) {
+							//some error, relay it
+							return callback(data);
+						}
+						else if (response.warning) {
+							//no such user, return that error
+							return callback(api_errors.noSuchUsername(req.session.user, params, params.username));
+						}
+						else {
+							//the user exists! yay!
+							//check whether the user is already a member of the group
+							members.is(req, params, function (data) {
+								//TODO
+							});
+						}
+					});
+				}
+				else {
+					//return the generic no permission error
+					return callback(api_errors.noPermission(req.session.user, params));
+				}
+			}
+			else {
+				//some weird case - return internal server error and log it
+				gen_utils.err_log('weird case: sibn;wah#8sh');
+				return callback(api_errors.internalServer(req.session.user, params));
+			}
+		});
+	}
 }
+exports.create = create;
 
 //export the subdomains
 exports.group = group;

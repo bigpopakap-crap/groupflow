@@ -50,8 +50,8 @@ function me(req, params, callback) {
 		return callback(api_errors.noAuth(req.session.user, params));
 	}
 	else if (paramErrors) {
-		//return param error message
-		//TODO
+		//errors in the input parameters
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
 	}
 	else {
 		//get the groupflags and make sure the user is in the group

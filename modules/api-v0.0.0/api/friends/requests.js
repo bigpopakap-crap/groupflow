@@ -73,6 +73,7 @@ function create(req, params, callback) {
 		return callback(api_errors.noAuth(req.session.user, params));
 	}
 	else if (paramErrors) {
+		//errors in the input parameters
 		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
 	}
 	else {

@@ -4,6 +4,7 @@
 
 	REST functions:
 		list - lists all the members of a group, with their statuses
+		is - determines whether a user is a member of a group or not
 	
 	Internal-only functions:
 		(none)
@@ -35,6 +36,7 @@ function configure(app, url_prefix) {
 
 	//configure this api domain
 	api_utils.restHandler(app, 'get', url_prefix + '/list', list);
+	api_utils.restHandler(app, 'get', url_prefix + '/is', is);
 }
 exports.configure = configure;
 
@@ -151,6 +153,83 @@ function list(req, params, callback) {
 	}
 }
 exports.list = list;
+
+/*
+	Inputs:
+		groupid (required)
+		username (required)
+		status (optional) - one of 'owner', 'admin', 'member'
+
+	Cases:
+		error: param errors, database, no such group (from the auth'd user's view)
+		success: a boolean indicating whether the user is part of the group
+				(will be false if the user does not exist)
+*/
+function is(req, params, callback) {
+	var paramErrors = api_validate.validate(params, {
+		username: { required: true },
+		groupid: { required: true },
+		status: { inrange: [ 'any', 'member', 'admin', 'owner' ] }
+	});
+
+	//set default values
+	if (!params.status) params.status = 'any';
+
+	if (!req.session.user) {
+		//make sure there is an auth'd user
+		return callback(api_errors.noAuth(req.session.user, params));
+	}
+	else if (paramErrors) {
+		//something wrong with the given parameters
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+	}
+	else {
+		//check that the group exists (from the user's view)
+		groups.get(req, params, function (data) {
+			var response = data.response;
+
+			if (response.error) {
+				//some error, relay it
+				return callback(data);
+			}
+			else if (response.warning) {
+				//no such group - return that error
+				return callback(api_errors.noSuchGroup(req.session.user, params, params.groupid));
+			}
+			else if (response.success) {
+				//the group exists! now check if the given user is a member
+
+				//if status isn't 'any', filter results for that status
+				var filterstr = (params.status != 'any' ? ' and status=?' : '');
+				var filterparams = (params.status != 'any' ? [ params.status ] : []);
+
+				db.query(
+					'select username from GroupMembers where groupid=? and username=?' + filterstr + ' limit 1',
+					[ params.groupid, params.username ].concat(filterparams),
+					function (err, results) {
+						if (err) {
+							//return a database error
+							return callback(api_errors.database(req.session.user, params, err));
+						}
+						else {
+							//return true if and only if the results is not empty
+							return callback(api_utils.wrapResponse({
+								params: params,
+								success: (results.length > 0 ? true : false)
+							}));
+						}
+					}
+				);
+			}
+			else {
+				//some weird case - return internal server error and log it
+				gen_utils.err_log('weird case: h29ghsaLHs');
+				return callback(api_errors.internalServer(req.session.user, params));
+			}
+		});
+	}
+}
+exports.is = is;
 
 //export the subdomains
 exports.permissions = permissions;
