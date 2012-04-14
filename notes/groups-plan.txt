@@ -27,7 +27,8 @@ PERMISSIONS
 	false		true	true		cancel (bool) - can cancel outgoing invitation?
 	true		true	false		leave (bool) - can leave group?
 	false		true	true		kick (bool) - can kick others out of group? (only those below in rank)
-	false		false	true		promote (bool) - can user make another into an admin?
+	false		true	true		promote (bool) - can user make another into an admin?
 	false		false	true		demote (bool) - can user revoke another's admin status?
 	true		true	true		viewmembers (bool) - can user see list of other members?
 	none		view	view		permissions ('none', 'view', 'edit') - can view/edit others' permissions?
+
