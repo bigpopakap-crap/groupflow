@@ -100,9 +100,9 @@ function groupStatusToPermissions(flags) {
 		case 'owner':		return {
 								receive: true,				//receive posts?
 								post: true,					//make posts?
-								delete: true,				//delete OTHER's posts (can always delete own)
+								delete: true,				//delete OTHERS' posts (can always delete own)
 								invite: true,				//invite their friends?
-								cancel: true,				//cancel outgoing invitations?
+								cancel: true,				//cancel OTHERS' outgoing invitations? (can always cancel your own)
 								leave: false,				//leave the group? (only the owner can't)
 								kick: true,					//kick others out?
 								promote: true,				//promote a member to admin?
