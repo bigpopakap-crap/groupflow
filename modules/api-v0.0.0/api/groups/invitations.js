@@ -27,6 +27,7 @@ var members = require('./members.js');
 var users = require('../users.js');
 
 //subdomain modules
+var groups = require('../groups.js');
 var group = require('./invitations/group.js');
 var me = require('./invitations/me.js');
 
@@ -63,7 +64,7 @@ exports.configure = configure;
 				{
 					requester: (username),
 					recipient: (username),
-					groupid: (groupid)
+					group: { ... the group object .. }
 				}
 */
 function create(req, params, callback) {
@@ -120,34 +121,53 @@ function create(req, params, callback) {
 									return callback(api_errors.alreadyInGroup(req.session.user, params, params.username, params.groupid));
 								}
 								else {
-									//try adding the new invitation, return a warning if it was already there
-									db.query(
-										'insert into GroupInvitations (requester, recipient, groupid) values (?, ?, ?)',
-										[ req.session.user.username, params.username, params.groupid ],
-										function (err, results) {
-											if (err && (err.number == 1060 || err.number == 1061 || err.number == 1062)) {
-												//warn that there was already an outgoing request
-												return callback(api_warnings.groupInvitationAlreadySent(req.session.user, params, params.username, params.groupid));
-											}
-											else if (err) {
-												//some other database error
-												return callback(api_errors.database(req.session.user, params, err));
-											}
-											else {
-												//TODO send the recipient a notification of the invitation
+									//get the group object from the id
+									groups.get(req, params, function (data) {
+										var response = data.response;
 
-												//successfully sent the request!
-												return callback(api_utils.wrapResponse({
-													params: params,
-													success: {
-														requester: req.session.user.username,
-														recipient: params.username,
-														groupid: params.groupid
-													}
-												}));
-											}
+										if (response.error) {
+											//relay the error
+											return callback(data);
 										}
-									);
+										else if (response.warning) {
+											//this should not happen (the group should exist)
+											gen_utils.err_log('weird case: 1pppHSHiihalhg1');
+											return callback(api_errors.internalServer(req.session.user, params));
+										}
+										else {
+											//get the group object
+											var group = response.success
+
+											//try adding the new invitation, return a warning if it was already there
+											db.query(
+												'insert into GroupInvitations (requester, recipient, groupid) values (?, ?, ?)',
+												[ req.session.user.username, params.username, params.groupid ],
+												function (err, results) {
+													if (err && (err.number == 1060 || err.number == 1061 || err.number == 1062)) {
+														//warn that there was already an outgoing request
+														return callback(api_warnings.groupInvitationAlreadySent(req.session.user, params, params.username, params.groupid));
+													}
+													else if (err) {
+														//some other database error
+														return callback(api_errors.database(req.session.user, params, err));
+													}
+													else {
+														//TODO send the recipient a notification of the invitation
+
+														//successfully sent the request!
+														return callback(api_utils.wrapResponse({
+															params: params,
+															success: {
+																requester: req.session.user.username,
+																recipient: params.username,
+																group: group
+															}
+														}));
+													}
+												}
+											);
+										}
+									});
 								}
 							});
 						}
