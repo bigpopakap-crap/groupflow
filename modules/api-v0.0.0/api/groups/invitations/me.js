@@ -230,10 +230,67 @@ function isfun(role) {
 }
 
 /*
-	TODO
+	Inputs:
+		groupid - the group id for which you want to accept the invitation
+
+	Cases:
+		Error: bad params, no auth, no such incoming group invitation
+		Success: the id of the group
 */
 function accept(req, params, callback) {
-	//TODO
+	var paramErrors = api_validate.validate(params, {
+		groupid: { required: true }
+	});
+
+	if (!req.session.user) {
+		//no auth'd user
+		return callback(api_errors.noAuth(req.session.user, params));
+	}
+	else if (paramErrors) {
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+	}
+	else {
+		//check that there is an incoming request
+		isin(req, params, function (data) {
+			var response = data.response;
+
+			if (response.error) {
+				//relay the error
+				return callback(data);
+			}
+			else if (!response.success) {
+				//there is no incoming invitation, return that error
+				return callback(api_errors.noSuchIncomingGroupInvitation(req.session.user, params, params.groupid));
+			}
+			else {
+				//there is an incoming group invitation! yay!
+				//remove the entry from the invitation table, add the membership in that table
+				db.insertTransaction(
+					[
+						{ query: 'delete from GroupInvitations where recipient=? and groupid=?',
+							params: [ req.session.user.username, params.groupid ] },
+						{ query: 'insert into GroupMembers (groupid, username, status) values (?, ?, ?)',
+							params: [ params.groupid, req.session.user.username, 'member' ] }
+					],
+					function (err, results) {
+						if (err) {
+							//relay the database error
+							return callback(api_errors.database(req.session.user, params, err));
+						}
+						else {
+							//TODO post to the group that the user just joined
+
+							//return the username of the new friend
+							return callback(api_utils.wrapResponse({
+								params: params,
+								success: params.groupid
+							}));
+						}
+					}
+				);
+			}
+		});
+	}
 }
 exports.accept = accept;
 

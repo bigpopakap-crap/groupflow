@@ -390,13 +390,13 @@ function accept(req, params, callback) {
 							params: [ user.username, params.username ].sort() }
 					],
 					function (err, results) {
-						//TODO send a notification of the accepted friend request
-
 						if (err) {
 							//relay the database error
 							return callback(api_errors.database(req.session.user, params, err));
 						}
 						else {
+							//TODO send a notification of the accepted friend request
+
 							//return the username of the new friend
 							return callback(api_utils.wrapResponse({
 								params: params,
