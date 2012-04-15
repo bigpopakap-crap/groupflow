@@ -19,6 +19,10 @@ FEATURES FOR WEB APPS
 - TODO problem: check that any function with maxcount/offset returns
 			paramErrors BEFORE trying to convert them to numbers (in case they
 			were not given as numbers)
+- TODO design flaw: if a group invitation is pending, it blocks others from
+			sending an invitation. but then if the original is cancelled by the
+			sender, the other ones should appear. If an admin cancels and outgoin
+			group invitation then it should cancel all of them
 
 FEATURES AFTER WEB APPS
 - unfriending people
