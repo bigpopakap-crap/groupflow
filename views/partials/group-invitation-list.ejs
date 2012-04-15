@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<%/*
+	Expects variables:
+		invitations - an array of user objects to populate the initial list
+					(it is expected that this is the start of the invitations list)
+		offset - the offset of the current view
+		maxcount - the maxcount of the current view
+*/%>
+<html>
+<head>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/gf-style.css',
+				'/public/group-invitation-list/group-invitation-list.css'
+			],
+			scripts: [
+				'/public/lib/jquery/jquery.min.js',
+				'/public/group-invitation-list/group-invitation-list.js'
+			]
+		}) %>
+</head>
+<body>
+	<div class="group-invitation-list-partial">
+		<%	if (invitations.length == 0) { %>
+			<div class="alert alert-warning">
+				<div>No pending group invitations to worry about.
+					 Add more <a href="/friends/search">friends</a>!</div>
+			</div>
+		<% } else { %>
+			<%  for (var i in invitations) { %>
+				<div class="group-invitation-tile-outer">
+					<%- partial('partials/group-invitation-tile.ejs', {
+							invitation: invitations[i],
+							alert_class: "alert-warning"
+						}) %>
+				</div>
+			<% } %>
+			<% if (invitations.length == maxcount) { %>
+				<!-- TODO: load more invitations feature -->
+			<% } %>
+		<% } %>
+	</div>
+</body>
+</html>
