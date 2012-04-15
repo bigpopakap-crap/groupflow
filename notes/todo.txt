@@ -13,6 +13,10 @@ FEATURES FOR WEB APPS
 - api for group promotions
 - interface for group promotions
 - admin/owner view for managing a group and its members
+- make ajax user tile
+	(hover over a username to see the user tile)
+	use this on group invitations for the requester
+- make ajax list of members of a group for group invitations
 
 - TODO problem: when checking that an input parameter is a boolean or array,
 			the values should be converted somewhere (because they could be
@@ -24,6 +28,7 @@ FEATURES FOR WEB APPS
 			sending an invitation. but then if the original is cancelled by the
 			sender, the other ones should appear. If an admin cancels and outgoin
 			group invitation then it should cancel all of them
+- TODO tweak: allow single apostrophes in group names and descriptions
 
 FEATURES AFTER WEB APPS
 - unfriending people
