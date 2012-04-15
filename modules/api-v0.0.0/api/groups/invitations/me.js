@@ -40,20 +40,59 @@ function configure(app, url_prefix) {
 exports.configure = configure;
 
 /*
-	TODO
+	Inputs:
+		(none)
+
+	Cases:
+		Error: no auth, database
+		Success: an array of pending request objects, where the auth'd user is the recipient
 */
-function listin(req, params, callback) {
-	//TODO
-}
+var listin = listfun('recipient');
 exports.listin = listin;
 
 /*
-	TODO
+	Inputs:
+		(none)
+
+	Cases:
+		Error: no auth, database
+		Success: an array of pending request objects, where the auth'd user is the requester
 */
-function listout(req, params, callback) {
-	//TODO
-}
+var listout = listfun('requester');
 exports.listout = listout;
+
+/*
+	Base for the two list functions:
+		role = 'requester' for outgoing invitations
+		role = 'recipient' for incoming invitations
+*/
+function listfun(role) {
+	return function(req, params, callback) {
+		if (!req.session.user) {
+			//no auth'd user
+			return callback(api_errors.noAuth(req.session.user, params));
+		}
+		else {
+			db.query(
+				'select * from GroupInvitations where ' + role + '=?',
+				[ req.session.user.username ],
+				function (err, results) {
+					if (err) {
+						//database error
+						return callback(api_errors.database(req.session.user, params, err));
+					}
+					else {
+						//directly return the results, they have the correct object structure
+						return callback(api_utils.wrapResponse({
+							params: params,
+							success: results
+						}));
+					}
+				}
+			);
+		}
+	}
+}
 
 /*
 	TODO
