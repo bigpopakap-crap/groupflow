@@ -59,14 +59,6 @@ function listout(req, params, callback) {
 		maxcount: { isnum: true }
 	});
 
-	//correct the maxcount and offset
-	if (typeof params.offset == 'undefined') params.offset = 0;			//default values
-	if (typeof params.maxcount == 'undefined') params.maxcount = 50;
-	params.offset = parseInt(params.offset);							//convert to ints
-	params.maxcount = parseInt(params.maxcount);
-	params.offset = Math.max(params.offset, 0);							//offset is at least 0
-	params.maxcount = Math.min(Math.max(params.maxcount, 0), 50);		//maxcount between 0 and 50
-
 	if (!req.session.user) {
 		//no auth'd user
 		return callback(api_errors.noAuth(req.session.user, params));
@@ -76,6 +68,14 @@ function listout(req, params, callback) {
 		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
 	}
 	else {
+		//correct the maxcount and offset
+		if (typeof params.offset == 'undefined') params.offset = 0;			//default values
+		if (typeof params.maxcount == 'undefined') params.maxcount = 50;
+		params.offset = parseInt(params.offset);							//convert to ints
+		params.maxcount = parseInt(params.maxcount);
+		params.offset = Math.max(params.offset, 0);							//offset is at least 0
+		params.maxcount = Math.min(Math.max(params.maxcount, 0), 50);		//maxcount between 0 and 50
+
 		//check if the user is in the group and has permission at the same time
 		members.permissions.me(req, params, function (data) {
 			var response = data.response;
@@ -128,5 +128,4 @@ function cancel(req, params, callback) {
 	//TODO
 }
 exports.cancel = cancel;
-
 

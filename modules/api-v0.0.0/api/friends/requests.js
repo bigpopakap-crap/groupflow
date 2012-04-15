@@ -216,19 +216,22 @@ function listfun(endpoint, origin) {
 			maxcount: { isnum: true }
 		});
 
-		//correct the maxcount and offset
-		if (typeof params.offset == 'undefined') params.offset = 0;			//default values
-		if (typeof params.maxcount == 'undefined') params.maxcount = 50;
-		params.offset = parseInt(params.offset);							//convert to ints
-		params.maxcount = parseInt(params.maxcount);
-		params.offset = Math.max(params.offset, 0);							//offset is at least 0
-		params.maxcount = Math.min(Math.max(params.maxcount, 0), 50);		//maxcount between 0 and 50								
-
 		if (!req.session.user) {
 			//no auth'd user
 			return callback(api_errors.noAuth(req.session.user, params));
 		}
+		else if (paramErrors) {
+			return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+		}
 		else {
+			//correct the maxcount and offset
+			if (typeof params.offset == 'undefined') params.offset = 0;			//default values
+			if (typeof params.maxcount == 'undefined') params.maxcount = 50;
+			params.offset = parseInt(params.offset);							//convert to ints
+			params.maxcount = parseInt(params.maxcount);
+			params.offset = Math.max(params.offset, 0);							//offset is at least 0
+			params.maxcount = Math.min(Math.max(params.maxcount, 0), 50);		//maxcount between 0 and 50								
+
 			var username = req.session.user.username;
 
 			db.query(

@@ -16,6 +16,9 @@ FEATURES FOR WEB APPS
 - TODO problem: when checking that an input parameter is a boolean or array,
 			the values should be converted somewhere (because they could be
 			strings representing those types, or values of those types)
+- TODO problem: check that any function with maxcount/offset returns
+			paramErrors BEFORE trying to convert them to numbers (in case they
+			were not given as numbers)
 
 FEATURES AFTER WEB APPS
 - unfriending people

@@ -43,7 +43,12 @@ exports.configure = configure;
 
 /*
 	Inputs:
-		(none)
+		offset (optional, default 0) - the offset of the list of friends
+		maxcount (optional, default to the max of 50) - the max number of friends to return
+
+	Note that this function does adjust the returned input parameters to the maxcount
+		and offset that were actually used. If maxcount was not given, it will be returned
+		as set to 50. If one of them is negative, it will return as set to 0
 
 	Cases:
 		Error: no auth, database
@@ -54,7 +59,12 @@ exports.listin = listin;
 
 /*
 	Inputs:
-		(none)
+		offset (optional, default 0) - the offset of the list of friends
+		maxcount (optional, default to the max of 50) - the max number of friends to return
+
+	Note that this function does adjust the returned input parameters to the maxcount
+		and offset that were actually used. If maxcount was not given, it will be returned
+		as set to 50. If one of them is negative, it will return as set to 0
 
 	Cases:
 		Error: no auth, database
@@ -70,14 +80,30 @@ exports.listout = listout;
 */
 function listfun(role) {
 	return function(req, params, callback) {
+		var paramErrors = api_validate.validate(params, {
+			offset: { isnum: true },
+			maxcount: { isnum: true }
+		});
+
 		if (!req.session.user) {
 			//no auth'd user
 			return callback(api_errors.noAuth(req.session.user, params));
 		}
+		else if (paramErrors) {
+			return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+		}
 		else {
+			//correct the maxcount and offset
+			if (typeof params.offset == 'undefined') params.offset = 0;			//default values
+			if (typeof params.maxcount == 'undefined') params.maxcount = 50;
+			params.offset = parseInt(params.offset);							//convert to ints
+			params.maxcount = parseInt(params.maxcount);
+			params.offset = Math.max(params.offset, 0);							//offset is at least 0
+			params.maxcount = Math.min(Math.max(params.maxcount, 0), 50);		//maxcount between 0 and 50								
+
 			db.query(
-				'select * from GroupInvitations where ' + role + '=?',
-				[ req.session.user.username ],
+				'select * from GroupInvitations where ' + role + '=? limit ?, ?',
+				[ req.session.user.username, params.offset, params.maxcount ],
 				function (err, results) {
 					if (err) {
 						//database error
