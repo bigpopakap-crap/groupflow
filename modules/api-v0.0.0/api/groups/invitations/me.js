@@ -6,6 +6,8 @@
 		listin - lists all incoming group invitations
 		listout - lists all outgoing group invitations sent by the auth'd user
 				  can be filtered by which group
+		isin - determines whether there is such an incoming group invitation
+		isout - determines whether there is such an outgoing group invitation
 		accept - accepts an invitation
 		reject - rejects an invitation
 		cancel - cancels an outgoing invitation initiated by the auth'd user
@@ -35,6 +37,8 @@ function configure(app, url_prefix) {
 	//configure this api domain
 	api_utils.restHandler(app, 'get', url_prefix + '/listin', listin);
 	api_utils.restHandler(app, 'get', url_prefix + '/listout', listout);
+	api_utils.restHandler(app, 'get', url_prefix + '/isin', isin);
+	api_utils.restHandler(app, 'get', url_prefix + '/isout', isout);
 	api_utils.restHandler(app, 'post', url_prefix + '/accept', accept);
 	api_utils.restHandler(app, 'post', url_prefix + '/reject', reject);
 	api_utils.restHandler(app, 'post', url_prefix + '/cancel', cancel);
@@ -120,6 +124,25 @@ function listfun(role) {
 			);
 		}
 	}
+}
+
+/*
+	TODO
+*/
+var isin = isfun(/* TODO */);
+exports.isin = isin;
+
+/*
+	TODO
+*/
+var isout = isfun(/*TODO*/);
+exports.isout = isout;
+
+/*
+	TODO
+*/
+function isfun(/* TODO */) {
+	//TODO
 }
 
 /*
