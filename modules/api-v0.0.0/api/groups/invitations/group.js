@@ -96,11 +96,43 @@ function listout(req, params, callback) {
 								return callback(api_errors.database(req.session.user, params, err));
 							}
 							else {
-								//directly return the results, they have the correct object structure
-								return callback(api_utils.wrapResponse({
-									params: params,
-									success: results
-								}));
+								//get the list of group ids to convert to objects
+								var groupids = results.map(function (entry) {
+									return entry.groupid;
+								});
+
+								//get the group objects from the ids
+								groups.getarr(req, { groupids: groupids }, function (data) {
+									var response = data.response;
+
+									if (response.error) {
+										//relay the error
+										return callback(data);
+									}
+									else if (response.success) {
+										//make sure there are as many groups as group ids
+										if (groupids.length != response.success.length || results.length != groupids.length) {
+											return callback(api_errors.internalServer(req.session.user, params));
+										}
+										else {
+											for (var i=0; i < results.length; i++) {
+												delete results[i].groupid;
+												results[i].group = response.success[i];
+											}
+
+											//return the results that now have the group objects
+											return callback(api_utils.wrapResponse({
+												params: params,
+												success: results
+											}));
+										}
+									}
+									else {
+										//this shouldn't happen
+										gen_utils.err_log('weird case: 828gH00282y00');
+										return callback(api_errors.internalServer(req.session.user, params));
+									}
+								});
 							}
 						}
 					);
