@@ -32,7 +32,17 @@ function configure(app, url_prefix) {
 exports.configure = configure;
 
 /*
-	TODO
+	Inputs
+		groupid - the id of the group to see outgoing invitations for
+		//TODO offset and maxcount
+
+	Cases:
+		Error:  no auth,
+				missing input params,
+				auth'd user not in group,
+				auth'd user doesn't have permission
+		Success:
+				the array of invitation objects where the groupid is the one given
 */
 function listout(req, params, callback) {
 	//TODO

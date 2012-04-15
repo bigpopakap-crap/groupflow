@@ -108,6 +108,7 @@ function groupStatusToPermissions(flags) {
 								promote: true,				//promote a member to admin?
 								demote: true,				//demote admin back to member?
 								viewmembers: true,			//view list of members?
+								viewinvitations: true,		//view list of outgoing invitations?
 								permissions: 'view'			//view or edit member permissions?
 							};
 		case 'admin':		return {
@@ -121,6 +122,7 @@ function groupStatusToPermissions(flags) {
 								promote: true,
 								demote: false,
 								viewmembers: true,
+								viewinvitations: true,
 								permissions: 'view'
 							};
 		case 'member': 		return {
@@ -134,6 +136,7 @@ function groupStatusToPermissions(flags) {
 								promote: false,
 								demote: false,
 								viewmembers: true,
+								viewinvitations: false,
 								permissions: 'none'
 							};
 		default:			gen_utils.err_log('unhandled status type in groupStatusToPermissions(): ' + flags.status);
