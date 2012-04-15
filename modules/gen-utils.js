@@ -56,7 +56,7 @@ function dflt_render_vars(req, callback) {
 	req = req || {};
 
 	api.users.permissions.get(req, getParams(req), function(data) {
-		//assumes that permissions object is flat to that an empty object
+		//assumes that permissions object is flat so that an empty object
 		//		will just have undefined (false) permissions
 		var permissions = {};
 		if (data.response.success) permissions = data.response.success;

@@ -168,7 +168,7 @@ function create(req, params, callback) {
 exports.create = create;
 
 /*
-	Cancels the group invitation with the columns matching the given row object exactly
+	Cancels the group invitation with the columns matching the given invitation object exactly
 
 	callback takes two arguments: status, error
 		status is:
@@ -179,13 +179,30 @@ exports.create = create;
 			the database error if status=='error'
 		
 */
-function cancelExec(row, callback) {
-	//TODO
+function cancelExec(invitation, callback) {
+	//create the query string and params
+	var querystr = 'delete from GroupInvitations where';
+	var queryparams = [];
+	for (var i in invitation) {
+		if (invitation.hasOwnProperty(i)) {
+			if (queryparams.length > 0) querystr += ' and';
+			querystr += ' ' + i + '=?';
+			queryparams.push(invitation[i]);
+		}
+	}
+
+	db.query(querystr, queryparams, function (err, results) {
+		if (err)
+			return callback('error', err);
+		else if (results.affectedRows < 1)
+			return callback('noaction');
+		else 
+			return callback('deleted');
+	});
 }
 exports.cancelExec = cancelExec;
 
 //export the subdomains
 exports.group = group;
 exports.me = me;
-
 

@@ -16,7 +16,6 @@
 	Directly touches database tables:
 		GroupInvitations (read/write)
 		GroupMembers (read/write)
-		TODO
 
 	Directly touches session variables:
 		req.session.user
@@ -26,6 +25,9 @@ var api_errors = require('../../util/api-errors.js');
 var api_warnings = require('../../util/api-warnings.js');
 var api_validate = require('../../util/api-validate.js');
 var db = require('../../../db.js');
+
+//other api modules
+var invitations = require('../invitations.js');
 
 function configure(app, url_prefix) {
 	url_prefix += '/me';
@@ -103,18 +105,103 @@ function accept(req, params, callback) {
 exports.accept = accept;
 
 /*
-	TODO
+	Inputs:
+		groupid - the group invitation to reject
+
+	(Since the invitations have unique (recipient, groupid) pairings, this
+		pair uniquely defines the invitation)
+
+	Cases:
+		Error: no auth, param errors, no pending group invitation
+		Success: the groupid
 */
-function reject(req, params, callback) {
-	//TODO
-}
+var reject = deletefun('recipient', function (req, params) {
+	return api_errors.noSuchIncomingGroupInvitation(req.session.user, params, params.groupid);
+});
 exports.reject = reject;
 
 /*
-	TODO
+	Inputs:
+		username - the recipient of the invitation
+		groupid - the group invitation to reject
+
+	(Since the invitations have unique (recipient, groupid) pairings, this
+		pair uniquely defines the invitation)
+
+	Cases:
+		Error: no auth, param errors, no pending group invitation
+		Success: the groupid
 */
-function cancel(req, params, callback) {
-	//TODO
-}
+var cancel = deletefun('requester', function (req, params) {
+	return api_errors.noSuchOutgoingGroupInvitation(req.session.user, params, params.username, params.groupid);
+});
 exports.cancel = cancel;
+
+function deletefun(role, noInvErrGen) {
+	return function (req, params, callback) {
+		//switch the param errors criteria based on whether we are doing incoming or
+		//		outgoing invitations
+		var paramErrors;
+		switch (role) {
+			//outgoing invitations
+			case 'requester':		paramErrors = api_validate.validate(params, {
+										username: { required: true },
+										groupid: { required: true }
+									});
+									break;
+
+			//incoming invitations
+			case 'recipient':		paramErrors = api_validate.validate(params, {
+										groupid: { required: true }
+									});
+									break;
+
+			default: 				gen_utils.err_log('weird case: bihea;jhwi:L');
+									return callback(api_errors.internalServer(req.session.user, params));
+		}
+
+		if (!req.session.user) {
+			//no auth'd user
+			return callback(api_errors.noAuth(req.session.user, params));
+		}
+		else if (paramErrors) {
+			//errors in input parameters
+			return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+		}
+		else {
+			//the criteria on which to match the invitation (fields joined with ANDs)
+			var criteria = { groupid: params.groupid };
+			switch (role) {
+				//outgoing invitations
+				case 'requester': 		criteria[role] = req.session.user.username;
+										criteria.recipient = params.username;
+										break;
+
+				//incoming invitations
+				case 'recipient': 		criteria[role] = req.session.user.username;
+										break;
+
+				default:				gen_utils.err_log('weird case: s8%h9sfqhhn');
+										return callback(api_errors.internalServer(req.session.user, params));		
+			}
+
+			//cancel the invitation
+			invitations.cancelExec(criteria, function (status, err) {
+				switch (status) {
+					case 'deleted': 	return callback(api_utils.wrapResponse({
+											params: params,
+											success: params.groupid
+										}));
+				
+					case 'noaction': 	return callback(noInvErrGen(req, params));
+				
+					case 'error': 		return callback(api_errors.database(req.session.user, params, err));
+				
+					default: 			gen_utils.err_log('weird case: $$%h9HLFSH[hphhn');
+										return callback(api_errors.internalServer(req.session.user, params));
+				}
+			});
+		}
+	}
+}
 

@@ -7,6 +7,8 @@ FEATURES FOR WEB APPS
 - in user tile, have a <div> for error messages for the button actions
 - load more results in friends list and friend requests list
 - create back button image in /public/images/icons/back.png
+- api for group post comments
+- interface for group post comments
 - api for group promotions
 - interface for group promotions
 - admin/owner view for managing a group and its members

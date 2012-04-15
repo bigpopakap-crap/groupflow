@@ -209,6 +209,30 @@ exports.noSuchOutgoingFriendRequest = function(user, params, username) {
 	});
 }
 
+/* no group invitation pending for that group */
+exports.noSuchIncomingGroupInvitation = function(user, params, groupid) {
+	return wrapError(params, {
+		statusCode: 404,
+		errorCode: 'NO_SUCH_INCOMING_GROUP_INVITATION',
+		devMsg: 'The authenticated user does not have a pending invitation to group ' + groupid,
+		userMsg: 'You have no pending invitation to the group. Someone may have recently cancelled it',
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
+/* no group invitation sent */
+exports.noSuchOutgoingGroupInvitation = function(user, params, username, groupid) {
+	return wrapError(params, {
+		statusCode: 404,
+		errorCode: 'NO_SUCH_OUTGOING_GROUP_INVITATION',
+		devMsg: 'The authenticated has not sent an invitation to ' + username + ' for the group ' + groupid,
+		userMsg: 'You have not sent a group invitation for that group to ' + username,
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
 /* generic no permission error */
 exports.noPermission = function(user, params) {
 	return wrapError(params, {

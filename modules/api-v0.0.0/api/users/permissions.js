@@ -18,6 +18,7 @@
 var api_utils = require('../util/api-utils.js');
 var api_errors = require('../util/api-errors.js');
 var api_validate = require('../util/api-validate.js');
+var db = require('../../db.js');
 
 function configure(app, url_prefix) {
 	url_prefix += '/permissions';
@@ -49,23 +50,32 @@ function get(req, params, callback) {
 			success: req.session.user_permissions
 		}));
 	}
-	else if (req.session.user.username == process.env.APP_NAME) {
-		//this is the site admin
-		var permissions = { devtools: true };
-		req.session.user_permissions = permissions; //cache the value in the session
-		return callback(api_utils.wrapResponse({
-					params: params,
-					success: permissions
-				}));
-	}
 	else {
-		//this is not the site admin
-		var permissions = { devtools: false };
-		req.session.user_permissions = permissions; //cache the value in the session
-		return callback(api_utils.wrapResponse({
-					params: params,
-					success: permissions
-				}));
+		db.query(
+			'select * from UserDevPermissions where username=? limit 1',
+			[ req.session.user.username ],
+			function (err, results) {
+				if (err) {
+					//database error
+					return callback(api_errors.database(req.session.user, params, err));
+				}
+				else {
+					//convert the numbers to booleans and return the permissions
+					var permissions = {
+						devtools: ((results[0] && results[0].devtools) ? true : false)
+					}
+
+					//cache the value in the session
+					req.session.user_permissions = permissions;
+
+					//return them
+					return callback(api_utils.wrapResponse({
+						params: params,
+						success: permissions
+					}));
+				}
+			}
+		);
 	}
 }
 exports.get = get;
