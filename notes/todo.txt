@@ -28,6 +28,7 @@ FEATURES FOR WEB APPS
 FEATURES AFTER WEB APPS
 - unfriending people
 - view for outgoing pending friend requests
+- view for outgoing group invitations
 - notifications of various events
 - log in with facebook account
 - user fb picture if account is linked

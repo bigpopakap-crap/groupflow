@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<%- partial('partials/header/header-start.ejs', {
+			title: process.env.APP_NAME + ' - Groups'
+		}) %>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/gf-style.css',
+				'/public/user-groups.css'
+			],
+			scripts: []
+		}) %>
+	<%- partial('partials/header/header-end.ejs') %>
+</head>
+<body>
+	<%- partial('partials/topbar.ejs') %>
+	<%- partial('partials/shadowbox.ejs') %>
+
+	<div class="container container-fluid">
+		<%- partial('partials/page-headers/user-header.ejs') %>
+
+		<div class="row-fluid">
+			<div class="span3">
+				<%- partial('partials/sidebar/sidebar-nav.ejs', {
+						active: 'Groups'
+					}) %>
+			</div>
+
+			<div class="main-content span9">
+				<div class="section">
+					<h2>Group invitations</h2>
+					<label>
+						Accept these invitations to joing a group and start posting to them!
+					</label>
+					<%- partial('partials/group-invitation-list.ejs', {
+							invitations: invitations.list,
+							offset: invitations.offset,
+							maxcount: invitations.maxcount
+						}) %>
+				</div>
+				<div class="section">
+					<h2>Your groups</h2>
+					<label>
+						These are the groups you are already a part of. Click on a group
+						to go to its group page
+					</label>
+					<%- partial('partials/group-list.ejs', {
+							groups: groups.list,
+							offset: groups.offset,
+							maxcount: groups.maxcount
+						}) %>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+

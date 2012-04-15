@@ -80,7 +80,9 @@ app.get('/notifications', function(req, res) {
 app.get('/friends', function(req, res, next) {
 	//make sure there is an auth'd user
 	if (req.session.user) {
+		//get the user's friend list
 		api.friends.list(req, {}, function (friend_data) {
+			//get the user's incoming friend requests
 			api.friends.requests.listin(req, {}, function (requests_data) {
 				var friend_response = friend_data.response;
 				var friend_params = friend_data.request.params;
@@ -157,6 +159,43 @@ app.post('/friends/search', function(req, res, next) {
 					error: 'Uh oh! Something went wrong while processing your request'
 				});
 			}
+		});
+	}
+	else return next();
+});
+
+//group list page
+app.get('/groups', function(req, res, next) {
+	//make sure there is an auth'd user
+	if (req.session.user) {
+		//get the user's group list
+		api.groups.list(req, {}, function (group_data) {
+			//get the incoming group invitations
+			api.groups.invitations.me.listin(req, {}, function (invitation_data) {
+				var group_response = group_data.response;
+				var group_params = group_data.request.params;
+
+				var invitation_response = invitation_data.response;
+				var invitation_params = invitation_data.request.params;
+
+				if (group_response.success && invitation_response.success) {
+					gen_utils.render(req, res, 'user-groups.ejs', {
+						groups: {
+							list: group_response.success,
+							offset: group_params.offset,
+							maxcount: group_params.maxcount
+						},
+						invitations: {
+							list: invitation_response.success,
+							offset: invitation_params.offset,
+							maxcount: invitation_params.maxcount
+						}
+					});
+				}
+				else {
+					//TODO what to do here?
+				}
+			});
 		});
 	}
 	else return next();
