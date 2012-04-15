@@ -10,7 +10,8 @@
 					 THIS DOES NOT FOLLOW THE NORMAL REST FUNCTION ARG PATTERN
 
 	Directly touches database tables:
-		(none)
+		GroupInvitations (read/write)
+		Groups (read/write)
 
 	Directly touches session variables:
 		(none)

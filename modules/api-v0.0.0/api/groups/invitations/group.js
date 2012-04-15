@@ -11,7 +11,6 @@
 
 	Directly touches database tables:
 		GroupInvitations (read/write)
-		TODO
 
 	Directly touches session variables:
 		req.session.user
