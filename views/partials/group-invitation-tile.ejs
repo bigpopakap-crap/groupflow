@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<%/*
+	Expects variables:
+		invitation - the invitation object to display
+		alert_class - one of "", "alert-info", "alert-warning", "alert-error"
+*/%>
+<html>
+<head>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/gf-style.css',
+				'/public/group-invitation-tile/group-invitation-tile.css'
+			],
+			scripts: [
+				'/public/lib/jquery/jquery.min.js',
+				'/public/group-invitation-tile/group-invitation-tile.js'
+			]
+		}) %>
+</head>
+<body>
+	<div class="group-invitation-tile-partial">
+		<div class="group-invitation-tile alert <%= alert_class %>">
+			<div class="actions pull-right">
+				<!-- TODO -->
+			</div>
+
+			<div class="group-invitation-info">
+				<!-- TODO -->
+			</div>
+		</div>
+	</div>
+</body>
+</html>
