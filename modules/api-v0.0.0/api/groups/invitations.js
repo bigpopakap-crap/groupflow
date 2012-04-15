@@ -7,6 +7,7 @@
 	
 	Internal-only functions:
 		cancelExec - cancels a group invitation without any permissions checking
+					 THIS DOES NOT FOLLOW THE NORMAL REST FUNCTION ARG PATTERN
 
 	Directly touches database tables:
 		(none)
@@ -167,9 +168,18 @@ function create(req, params, callback) {
 exports.create = create;
 
 /*
-	TODO
+	Cancels the group invitation with the columns matching the given row object exactly
+
+	callback takes two arguments: status, error
+		status is:
+			'deleted' - if the invitation was there and was deleted
+			'noaction' - if the invitation was not there to begin with
+			'error' - if there was some error
+		error is:
+			the database error if status=='error'
+		
 */
-function cancelExec(req, params, callback) {
+function cancelExec(row, callback) {
 	//TODO
 }
 exports.cancelExec = cancelExec;
