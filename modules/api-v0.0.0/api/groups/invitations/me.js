@@ -127,22 +127,106 @@ function listfun(role) {
 }
 
 /*
-	TODO
+	Inputs:
+		groupid - the group to check if there is a pending invitation for
+
+	Cases:
+		Error: no auth, param errors, database
+		Success: a boolean (true if the invitation was found)
 */
-var isin = isfun(/* TODO */);
+var isin = isfun('recipient');
 exports.isin = isin;
 
 /*
-	TODO
+	Inputs:
+		username - the user the invitation is supposed to be to
+		groupid - the group to check if there is a pending invitation for
+
+	Cases:
+		Error: no auth, param errors, database
+		Success: a boolean (true if the invitation was found)
 */
-var isout = isfun(/*TODO*/);
+var isout = isfun('requester');
 exports.isout = isout;
 
 /*
-	TODO
+	returns a REST handler function that determines if an incoming/ougoing invitation
+	exists
+
+	incoming: role='recipient'
+	outgoing: role='requester'
 */
-function isfun(/* TODO */) {
-	//TODO
+function isfun(role) {
+	return function (req, params, callback) {
+		//switch the param errors criteria based on whether we are doing incoming or
+		//		outgoing invitations
+		var paramErrors;
+		switch (role) {
+			//outgoing invitations
+			case 'requester':		paramErrors = api_validate.validate(params, {
+										username: { required: true },
+										groupid: { required: true }
+									});
+									break;
+
+			//incoming invitations
+			case 'recipient':		paramErrors = api_validate.validate(params, {
+										groupid: { required: true }
+									});
+									break;
+
+			default: 				gen_utils.err_log('weird case: IhshlH:Fho');
+									return callback(api_errors.internalServer(req.session.user, params));
+		}
+
+		//make sure there is user auth
+		if (!req.session.user) {
+			//no auth'd user
+			return callback(api_errors.noAuth(req.session.user, params));
+		}
+		else if (paramErrors) {
+			//errors in input parameters
+			return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+		}
+		else {
+			//the criteria on which to match the invitation (fields joined with ANDs)
+			var querystr = 'select * from GroupInvitations where groupid=?';
+			var queryparams = [ params.groupid ];
+			switch (role) {
+				//outgoing invitations
+				case 'requester': 		querystr += ' and ' + role + '=? and recipient=?';
+										queryparams.push(req.session.user.username);
+										queryparams.push(params.username);
+										break;
+
+				//incoming invitations
+				case 'recipient': 		querystr += ' and ' + role + '=?';
+										queryparams.push(req.session.user.username);
+										break;
+
+				default:				gen_utils.err_log('weird case: 9BhsLH*');
+										return callback(api_errors.internalServer(req.session.user, params));		
+			}
+
+			//add a limit
+			querystr += ' limit 1';
+
+			//select from the table
+			db.query(querystr, queryparams, function (err, results) {
+				if (err) {
+					//return database error
+					return callback(api_errors.database(req.session.user, params, err));
+				}
+				else {
+					//return true if an only if a result was returned
+					return callback(api_utils.wrapResponse({
+						params: params,
+						success: (results.length > 0 ? true : false)
+					}));
+				}
+			});
+		}
+	}
 }
 
 /*
@@ -186,6 +270,14 @@ var cancel = deletefun('requester', function (req, params) {
 });
 exports.cancel = cancel;
 
+/*
+	returns a REST handler function that deletes an invitation
+
+	incoming invitation: role='recipient'
+	outgoing invitation: role='requester'
+
+	noInvErrGen returns the JSON response when the invitation isn't found
+*/
 function deletefun(role, noInvErrGen) {
 	return function (req, params, callback) {
 		//switch the param errors criteria based on whether we are doing incoming or
