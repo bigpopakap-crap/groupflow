@@ -176,7 +176,12 @@ function create(req, params, callback) {
 						{ query: 'select * from Groups where groupid=?',
 						  params: [ uuid ] }
 					],
-					getGroupCallback(req, params, callback)
+					getGroupCallback(req, params, function () {
+						//TODO post a group-created message to the group
+						
+						//call the callback with the correct arguments
+						callback.apply(null, arguments);
+					})
 				);
 			}
 		});

@@ -203,11 +203,34 @@ app.get('/groups', function(req, res, next) {
 
 //group creation page
 app.get('/groups/create', function (req, res, next) {
-	//TODO
+	if (req.session.user) gen_utils.render(req, res, 'group-create.ejs');
+	else return next();
 });
 
 app.get('/group', function (req, res, next) {
-	//TODO
+	if (req.session.user) {
+		//get the groupid parameter
+		var groupid = req.param('groupid');
+		if (groupid) {
+			//get the group object
+			api.groups.get(req, { groupid: groupid }, function (group_data) {
+				if (group_data.response.success) {
+					gen_utils.render(req, res, 'group-home.ejs', {
+						group: group_data.response.success
+					});
+				}
+				else {
+					//TODO display some error?
+					res.redirect('/groups');
+				}
+			});
+		}
+		else {
+			//no groupid specified, go back to the groups page
+			res.redirect('/groups');
+		}
+	}
+	else return next();
 });
 
 //account settings page

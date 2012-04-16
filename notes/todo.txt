@@ -1,11 +1,11 @@
 FEATURES FOR WEB APPS
 - interface for group creation
-- interface for group invitations
 - api for group posts
 - interface for group posts
 - in user tile and group invitation tile, have a <div> for error messages for the button actions
 - load more results in friends list and friend requests list
 - create back button image in /public/images/icons/back.png
+- view for seeing the members/admins/owner of a group from the group page
 - api for group post comments
 - interface for group post comments
 - api for admins to cancel outgoing requests for a group
@@ -29,6 +29,8 @@ FEATURES FOR WEB APPS
 			sender, the other ones should appear. If an admin cancels and outgoin
 			group invitation then it should cancel all of them
 - TODO tweak: allow single apostrophes in group names and descriptions
+- TODO interface tweak: change group tile to be a link to the group page,
+			instead of a small link in the corner
 
 FEATURES AFTER WEB APPS
 - unfriending people
