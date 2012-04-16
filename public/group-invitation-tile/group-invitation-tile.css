@@ -5,3 +5,7 @@
 .group-invitation-tile-partial .group-invitation-info .group-description {
 	font-style: italic;
 }
+
+.group-invitation-tile-partial .black-text {
+	color: #222222;
+}

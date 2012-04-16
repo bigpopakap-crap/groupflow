@@ -201,6 +201,15 @@ app.get('/groups', function(req, res, next) {
 	else return next();
 });
 
+//group creation page
+app.get('/groups/create', function (req, res, next) {
+	//TODO
+});
+
+app.get('/group', function (req, res, next) {
+	//TODO
+});
+
 //account settings page
 app.get('/settings', function(req, res, next) {
 	//make sure there is an auth'd user

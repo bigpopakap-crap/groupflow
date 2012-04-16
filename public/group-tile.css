@@ -1,3 +1,7 @@
 .group-tile-partial .group-info .group-description {
 	font-style: italic;
 }
+
+.group-tile-partial .black-text {
+	color: #222222;
+}
