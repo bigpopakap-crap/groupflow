@@ -28,33 +28,9 @@
 		});
 	}
 
-	//submits the form and calls the success or error callbacks
-	//callbacks are: success, warning, error, neterror
-	function submitForm(jform, callbacks) {
-		callbacks = callbacks || {};
-		$.ajax({
-			type: jform.attr('method'),
-			data: jform.serializeArray(),
-			url: jform.attr('action'),
-			success: function(data) {
-				data = JSON.parse(data);
-
-				if (data.response.success && callbacks.success)
-					return callbacks.success(data);
-				else if (data.response.warning && callbacks.warning)
-					return callbacks.warning(data);
-				else if (data.response.error && callbacks.error)
-					return callbacks.error(data);
-			},
-			error: function(data) {
-				if (callbacks.neterror) callbacks.neterror(JSON.parse(data));
-			}
-		});
-	}
-
 	//accept a group invitation
 	function acceptInvitation(jform, jpartial) {
-		submitForm(jform, {
+		jform.ajaxSubmit({
 			success: function(data) {
 				jpartial.find(action_buttons_sel).fadeOut(400);
 				jpartial.find(accepted_message_sel).delay(400).fadeIn(400);
@@ -67,7 +43,7 @@
 
 	//accept a group invitation
 	function rejectInvitation(jform, jpartial) {
-		submitForm(jform, {
+		jform.ajaxSubmit({
 			success: function(data) {
 				jpartial.find(action_buttons_sel).fadeOut(400);
 				jpartial.find(rejected_message_sel).delay(400).fadeIn(400);

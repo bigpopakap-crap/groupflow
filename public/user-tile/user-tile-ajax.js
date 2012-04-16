@@ -27,33 +27,9 @@
 		});
 	}
 
-	//submits the form and calls the success or error callbacks
-	//callbacks are: success, warning, error, neterror
-	function submitForm(jform, callbacks) {
-		callbacks = callbacks || {};
-		$.ajax({
-			type: jform.attr('method'),
-			data: jform.serializeArray(),
-			url: jform.attr('action'),
-			success: function(data) {
-				data = JSON.parse(data);
-
-				if (data.response.success && callbacks.success)
-					return callbacks.success(data);
-				else if (data.response.warning && callbacks.warning)
-					return callbacks.warning(data);
-				else if (data.response.error && callbacks.error)
-					return callbacks.error(data);
-			},
-			error: function(data) {
-				if (callbacks.neterror) callbacks.neterror(JSON.parse(data));
-			}
-		});
-	}
-
 	//accept a friend request
 	function acceptRequest(jform, jpartial) {
-		submitForm(jform, {
+		jform.ajaxSubmit({
 			success: function(data) {
 				//do nothing except change the tile state to friends
 				jpartial.setTileState('friends');
@@ -66,7 +42,7 @@
 
 	//accept a friend request
 	function rejectRequest(jform, jpartial) {
-		submitForm(jform, {
+		jform.ajaxSubmit({
 			success: function(data) {
 				//do nothing except change the tile state to none
 				jpartial.setTileState('none');
@@ -79,7 +55,7 @@
 
 	//accept a friend request
 	function createRequest(jform, jpartial) {
-		submitForm(jform, {
+		jform.ajaxSubmit({
 			success: function(data) {
 				//do nothing except change the tile state to outgoing
 				jpartial.setTileState('outgoing');
@@ -92,7 +68,7 @@
 
 	//cancel a friend request
 	function cancelRequest(jform, jpartial) {
-		submitForm(jform, {
+		jform.ajaxSubmit({
 			success: function(data) {
 				//do nothing except change the tile state to none
 				jpartial.setTileState('none');
