@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<%/*
+	Expects variables:
+		group - the group object to display
+		alert_class - one of "", "alert-info", "alert-warning", "alert-error"
+*/%>
+<html>
+<head>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/gf-style.css',
+				'/public/group-tile.css'
+			],
+			scripts: []
+		}) %>
+</head>
+<body>
+	<div class="group-tile-partial">
+		<div class="group-tile alert <%= alert_class %>">
+			<div class="group-info">
+				<a class="pull-right" href="/group?groupid=<%= group.groupid %>">Go to group</a>
+				<div><strong><%= group.name %></strong></div>
+				<div class="group-description"><%= group.description %></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
