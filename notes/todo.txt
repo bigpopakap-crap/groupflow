@@ -1,5 +1,4 @@
 FEATURES FOR WEB APPS
-- interface for group creation
 - api for group posts
 - interface for group posts
 - in user tile and group invitation tile, have a <div> for error messages for the button actions
