@@ -12,6 +12,11 @@ body {
 	overflow-y: scroll;
 }
 
+/* make textareas only vertically resizable */
+textarea {
+	resize: vertical;
+}
+
 /* other utility classes */
 .nowrap {
 	overflow: hidden;
