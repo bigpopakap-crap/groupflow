@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<%/*
+	Expects variables:
+		TODO
+*/%>
+<html>
+<head>
+	<%- partial('partials/header/header-start.ejs', {
+			title: process.env.APP_NAME + ' - Create group'
+		}) %>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/gf-style.css',
+				'/public/user-groups-create.css'
+			],
+			scripts: []
+		}) %>
+	<%- partial('partials/header/header-end.ejs') %>
+</head>
+<body>
+	<%- partial('partials/topbar.ejs') %>
+	<%- partial('partials/shadowbox.ejs') %>
+
+	<div class="container container-fluid">
+		<%- partial('partials/page-headers/user-header.ejs') %>
+
+		<div class="row-fluid">
+			<div class="span3">
+				<%- partial('partials/sidebar/sidebar-nav.ejs', {
+						active: 'Groups'
+					}) %>
+			</div>
+
+			<div class="main-content span9">
+				<div class="section">
+					<h2>
+						Create a group
+					</h2>
+					<label>
+						You will become the owner of the group. You can invite members and
+						 	manage group admins, but <strong>you will not be able to leave the group</strong>
+							(this prevents groups from becoming empty)
+					</label>
+				</div>
+
+				<div class="new-group section">
+					<%- partial('partials/new-group-form.ejs', {
+						parent: '.new-group.section'
+					}) %>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

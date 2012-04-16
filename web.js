@@ -203,7 +203,7 @@ app.get('/groups', function(req, res, next) {
 
 //group creation page
 app.get('/groups/create', function (req, res, next) {
-	if (req.session.user) gen_utils.render(req, res, 'group-create.ejs');
+	if (req.session.user) gen_utils.render(req, res, 'user-groups-create.ejs');
 	else return next();
 });
 
