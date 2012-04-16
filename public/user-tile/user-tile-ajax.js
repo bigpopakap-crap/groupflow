@@ -46,7 +46,7 @@
 					return callbacks.error(data);
 			},
 			error: function(data) {
-				if (callbacks.error) callbacks.error(JSON.parse(data));
+				if (callbacks.neterror) callbacks.neterror(JSON.parse(data));
 			}
 		});
 	}

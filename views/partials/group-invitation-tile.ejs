@@ -22,7 +22,25 @@
 	<div class="group-invitation-tile-partial">
 		<div class="group-invitation-tile alert <%= alert_class %>">
 			<div class="actions pull-right">
-				<!-- TODO -->
+				<!-- accept invitation -->
+				<form class="action form-ajax" method="post"
+							action="/api/groups/invitations/me/accept" data-gf-ajax-form-action="accept-invitation">
+					<input type="hidden" name="groupid" value="<%= invitation.group.groupid %>">
+					<input type="submit" class="btn btn-primary" value="Accept">
+				</form>
+
+				<!-- decline invitation -->
+				<form class="action form-ajax" method="post"
+							action="/api/groups/invitations/me/reject" data-gf-ajax-form-action="reject-invitation">
+					<input type="hidden" name="groupid" value="<%= invitation.group.groupid %>">
+					<input type="submit" class="btn" value="Decline">
+				</form>
+			</div>
+
+			<div class="messages pull-right">
+				<span class="accepted text" style="display: none">Invitation accepted: </span>
+				<a class="accepted" style="display: none" href="/group?groupid=<%= invitation.group.groupid %>">go to group</a>
+				<span class="rejected text" style="display: none">Invitation declined</span>			
 			</div>
 
 			<div class="group-invitation-info">
@@ -30,7 +48,7 @@
 					<strong><%= invitation.group.name %></strong>
 					(invited by <%= invitation.requester %>)
 				</div>
-				<div><%= invitation.group.description %></div>
+				<div class="group-description"><%= invitation.group.description %></div>
 			</div>
 		</div>
 	</div>

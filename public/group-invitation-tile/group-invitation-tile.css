@@ -1,0 +1,7 @@
+.group-invitation-tile-partial .actions .action {
+	display: inline;
+}
+
+.group-invitation-tile-partial .group-invitation-info .group-description {
+	font-style: italic;
+}
