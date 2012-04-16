@@ -17,6 +17,9 @@ FEATURES FOR WEB APPS
 	use this on group invitations for the requester
 - make ajax list of members of a group for group invitations
 
+- TODO design issue: figure out how to disallow users from leaving the
+			Groupflow Feedback and Groupflow Announcements groups
+			(have a special flag for a special group that has specific permissions?)
 - TODO problem: when checking that an input parameter is a boolean or array,
 			the values should be converted somewhere (because they could be
 			strings representing those types, or values of those types)
@@ -27,7 +30,7 @@ FEATURES FOR WEB APPS
 			sending an invitation. but then if the original is cancelled by the
 			sender, the other ones should appear. If an admin cancels and outgoin
 			group invitation then it should cancel all of them
-- TODO tweak: allow single apostrophes in group names and descriptions
+- TODO tweak: allow single apostrophes, questions, exclamations, commas, etc. in group names and descriptions
 - TODO interface tweak: change group tile to be a link to the group page,
 			instead of a small link in the corner
 

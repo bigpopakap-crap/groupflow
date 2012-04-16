@@ -123,7 +123,7 @@ exports.getarr = getarr;
 
 /*
 	Inputs:
-		name - string, required, no weird chars, min 4 chars, max 24 chars
+		name - string, required, no weird chars, min 4 chars, max 60 chars
 		description - string, required, no weird chars, min 12 chars, max 240 chars
 		memberpost - boolean (if it is a non-empty string, it is considered true)
 		memberinvite - boolean (if it is a non-empty string, it is considered true)
@@ -134,7 +134,7 @@ exports.getarr = getarr;
 */
 function create(req, params, callback) {
 	var paramErrors = api_validate.validate(params, {
-		name: { required: true, minlen: 4, maxlen: 24, isname2: true },
+		name: { required: true, minlen: 4, maxlen: 60, isname2: true },
 		description: { required: true, minlen: 12, maxlen: 240, isname2: true }
 	});
 

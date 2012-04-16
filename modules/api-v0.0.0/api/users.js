@@ -231,6 +231,9 @@ function create(req, params, callback) {
 	else {
 		var initBlurb = 'Hello, world! I just joined ' + process.env.APP_NAME + '!';
 
+		//TODO add Groupflow as a friend, and put the user in the groups
+		//			Groupflow Announcements and Groupflow Feedback
+
 		//enter values into: UsersName, UsersEmail, UsersAuth, UsersBlurb
 		db.insertTransaction(
 			[
