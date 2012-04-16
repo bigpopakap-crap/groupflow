@@ -125,8 +125,8 @@ exports.getarr = getarr;
 	Inputs:
 		name - string, required, no weird chars, min 4 chars, max 24 chars
 		description - string, required, no weird chars, min 12 chars, max 240 chars
-		memberpost - boolean, required
-		memberinvite - boolean, required
+		memberpost - boolean (if it is a non-empty string, it is considered true)
+		memberinvite - boolean (if it is a non-empty string, it is considered true)
 
 	Cases:
 		error: database error or input params error
@@ -135,15 +135,12 @@ exports.getarr = getarr;
 function create(req, params, callback) {
 	var paramErrors = api_validate.validate(params, {
 		name: { required: true, minlen: 4, maxlen: 24, isname2: true },
-		description: { required: true, minlen: 12, maxlen: 240, isname2: true },
-		memberpost: { required: true, isbool: true },
-		memberinvite: { required: true, isbool: true }
+		description: { required: true, minlen: 12, maxlen: 240, isname2: true }
 	});
 
-	//convert the booleans to actual booleans
-	//TODO what if they are booleans already?
-	params.memberpost = (params.memberpost === 'true');
-	params.memberinvite = (params.memberinvite === 'true');
+	//convert the flags to booleans
+	params.memberpost = (params.memberpost ? true : false);
+	params.memberinvite = (params.memberinvite ? true : false);
 
 	if (!req.session.user) {
 		//make sure there is an auth'd user

@@ -20,7 +20,54 @@
 			<div class="alert alert-error gf-validate-generic-error hidden"></div>
 
 			<fieldset>
-				wooo
+				<!-- group name control group -->
+				<div class="control-group">
+					<div class="control-label">Group name</div>
+					<div class="controls">
+						<div class="gf-validate-input-container">
+							<input name="name" class="input-xlarge" type="text" placeholder="Family">
+							<span class="help-inline gf-validate-field-error"></span>
+						</div>
+					</div>
+				</div>
+
+				<!-- group description control group -->
+				<div class="control-group">
+					<div class="control-label">Group description</div>
+					<div class="controls">
+						<div class="gf-validate-input-container">
+							<textarea name="description"
+									  class="input-xlarge"
+									  placeholder="A group for close family members"></textarea>
+							<span class="help-block gf-validate-field-error"></span>
+						</div>
+					</div>
+				</div>
+
+				<!-- group flag options -->
+				<div class="control-group">
+					<div class="control-label">Other group options</div>
+					<div class="controls">
+						<!-- memberpost -->
+						<div class="gf-validate-input-container">
+							<input name="memberpost" type="checkbox" value="true" checked="checked">
+								Allow all members to post to the group (admins and the owner can always post)
+							<span class="help-block gf-validate-field-error"></span>
+						</div>
+
+						<!-- memberinvite -->
+						<div class="gf-validate-input-container">
+							<input name="memberinvite" type="checkbox" value="true" checked="checked">
+								Allow all members to invite their friends to the group (admins and the owner can always invite their friends)
+							<span class="help-block gf-validate-field-error"></span>
+						</div>
+					</div>
+				</div>
+
+				<!-- form actions -->
+				<div class="form-actions">
+					<input class="register-button btn-primary" type="submit" value="Create group">
+				</div>
 			</fieldset>
 		</form>
 	</div>

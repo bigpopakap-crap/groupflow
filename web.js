@@ -45,8 +45,10 @@ app.post('/', function(req, res) {
 });
 
 //go to the registration page
-app.get('/register', function(req, res) {
-	gen_utils.render(req, res, 'register.ejs');
+app.get('/register', function(req, res, next) {
+	//make sure there is NOT an auth'd user
+	if (!req.session.user) gen_utils.render(req, res, 'register.ejs');
+	else return next();
 });
 //handle register POST request
 app.post('/register', function(req, res) {
@@ -205,6 +207,28 @@ app.get('/groups', function(req, res, next) {
 app.get('/groups/create', function (req, res, next) {
 	if (req.session.user) gen_utils.render(req, res, 'user-groups-create.ejs');
 	else return next();
+});
+//handle group creation form submission
+app.post('/groups/create', function (req, res, next) {
+	api.groups.create(req, gen_utils.getParams(req), function(data) {
+		//if successful, go to back to the root, which will go to the homepage
+		if (data.response.success) {
+			res.redirect('/group?groupid=' + data.response.success.groupid);
+		}
+		//else display the errors on this page
+		else if (data.response.error) {
+			gen_utils.render(req, res, 'user-groups-create.ejs', {
+				errors: [data.response.error.userMsg],
+				param_errors: data.response.error.paramErrors
+			});
+		}
+		//else in some weird state... log that error and go back to the root
+		else {
+			//TODO display an error message?
+			gen_utils.err_log('weird case: shfihwlsh28HSh2hsa');
+			res.redirect('/');
+		}
+	});
 });
 
 app.get('/group', function (req, res, next) {
