@@ -1,8 +1,12 @@
 FEATURES FOR WEB APPS
+- interface for group invitations
 - api for group posts
 - interface for group posts
+
+NEXT FEATURES
 - in user tile and group invitation tile, have a <div> for error messages for the button actions
 - load more results in friends list and friend requests list
+	(and in group posts)
 - create back button image in /public/images/icons/back.png
 - view for seeing the members/admins/owner of a group from the group page
 - api for group post comments
