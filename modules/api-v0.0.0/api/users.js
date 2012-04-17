@@ -144,7 +144,7 @@ function search(req, params, callback) {
 	params.query = params.query || '';
 	dbReqUserObjList(req, params, callback,
 					 SEARCH_QUERY_STRING,
-					 [ params.query, params.query, params.query ]);
+					 [ params.query ]);
 }
 exports.search = search;
 
@@ -263,7 +263,8 @@ var GET_PASSWORD_QUERY_STRING = 'select n.username, n.firstName, n.lastName, b.b
 				'where n.username=? and b.username=? and a.username=?';
 var SEARCH_QUERY_STRING = 'select n.username, n.firstName, n.lastName, b.blurb ' +
 				'from (UsersName n, UsersBlurb b) ' +
-				'where (n.username=? or n.firstName=? or n.lastName=?) and n.username=b.username';
+				'where match(n.username, n.firstName, n.lastName) against(? in boolean mode) ' +
+					'and n.username=b.username';
 function ARR_QUERY_STRING(usernames) {
 	var questions = '';
 	for (i = 0; i < usernames.length; i++) {
