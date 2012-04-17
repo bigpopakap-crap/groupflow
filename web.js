@@ -238,15 +238,29 @@ app.get('/group', function (req, res, next) {
 		if (groupid) {
 			//get the group object
 			api.groups.get(req, { groupid: groupid }, function (group_data) {
+
 				if (group_data.response.success) {
-					gen_utils.render(req, res, 'group-home.ejs', {
-						group: group_data.response.success
+
+					//get the user's permissions
+					api.groups.members.permissions.me(req, { groupid: groupid }, function (perm_data) {
+						//get the permissions if successful, else just default to no permissions
+						//TODO display an error on failure?
+						var permissions = {};
+						if (perm_data.response.success) permissions = perm_data.response.success;					
+
+						//render the page if the group was gotten
+						gen_utils.render(req, res, 'group-home.ejs', {
+							group: group_data.response.success,
+							permissions: permissions
+						});
 					});
+
 				}
 				else {
 					//TODO display some error?
 					res.redirect('/groups');
 				}
+
 			});
 		}
 		else {

@@ -98,6 +98,7 @@ exports.me = me;
 function groupStatusToPermissions(flags) {
 	switch (flags.status) {
 		case 'owner':		return {
+								status: 'owner',
 								receive: true,				//receive posts?
 								post: true,					//make posts?
 								delete: true,				//delete OTHERS' posts (can always delete own)
@@ -112,6 +113,7 @@ function groupStatusToPermissions(flags) {
 								permissions: 'view'			//view or edit member permissions?
 							};
 		case 'admin':		return {
+								status: 'admin',
 								receive: true,
 								post: true,
 								delete: true,
@@ -126,6 +128,7 @@ function groupStatusToPermissions(flags) {
 								permissions: 'view'
 							};
 		case 'member': 		return {
+								status: 'member',
 								receive: true,
 								post: (memberpost ? true : false),
 								delete: false,

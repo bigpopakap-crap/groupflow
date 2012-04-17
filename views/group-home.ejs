@@ -1,1 +1,35 @@
-<%= JSON.stringify(group) %>
+<!DOCTYPE html>
+<%/* 
+	Expects variables:
+		group - the group object
+		permissions - the auth'd user's permissions in this group
+*/%>
+<html>
+<head>
+	<%- partial('partials/header/header-start.ejs', {
+			title: process.env.APP_NAME + (group ? ' - ' + group.name : '')
+		}) %>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/gf-style.css',
+				'/public/group-home.css'
+			],
+			scripts: []
+		}) %>
+	<%- partial('partials/header/header-end.ejs') %>
+</head>
+<body>
+	<%- partial('partials/topbar.ejs') %>
+	<%- partial('partials/shadowbox.ejs') %>
+
+	<div class="container container-fluid">
+		<%- partial('partials/page-headers/group-header.ejs') %> TODO
+
+		<div class="row-fluid">
+			<%= JSON.stringify(group) %>
+			<%= JSON.stringify(permissions) %>
+		</div>
+	</div>
+</body>
+</html>
