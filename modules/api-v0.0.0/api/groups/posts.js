@@ -157,7 +157,39 @@ function ARR_QUERY_STRING(postids) {
 		Success: the text of the post
 */
 function create(req, params, callback) {
-	//TODO
+	var paramErrors = api_validate.validate(params, {
+		groupid: { required: true },
+		text: { required: true }
+	});
+
+	if (!req.session.user) {
+		//make sure there is an auth'd user
+		return callback(api_errors.noAuth(req.session.user, params));
+	}
+	else if (paramErrors) {
+		//something wrong with the given parameters
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+	}
+	else {
+		//check that the user has permission to post
+		groups.members.permissions.me(req, params, function (data) {
+			//TODO display an error if no permissions are returned?
+			var permissions = {};
+			if (data.response.success) permissions = data.response.success;
+			
+			if (permissions.post) {
+				return post(req, {
+						poster: req.session.user.username,
+						groupid: params.groupid,
+						text: params.text
+					}, callback);
+			}
+			else {
+				//return the generic no permission error
+				return callback(api_errors.noPermission(req.session.user, params));
+			}
+		});
+	}
 }
 exports.create = create;
 
@@ -171,7 +203,11 @@ exports.create = create;
 		Success: the text of the post
 */
 function system(req, params, callback) {
-	//TODO
+	return post(req, {
+						poster: null,
+						groupid: params.groupid,
+						text: params.text
+					}, callback);
 }
 exports.system = system;
 
@@ -189,6 +225,69 @@ exports.system = system;
 		Success: the text of the post
 */
 function post(req, params, callback) {
-	//TODO
+	//assume that poster and groupid have already been validated
+	var paramErrors = api_validate.validate(params, {
+		text: { required: true, minlen: 1, maxlen: 240, isname2: true }
+	});
+
+	if (paramErrors) {
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+	}
+	else {
+		//get the current members of the group
+		db.query(
+			'select username, UUID() as uuid from GroupMembers where groupid=?',
+			[ params.groupid ],
+			function (err, results) {
+				if (err) {
+					//database error
+					return callback(api_errors.database(req.session.user, params, err));
+				}
+				else {
+					var members = results.map(function (entry) {
+						return entry.username
+					});
+
+					//TODO check if "members" is empty - it shouldn't be, and it should be internal server error
+
+					//get a unique id for the posts
+					var uuid = results[0].uuid;
+
+					//create the insert for the post itself
+					var inserts = [
+						{ query: 'insert into GroupPosts (postid, poster, groupid, timestamp, type, content) ' +
+									'values(?, ?, ?, NOW(), ?, ?)',
+						  params: [ uuid, params.poster, params.groupid, 'text', params.text ] }
+					];
+
+					//add an insert for each member of the group
+					for (var i in members) {
+						inserts.push({
+							query: 'insert into GroupPostsRecipients (postid, username) values (?, ?)',
+							params: [ uuid, members[i] ]
+						});
+					}
+
+					//do the insert
+					db.insertTransaction(
+						inserts,
+						function (err, results) {
+							if (err) {
+								//database error
+								return callback(api_errors.database(req.session.user, params, err));
+							}
+							else {
+								//return the text of the post
+								return callback(api_utils.wrapResponse({
+									params: params,
+									success: params.text
+								}));
+							}
+						}
+					);
+				}
+			}
+		);
+	}
 }
 

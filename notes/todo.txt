@@ -1,5 +1,4 @@
 FEATURES FOR WEB APPS
-- api for group posts
 - interface for group posts
 
 NEXT FEATURES
