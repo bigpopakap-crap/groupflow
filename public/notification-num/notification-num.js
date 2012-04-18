@@ -5,6 +5,11 @@
 
 	$(document).ready(function() {
 		//get the list of notifications then set the text in all elements
+		load();
+		window.setInterval(load, 1000); //load the notifications every second
+	});
+
+	function load() {
 		$.ajax({
 			type: 'GET',
 			url: '/api/notifications/num',
@@ -19,6 +24,6 @@
 				}
 			}
 		});
-	});
+	}
 
 })(jQuery);
