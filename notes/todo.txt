@@ -3,12 +3,6 @@ IMMEDIATE STUFF
 - put in auto-refresh feature?
 - add list of current group members
 - add list of recipients to post
-- NOTIFICATIONS
-	- new group invitation
-	- accepted group invitation
-	- new friend request
-	- accepted friend request
-	- new group post
 
 NEXT FEATURES
 - in user tile and group invitation tile, have a <div> for error messages for the button actions

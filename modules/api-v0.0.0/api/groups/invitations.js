@@ -26,6 +26,7 @@ var db = require('../../db.js');
 var members = require('./members.js');
 var users = require('../users.js');
 var friends = require('../friends.js');
+var notifications = require('../notifications.js');
 
 //subdomain modules
 var groups = require('../groups.js');
@@ -154,7 +155,12 @@ function create(req, params, callback) {
 														return callback(api_errors.database(req.session.user, params, err));
 													}
 													else {
-														//TODO send the recipient a notification of the invitation
+														//send the recipient a notification of the invitation
+														notifications.notify(
+															params.username,
+															notifications.TYPES.NEW_GROUP_INVITATION,
+															req.session.user.username + ' invited you to a group: ' + group.name
+														);
 
 														//successfully sent the request!
 														return callback(api_utils.wrapResponse({

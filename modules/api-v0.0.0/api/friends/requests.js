@@ -31,6 +31,7 @@ var db = require('../../db.js');
 //other api domains
 var users = require('../users.js');
 var friends = require('../friends.js');
+var notifications = require('../notifications.js');
 
 function configure(app, url_prefix) {
 	url_prefix += '/requests';
@@ -145,7 +146,12 @@ function create(req, params, callback) {
 											return callback(api_errors.database(req.session.user, params, err));
 										}
 										else {
-											//TODO send the recipient a notification of the request
+											//send the recipient a notification of the request
+											notifications.notify(
+												params.username,
+												notifications.TYPES.NEW_FRIEND_REQUEST,
+												user.username + ' wants to be your friend'
+											);
 
 											//successfully sent the request!
 											return callback(api_utils.wrapResponse({
@@ -395,7 +401,12 @@ function accept(req, params, callback) {
 							return callback(api_errors.database(req.session.user, params, err));
 						}
 						else {
-							//TODO send a notification of the accepted friend request
+							//send a notification of the accepted friend request
+							notifications.notify(
+								params.username,
+								notifications.TYPES.ACCEPTED_FRIEND_REQUEST,
+								req.session.user.username + ' accepted your friend request. Invite them to some groups!'
+							);
 
 							//return the username of the new friend
 							return callback(api_utils.wrapResponse({

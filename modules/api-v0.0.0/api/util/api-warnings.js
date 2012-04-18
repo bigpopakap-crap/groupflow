@@ -20,6 +20,18 @@ exports.noFacebookAccountLinked = function (user, params) {
 	});
 }
 
+/* no such notification */
+exports.noSuchNotification = function (user, params, notid) {
+	return wrapWarning(params, {
+		statusCode: 404,
+		errorCode: 'NO_SUCH_NOTIFICATION',
+		devMsg: 'There is no notification with id ' + notid,
+		userMsg: 'The notification could not be found',
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
 /* no such user warning */
 exports.noSuchUser = function (user, params, username) {
 	return wrapWarning(params, {
