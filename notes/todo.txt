@@ -1,5 +1,8 @@
 IMMEDIATE STUFF
-- put in aut-refresh feature
+- use facebook profile pics
+- put in auto-refresh feature?
+- add list of current group members
+- add list of recipients to post
 - NOTIFICATIONS
 	- new group invitation
 	- accepted group invitation
