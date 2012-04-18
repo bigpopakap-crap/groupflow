@@ -18,7 +18,24 @@ api.configure(app);
 */
 //go to the landing page, or home page
 app.get('/', function(req, res) {
-	if (req.session.user) gen_utils.render(req, res, 'user-home.ejs');
+	if (req.session.user) {
+		api.notifications.list(req, {}, function (data) {
+			var unread = [];
+			var read = [];
+			if (data.response.success) {
+				unread = data.response.success.unread;
+				read = data.response.success.read;
+			}
+			//TODO show error on not success?
+
+			gen_utils.render(req, res, 'user-home.ejs', {
+				notifications: {
+					unread: unread,
+					read: read
+				}
+			});
+		});
+	}
 	else gen_utils.render(req, res, 'landing.ejs');
 });
 //handle login POST request

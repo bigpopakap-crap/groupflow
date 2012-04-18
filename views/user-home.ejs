@@ -29,9 +29,37 @@
 			</div>
 
 			<div class="main-content span9">
-				Notifications not yet implemented. For now, you have to check your
-				friend requests, group invitations, and group updates manually
-				<!-- TODO implement notifications -->
+				<div class="row-fluid">
+					<h2>New notifications</h2>
+					<label>To dismiss a notification and mark it as read, click the close
+							button at the top of the notification</label>
+					<% if (notifications.unread && notifications.unread.length > 0) { %>
+						<% for (var i in notifications.unread) { %>
+							<%- partial('partials/notification-tile', {
+									notification: notifications.unread[i],
+									alert_class: "alert-error"
+								}) %>
+						<% } %>
+					<% } else { %>
+						<div class="alert alert-warning">
+							<div>No new notifications.
+								Bored? Add some <a href="/friends/search">friends</a>
+								or go to your <a href="/groups">groups</a></div>
+						</div>
+					<% } %>
+				</div>
+
+				<% if (notifications.read && notifications.read.length > 0) { %>
+					<div class="row-fluid">
+						<h2>Old notifications</h2>
+							<% for (var i in notifications.read) { %>
+								<%- partial('partials/notification-tile', {
+										notification: notifications.read[i],
+										alert_class: "alert-warning"
+									}) %>
+							<% } %>
+					</div>
+				<% } %>
 			</div>
 		</div>
 	</div>

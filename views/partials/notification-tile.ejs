@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<%/*
+	Expects variables:
+		notification
+		alert_class - one of "", "alert-info", "alert-warning", "alert-error"
+*/%>
+<html>
+<head>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/gf-style.css'
+			],
+			scripts: [
+				'/public/lib/jquery/jquery.min.js',
+				'/public/notification-tile.js'
+			]
+		}) %>
+</head>
+<body>
+	<div class="notification-tile-partial">
+		<div class="alert <%= alert_class %>">
+			<span class="text"><%= notification.text %></span>
+			<% if (notification.unread) { %>
+				- <a class="action" href="<%= notification.href %>">check it out</a>
+				<a class="close pull-right" title="Dismiss" data-notid="<%= notification.notid %>">&times;</a>
+			<% } %>		
+		</div>
+	</div>
+</body>
+</html>
