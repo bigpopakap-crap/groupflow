@@ -46,10 +46,15 @@
 		</div>
 
 		<div class="post-list">
-			<% for (var i in posts) { %>
-				<%- partial('partials/post-tile.ejs', {
-						post: posts[i]
-					}) %>
+			<% if (posts.length == 0) %>
+				There are no posts to display (any posts that were made before you joined
+				the group are invisible to you)
+			<% } else { %>
+				<% for (var i in posts) { %>
+					<%- partial('partials/post-tile.ejs', {
+							post: posts[i]
+						}) %>
+				<% } %>
 			<% } %>
 		</div>
 	</div>
