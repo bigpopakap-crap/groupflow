@@ -8,6 +8,18 @@ function wrapWarning(params, warning) {
 	});
 }
 
+/* no facebook account linked */
+exports.noFacebookAccountLinked = function (user, params) {
+	return wrapWarning(params, {
+		statusCode: 404,
+		errorCode: 'NO_FACEBOOK_ACCOUNT_LINKED',
+		devMsg: 'There is no linked Facebook account',
+		userMsg: 'There is no Facebook account linked',
+		paramErrors: {},
+		nestedError: null
+	});
+}
+
 /* no such user warning */
 exports.noSuchUser = function (user, params, username) {
 	return wrapWarning(params, {

@@ -6,7 +6,7 @@
 		supported - gets a list of supported services, or if an account type is
 					passed, returns true/false
 		linkfacebook - links the user's facebook account so they can log in with it
-		unlink - unlinks a given account
+		getfacebook - returns the user's facebook id
 	
 	Internal-only functions:
 		(none)
@@ -15,23 +15,26 @@
 		UsersFacebookId (read/write)
 
 	Directly touches session variables:
-		(none)
+		req.session.user
 */
 var base64url = require('b64url');
 var crypto = require('crypto');
 var gen_utils = require('../../gen-utils.js');
 var api_utils = require('./util/api-utils.js');
 var api_errors = require('./util/api-errors.js');
+var api_warnings = require('./util/api-warnings.js');
 var api_validate = require('./util/api-validate.js');
 var db = require('../db.js');
+
+//TODO move the linkfacebook function to its own "facebook" api domain
 
 function configure(app, url_prefix) {
 	url_prefix += '/accounts';
 
 	//configure the actions in this api domain
 	api_utils.restHandler(app, 'get', url_prefix + '/supported', supported);
+	api_utils.restHandler(app, 'get', url_prefix + '/getfacebook', getfacebook);
 	api_utils.restHandler(app, 'post', url_prefix + '/linkfacebook', linkfacebook);
-	api_utils.restHandler(app, 'post', url_prefix + '/unlink', unlink);
 }
 exports.configure = configure;
 
@@ -66,11 +69,47 @@ function supported(req, params, callback) {
 exports.supported = supported;
 
 /*
+	Cases:
+		Error: no auth, database
+		Warning: facebook not linked
+		Success: the facebook id
+*/
+function getfacebook(req, params, callback) {
+	if (!req.session.user) {
+		//no auth'd user
+		return callback(api_errors.noAuth(req.session.user, params));
+	}
+	else {
+		db.query(
+			'select fbid from UsersFacebookId where username=? limit 1',
+			[ req.session.user.username ],
+			function (err, results) {
+				if (err) {
+					//database
+					return callback(api_errors.database(req.session.user, params, err));
+				}
+				else if (results.length == 0 || !results[0].fbid) {
+					//no account linked
+					return callback(api_warnings.noFacebookAccountLinked(req.session.user, params));
+				}
+				else {
+					//account linked!
+					return callback(api_utils.wrapResponse({
+						params: params,
+						success: results[0].fbid
+					}));
+				}
+			}
+		);
+	}
+}
+
+/*
 	Inputs
 		The signed request from facebook
 
 	Cases
-		error - database error, or account already linked
+		error - database error, or account already linked, or params, no auth
 		success - true
 */
 function linkfacebook(req, params, callback) {
@@ -110,7 +149,7 @@ function linkfacebook(req, params, callback) {
 
 	//try putting the data in the table
 	db.query(
-		'insert into UsersFacebookId values(?, ?)',
+		'insert into UsersFacebookId (username, fbid) values(?, ?)',
 		[user.username, fbid],
 		function(err, results) {
 			if (err && (err.number == 1060 || err.number == 1061 || err.number == 1062)) {
@@ -161,16 +200,4 @@ function decode_sr(signed_request) {
 
     return data;
 }
-
-/*
-	Inputs
-		TODO
-
-	Cases
-		TODO
-*/
-function unlink(req, params, callback) {
-	//TODO
-}
-exports.unlink = unlink;
 
