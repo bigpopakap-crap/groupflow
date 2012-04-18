@@ -16,14 +16,15 @@
 </head>
 <body>
 	<div class="post-tile-partial row-fluid <% if (!post.poster) { %>system<% } %>">
-		<div class="column poster-column span2">
+		<div class="column poster-column span3">
 			<% if (post.poster) { %>
-				<div class="poster pull-right nowrap">
+				<div class="poster nowrap">
+					<img src="/api/users/picture/get?username=<%= post.poster %>?type=small">
 					<%= post.poster %>
 				</div>
 			<% } %>
 		</div>
-		<div class="column content-column span9">
+		<div class="column content-column span8">
 			<div class="content">
 				<%= post.content %>
 			</div>

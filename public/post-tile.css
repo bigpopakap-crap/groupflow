@@ -1,6 +1,5 @@
 .post-tile-partial {
-	padding-top: 4px;
-	padding-bottom: 4px;
+	padding: 4px;
 	margin-bottom: 4px;
 }
 
@@ -16,9 +15,15 @@
 	height: 100%;
 }
 
-.post-tile-partial:not(.system) .content-column {
-	border-left: solid 1px #CCCCCC;
-	padding-left: 8px;
+.post-tile-partial .poster-column {
+	border-right: solid 1px #CCCCCC;
+	padding-right: 8px;
+}
+
+.post-tile-partial .poster img {
+	border: solid 1px #222222;
+	margin: 4px;
+	vertical-align: text-top;
 }
 
 .post-tile-partial .poster {
