@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<%/*
+	Expects variables:
+		post - the post object
+*/%>
+<html>
+<head>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/gf-style.css',
+				'/public/post-tile.css'
+			],
+			scripts: []
+		}) %>
+</head>
+<body>
+	<div class="post-tile-partial row-fluid">
+		<div class="column poster-column span2">
+			<div class="poster pull-right nowrap">
+				<%= post.poster %>
+			</div>
+		</div>
+		<div class="column content-column span9">
+			<div class="content">
+				<%= post.content %>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

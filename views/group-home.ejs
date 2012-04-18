@@ -3,6 +3,7 @@
 	Expects variables:
 		group - the group object
 		permissions - the auth'd user's permissions in this group
+		posts - the list of posts in the group
 */%>
 <html>
 <head>
@@ -24,11 +25,20 @@
 	<%- partial('partials/shadowbox.ejs') %>
 
 	<div class="container container-fluid">
-		<%- partial('partials/page-headers/group-header.ejs') %> TODO
+		<%- partial('partials/page-headers/group-header.ejs') %>
 
 		<div class="row-fluid">
-			<%= JSON.stringify(group) %>
-			<%= JSON.stringify(permissions) %>
+			<div class="post-area">
+				
+			</div>
+
+			<div class="post-list">
+				<% for (var i in posts) { %>
+					<%- partial('partials/post-tile.ejs', {
+							post: posts[i]
+						}) %>
+				<% } %>
+			</div>
 		</div>
 	</div>
 </body>

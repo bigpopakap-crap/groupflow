@@ -1,0 +1,22 @@
+.post-tile-partial {
+	padding-top: 4px;
+	padding-bottom: 4px;
+	margin-bottom: 4px;
+}
+
+.post-tile-partial:nth-child(2n) {
+	background-color: #EEEEEE;
+}
+
+.post-tile-partial .column {
+	height: 100%;
+}
+
+.post-tile-partial .content-column {
+	border-left: solid 1px #CCCCCC;
+	padding-left: 8px;
+}
+
+.post-tile-partial .poster {
+	font-weight: bold;
+}

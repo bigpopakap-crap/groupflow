@@ -1,6 +1,3 @@
-FEATURES FOR WEB APPS
-- interface for group posts
-
 NEXT FEATURES
 - in user tile and group invitation tile, have a <div> for error messages for the button actions
 - load more results in friends list and friend requests list

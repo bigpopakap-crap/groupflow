@@ -248,10 +248,18 @@ app.get('/group', function (req, res, next) {
 						var permissions = {};
 						if (perm_data.response.success) permissions = perm_data.response.success;					
 
-						//render the page if the group was gotten
-						gen_utils.render(req, res, 'group-home.ejs', {
-							group: group_data.response.success,
-							permissions: permissions
+						//get the group posts
+						api.groups.posts.list(req, { groupid: groupid}, function (post_data) {
+							var posts = [];
+							if (post_data.response.success) posts = post_data.response.success
+							//TODO show an error if not success?
+
+							//render the page if the group was gotten
+							gen_utils.render(req, res, 'group-home.ejs', {
+								group: group_data.response.success,
+								permissions: permissions,
+								posts: posts
+							});
 						});
 					});
 
