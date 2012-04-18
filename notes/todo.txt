@@ -1,7 +1,5 @@
 IMMEDIATE STUFF
 - put in aut-refresh feature
-- make input area help-block line up with input block
-- make the input box go all the way to the left
 - NOTIFICATIONS
 	- new group invitation
 	- accepted group invitation
