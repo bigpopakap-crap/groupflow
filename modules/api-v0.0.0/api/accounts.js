@@ -12,7 +12,7 @@
 		(none)
 
 	Directly touches database tables:
-		UsersFacebookId (read/write)
+		(none)
 
 	Directly touches session variables:
 		req.session.user

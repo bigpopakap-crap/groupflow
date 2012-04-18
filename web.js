@@ -285,6 +285,18 @@ app.get('/settings', function(req, res, next) {
 	if (req.session.user) gen_utils.render(req, res, 'user-settings.ejs');
 	else return next();
 });
+//linking facebook account
+app.post('/settings/facebook/link', function (req, res, next) {
+	//make sure there's an auth'd user
+	if (req.session.user) {
+		api.accounts.facebook.link(req, gen_utils.getParams(req), function (data) {
+			//TODO what to do if there is an error?
+			console.log(data.response);
+			res.redirect('/settings');
+		});
+	}
+	else return next();
+});
 
 //feedback page
 app.get('/feedback', function(req, res, next) {

@@ -3,10 +3,8 @@
 		/api/accounts, api.accounts
 
 	REST functions:
-		supported - gets a list of supported services, or if an account type is
-					passed, returns true/false
-		linkfacebook - links the user's facebook account so they can log in with it
-		getfacebook - returns the user's facebook id
+		link - links the user's facebook account so they can log in with it
+		get - returns the user's facebook id
 	
 	Internal-only functions:
 		(none)
@@ -30,8 +28,8 @@ function configure(app, url_prefix) {
 	url_prefix += '/facebook';
 
 	//configure the actions in this api domain
-	api_utils.restHandler(app, 'get', url_prefix + '/get', getfacebook);
-	api_utils.restHandler(app, 'post', url_prefix + '/link', linkfacebook);
+	api_utils.restHandler(app, 'get', url_prefix + '/get', get);
+	api_utils.restHandler(app, 'post', url_prefix + '/link', link);
 }
 exports.configure = configure;
 
@@ -41,7 +39,7 @@ exports.configure = configure;
 		Warning: facebook not linked
 		Success: the facebook id
 */
-function getfacebook(req, params, callback) {
+function get(req, params, callback) {
 	if (!req.session.user) {
 		//no auth'd user
 		return callback(api_errors.noAuth(req.session.user, params));
@@ -70,6 +68,7 @@ function getfacebook(req, params, callback) {
 		);
 	}
 }
+exports.get = get;
 
 /*
 	Inputs
@@ -79,7 +78,7 @@ function getfacebook(req, params, callback) {
 		error - database error, or account already linked, or params, no auth
 		success - true
 */
-function linkfacebook(req, params, callback) {
+function link(req, params, callback) {
 	//error when something is wrong with the signed request
 	function sr_error(callback) {
 		return callback(api_errors.badInputParams(req.session.user, {}, {
@@ -137,7 +136,7 @@ function linkfacebook(req, params, callback) {
 		}
 	);
 }
-exports.linkfacebook = linkfacebook;
+exports.link = link;
 
 /* helper: decodes a signed_request from facebook (from https://gist.github.com/1139981) */
 function decode_sr(signed_request) {
