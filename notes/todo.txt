@@ -1,4 +1,5 @@
 IMMEDIATE STUFF
+- interface for blurb-setting
 - put in auto-refresh feature?
 - add list of current group members
 - add list of recipients to post
