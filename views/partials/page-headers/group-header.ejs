@@ -5,21 +5,32 @@
 				'/public/lib/bootstrap/css/bootstrap.min.css',
 				'/public/page-headers/group-header.css'
 			],
-			scripts: []
+			scripts: [
+				'/public/lib/jquery/jquery.min.js',
+				'/public/page-headers/group-header.js'
+			]
 		}) %>
 </head>
 <body>
 	<div class="group-header-partial row-fluid">
-		<h1 class="nowrap"><%= group.name %></h1>
-		<p class="description"><%= group.description %></p>
+		<!-- group action buttons -->
 		<div class="group-actions pull-right">
 			<% if (permissions.invite) { %>
-				you can invite people
+				<a href="#" class="invite-toggle">Invite friends</a>
+				<div class="invite-area hidden">
+					<%- partial('partials/group-invite-input.ejs') %>
+				</div>
 			<% } %>
 
 			<% if (permissions.leave) { %>
 				you can leave this group
 			<% } %>
+		</div>
+
+		<!-- group title and description -->
+		<div>
+			<h1 class="nowrap"><%= group.name %></h1>
+			<p class="description"><%= group.description %></p>
 		</div>
 	</div>
 </body>
