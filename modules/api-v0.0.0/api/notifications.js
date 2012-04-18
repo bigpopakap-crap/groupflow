@@ -156,7 +156,7 @@ function list(req, params, callback) {
 	}
 	else {
 		db.query(
-			'select notid, text, type, unread from Notifications where username=? order by unread desc',
+			'select notid, text, type, unread from Notifications where username=? order by timestamp desc',
 			[ req.session.user.username ],
 			function (err, results) {
 				if (err) {
