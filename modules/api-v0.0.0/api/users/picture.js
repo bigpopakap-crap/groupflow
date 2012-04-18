@@ -18,6 +18,7 @@
 var gen_utils = require('../../../gen-utils.js');
 var api_validate = require('../util/api-validate.js');
 var url_path = '/';
+var accounts = require('../accounts.js');
 
 function configure(app, url_prefix) {
 	url_prefix += '/picture';
@@ -33,8 +34,6 @@ exports.configure = configure;
 	Cases:
 		error: 400 bad picture type, 404 no username
 		success: the image
-
-	TODO actually check if the user has linked their facebook
 */
 function get(req, res) {
 	var params = gen_utils.getParams(req);
@@ -52,17 +51,30 @@ function get(req, res) {
 		gen_utils.respondErr(res, 400, 'The type parameter must be one of: square, small, normal or large').end();
 	}
 	else {
-		//redirect to the image of the corresponding size
-		var type = params.type;
-		if (!type || type == 'square' || type == 'small') {
-			res.redirect('/public/images/default_userpic_small.png');
-		}
-		else if (type == 'normal') {
-			res.redirect('/public/images/default_userpic_medium.png');
-		}
-		else {
-			res.redirect('/public/images/default_userpic_large.png');
-		}
+		accounts.facebook.get(req, {}, function (data) {
+			if (data.response.success) {
+				//the facebook id was gotten
+				var fbid = data.response.success;
+				var type = params.type;
+
+				res.redirect('https://graph.facebook.com/' + fbid + '/picture' + 
+								(type ? '?type=' + type : ''));
+			}
+			else {
+				//no linked facebook, use placeholder images
+				//redirect to the image of the corresponding size
+				var type = params.type;
+				if (!type || type == 'square' || type == 'small') {
+					res.redirect('/public/images/default_userpic_small.png');
+				}
+				else if (type == 'normal') {
+					res.redirect('/public/images/default_userpic_medium.png');
+				}
+				else {
+					res.redirect('/public/images/default_userpic_large.png');
+				}
+			}
+		});
 	}
 }
 

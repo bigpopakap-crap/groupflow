@@ -1,5 +1,4 @@
 IMMEDIATE STUFF
-- use facebook profile pics
 - put in auto-refresh feature?
 - add list of current group members
 - add list of recipients to post
