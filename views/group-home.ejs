@@ -16,7 +16,11 @@
 				'/public/gf-style.css',
 				'/public/group-home.css'
 			],
-			scripts: []
+			scripts: [
+				'/public/lib/jquery/jquery.min.js',
+				'/public/lib/gf/gf-ajax-submit.js',
+				'/public/group-home.js'
+			]
 		}) %>
 	<%- partial('partials/header/header-end.ejs') %>
 </head>
@@ -29,16 +33,24 @@
 
 		<div class="row-fluid">
 			<div class="post-area">
-				
+				<form class="form-search" method="post" action="/api/groups/posts/create">
+					<div class="control-group">
+						<input type="hidden" name="groupid" value="<%= group.groupid %>">
+						<div class="span2">&nbsp;</div>
+						<input type="text" class="span8" name="text" placeholder="Write something...">
+						<input type="submit" class="btn btn-primary span1" value="Post">
+						<div class="message help-block"></div>
+					</div>
+				</form>
 			</div>
+		</div>
 
-			<div class="post-list">
-				<% for (var i in posts) { %>
-					<%- partial('partials/post-tile.ejs', {
-							post: posts[i]
-						}) %>
-				<% } %>
-			</div>
+		<div class="post-list">
+			<% for (var i in posts) { %>
+				<%- partial('partials/post-tile.ejs', {
+						post: posts[i]
+					}) %>
+			<% } %>
 		</div>
 	</div>
 </body>
