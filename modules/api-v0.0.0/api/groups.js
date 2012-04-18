@@ -27,6 +27,7 @@ var db = require('../db.js');
 //subdomain modules
 var invitations = require('./groups/invitations.js');
 var members = require('./groups/members.js');
+var posts = require('./groups/posts.js');
 
 //function to configure the app
 function configure(app, url_prefix) {
@@ -35,7 +36,8 @@ function configure(app, url_prefix) {
 	//configure each of the domains
 	invitations.configure(app, url_prefix);
 	members.configure(app, url_prefix);
-	
+	posts.configure(app, url_prefix);	
+
 	//configure this api domain
 	api_utils.restHandler(app, 'get', url_prefix + '/get', get);
 	api_utils.restHandler(app, 'post', url_prefix + '/create', create);
@@ -378,4 +380,5 @@ function dbToApiGroup(group) {
 //subdomains of the api
 exports.invitations = invitations;
 exports.members = members;
+exports.posts = posts;
 
