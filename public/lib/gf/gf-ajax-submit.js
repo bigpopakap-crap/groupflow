@@ -31,19 +31,19 @@
 
 				//call the base netsuccess handler
 				if (callbacks.netsuccess)
-					callbacks.netsuccess(data);
+					callbacks.netsuccess.call(jform, data);
 
 				//call the handlers meant for api calls
 				if (data.response.success && callbacks.success)
-					callbacks.success(data);
+					callbacks.success.call(jform, data);
 				else if (data.response.warning && callbacks.warning)
-					callbacks.warning(data);
+					callbacks.warning.call(jform, data);
 				else if (data.response.error && callbacks.error)
-					callbacks.error(data);
+					callbacks.error.call(jform, data);
 			},
 			error: function(data) {
 				data = JSON.parse(data);
-				if (callbacks.neterror) callbacks.neterror(data);
+				if (callbacks.neterror) callbacks.neterror.call(jform, data);
 			}
 		});
 	}

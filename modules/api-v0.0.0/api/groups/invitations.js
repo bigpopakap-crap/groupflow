@@ -25,6 +25,7 @@ var db = require('../../db.js');
 //other modules
 var members = require('./members.js');
 var users = require('../users.js');
+var friends = require('../friends.js');
 
 //subdomain modules
 var groups = require('../groups.js');
@@ -94,20 +95,21 @@ function create(req, params, callback) {
 				//the group exists! do they have invitation permission?
 				if (response.success.invite) {
 					//the user has permission to invite!
-					//now check if the other user exists
-					users.get(req, params, function (data) {
+					//now check if the other user exists AND if they are friends with the auth'd user
+					friends.is(req, params, function (data) {
 						var response = data.response;
 
 						if (response.error) {
 							//some error, relay it
 							return callback(data);
 						}
-						else if (response.warning) {
-							//no such user, return that error
+						else if (!response.success) {
+							//no such user, or the user is not friends
+							//TODO fix this message based on the reason for the error
 							return callback(api_errors.noSuchUsername(req.session.user, params, params.username));
 						}
 						else {
-							//the user exists! yay!
+							//the user exists and they are friends! yay!
 							//check whether the user is already a member of the group
 							members.is(req, params, function (data) {
 								var response = data.response;

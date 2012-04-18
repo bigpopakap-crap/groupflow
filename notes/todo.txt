@@ -1,5 +1,4 @@
 FEATURES FOR WEB APPS
-- interface for group invitations
 - api for group posts
 - interface for group posts
 

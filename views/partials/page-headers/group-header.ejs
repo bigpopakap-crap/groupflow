@@ -7,7 +7,8 @@
 			],
 			scripts: [
 				'/public/lib/jquery/jquery.min.js',
-				'/public/page-headers/group-header.js'
+				'/public/page-headers/group-header.js',
+				'/public/lib/gf/gf-ajax-submit.js'
 			]
 		}) %>
 </head>
@@ -15,16 +16,46 @@
 	<div class="group-header-partial row-fluid">
 		<!-- group action buttons -->
 		<div class="group-actions pull-right">
-			<% if (permissions.invite) { %>
-				<a href="#" class="invite-toggle">Invite friends</a>
-				<div class="invite-area hidden">
-					<%- partial('partials/group-invite-input.ejs') %>
-				</div>
-			<% } %>
+			<ul class="nav nav-pills pull-right">
+				<!-- group invitations button -->
+				<li>
+					<a href="#invite-area" data-toggle="pill">
+						Invite friends
+					</a>
+				</li>
 
-			<% if (permissions.leave) { %>
-				you can leave this group
-			<% } %>
+				<!-- other actions dropdown -->
+				<li>
+					<a href="#other-actions" data-toggle="pill">
+						Other actions
+					</a>
+				</li>
+
+				<!-- refresh page -->
+				<li class="active">
+					<a href="">
+						Refresh group
+					</a>
+				</li>
+			</ul>
+
+			<div class="tab-content">
+				<div id="invite-area" class="tab-pane pull-right">
+					<form class="form-search" method="post" action="/api/groups/invitations/create">
+						<div class="control-group">
+							<input type="hidden" name="groupid" value="<%= group.groupid %>">
+							<input type="text" name="username" placeholder="Enter a username here">
+							<input type="submit" class="btn btn-primary" value="Invite">
+							<div class="message help-block"></div>
+						</div>
+					</form>
+				</div>
+
+				<div id="other-actions" class="tab-pane pull-right">
+					<!-- TODO implement leave action -->
+					<p>No other actions available</p>
+				</div>
+			</div>
 		</div>
 
 		<!-- group title and description -->
