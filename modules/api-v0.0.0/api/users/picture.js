@@ -51,7 +51,7 @@ function get(req, res) {
 		gen_utils.respondErr(res, 400, 'The type parameter must be one of: square, small, normal or large').end();
 	}
 	else {
-		accounts.facebook.get(req, {}, function (data) {
+		accounts.facebook.get(req, { username: params.username }, function (data) {
 			if (data.response.success) {
 				//the facebook id was gotten
 				var fbid = data.response.success;

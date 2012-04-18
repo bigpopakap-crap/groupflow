@@ -4,10 +4,10 @@
 
 	REST functions:
 		link - links the user's facebook account so they can log in with it
-		get - returns the user's facebook id
+		me - returns the auth'd user's facebook id
 	
 	Internal-only functions:
-		(none)
+		get - gets any user's facebook id
 
 	Directly touches database tables:
 		UsersFacebookId (read/write)
@@ -28,26 +28,46 @@ function configure(app, url_prefix) {
 	url_prefix += '/facebook';
 
 	//configure the actions in this api domain
-	api_utils.restHandler(app, 'get', url_prefix + '/get', get);
+	api_utils.restHandler(app, 'me', url_prefix + '/get', me);
 	api_utils.restHandler(app, 'post', url_prefix + '/link', link);
 }
 exports.configure = configure;
 
 /*
-	Cases:
-		Error: no auth, database
-		Warning: facebook not linked
-		Success: the facebook id
+	Ensures auth, then calls get()
 */
-function get(req, params, callback) {
+function me(req, params, callback) {
 	if (!req.session.user) {
 		//no auth'd user
 		return callback(api_errors.noAuth(req.session.user, params));
 	}
 	else {
+		return get(req, { username: req.session.user.username }, callback);
+	}
+}
+
+/*
+	Inputs
+		username
+
+	Cases:
+		Error: database
+		Warning: facebook not linked
+		Success: the facebook id
+*/
+function get(req, params, callback) {
+	var paramErrors = api_validate.validate(params, {
+		username: { required: true }
+	});
+
+	if (paramErrors) {
+		//bad params
+		return callback(api_errors.badFormParams(req.session.user, params, paramErrors));
+	}
+	else {
 		db.query(
 			'select fbid from UsersFacebookId where username=? limit 1',
-			[ req.session.user.username ],
+			[ params.username ],
 			function (err, results) {
 				if (err) {
 					//database
