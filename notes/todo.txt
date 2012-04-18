@@ -1,3 +1,16 @@
+IMMEDIATE STUFF
+- autofocus input box in group home
+- fix the error message to be the "text" field error message, not the general one
+- put in aut-refresh feature
+- make input area help-block line up with input block
+- make the input box go all the way to the left
+- NOTIFICATIONS
+	- new group invitation
+	- accepted group invitation
+	- new friend request
+	- accepted friend request
+	- new group post
+
 NEXT FEATURES
 - in user tile and group invitation tile, have a <div> for error messages for the button actions
 - load more results in friends list and friend requests list
