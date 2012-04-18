@@ -134,7 +134,7 @@ function groupStatusToPermissions(flags) {
 								delete: false,
 								invite: (flags.memberinvite ? true : false),
 								cancel: false,
-								leave: false,
+								leave: true,
 								kick: false,
 								promote: false,
 								demote: false,
