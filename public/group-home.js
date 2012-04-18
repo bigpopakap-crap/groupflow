@@ -9,7 +9,7 @@
 					window.location.reload();
 				},
 				error: function (data) {
-					this.find('.message').text(data.response.error.userMsg);
+					this.find('.message').text(data.response.error.paramErrors.text.userMsg);
 				},
 				neterror: function (data) {
 					this.find('.message').text('Oops! something when wrong');
