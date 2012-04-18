@@ -18,7 +18,7 @@
 		isalpha (bool) - requires that the field only contains a-zA-Z and spaces
 		isword (bool) - requires that the field consists of only word characters (letters, nums, and _ )
 		isname (bool) - requires that the field only has a-zA-Z, spaces, dashes and periods
-		isname2 (bool) - requires that the field only has a-zA-Z, spaces, dashes, periods and numbers		
+		isname2 (bool) - requires only that the field has no angle brackets	
 		startletter (bool) requires that the field starts with a-zA-Z	
 		startcapletter (bool) - requires that the field starts with A-Z	
 		singlespaces (bool) - requires that the field doesn't have any spaces next to each other
@@ -201,9 +201,9 @@ function isName(str) {
 	return /^[a-zA-Z\.\- ]*$/.test(str);
 }
 
-//helper to determine if there are only letters, numbers, spaces, dashes and dots
+//helper to determine if there are no angle brackets
 function isName2(str) {
-	return /^[a-zA-Z0-9\.\- ]*$/.test(str);
+	return !(/<|>/.test(str));
 }
 
 //helper to determine if the string starts with a letter
@@ -355,8 +355,8 @@ function not_name_error(field) {
 
 function not_name2_error(field) {
 	return {
-		devMsg: 'The ' + field + ' param can only have letters, numbers, spaces, dashes and periods',
-		userMsg: 'Must only contain letters, numbers, spaces, dashes and periods'
+		devMsg: 'The ' + field + ' param cannot contain angle brackets < and >',
+		userMsg: 'Cannot contain angle brackets'
 	}
 }
 
