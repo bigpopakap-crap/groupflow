@@ -15,11 +15,13 @@
 		}) %>
 </head>
 <body>
-	<div class="post-tile-partial row-fluid">
+	<div class="post-tile-partial row-fluid <% if (!post.poster) { %>system<% } %>">
 		<div class="column poster-column span2">
-			<div class="poster pull-right nowrap">
-				<%= post.poster %>
-			</div>
+			<% if (post.poster) { %>
+				<div class="poster pull-right nowrap">
+					<%= post.poster %>
+				</div>
+			<% } %>
 		</div>
 		<div class="column content-column span9">
 			<div class="content">

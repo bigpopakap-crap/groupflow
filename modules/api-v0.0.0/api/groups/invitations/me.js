@@ -311,7 +311,11 @@ function accept(req, params, callback) {
 							return callback(api_errors.database(req.session.user, params, err));
 						}
 						else {
-							//TODO post to the group that the user just joined
+							//post to the group that the user just joined
+							groups.posts.system(req, {
+											groupid: params.groupid,
+											text: req.session.user.username + ' just joined the group. They can now see any new posts'},
+									function() { });
 
 							//return the username of the new friend
 							return callback(api_utils.wrapResponse({

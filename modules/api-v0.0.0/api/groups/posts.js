@@ -75,8 +75,8 @@ function list(req, params, callback) {
 
 				//get all postids this user has received
 				db.query(
-					'select postid from GroupPostsRecipients where username=?',
-					[ req.session.user.username ],
+					'select p.postid from (GroupPostsRecipients r, GroupPosts p) where username=? and r.postid=p.postid and p.groupid=?',
+					[ req.session.user.username, params.groupid ],
 					function (err, results) {
 						if (err) {
 							//database error
@@ -236,7 +236,7 @@ function post(req, params, callback) {
 	else {
 		//get the current members of the group
 		db.query(
-			'select username, UUID() as uuid from GroupMembers where groupid=?',
+			'select username from GroupMembers where groupid=?',
 			[ params.groupid ],
 			function (err, results) {
 				if (err) {
@@ -251,40 +251,48 @@ function post(req, params, callback) {
 					//TODO check if "members" is empty - it shouldn't be, and it should be internal server error
 
 					//get a unique id for the posts
-					var uuid = results[0].uuid;
-
-					//create the insert for the post itself
-					var inserts = [
-						{ query: 'insert into GroupPosts (postid, poster, groupid, timestamp, type, content) ' +
-									'values(?, ?, ?, NOW(), ?, ?)',
-						  params: [ uuid, params.poster, params.groupid, 'text', params.text ] }
-					];
-
-					//add an insert for each member of the group
-					for (var i in members) {
-						inserts.push({
-							query: 'insert into GroupPostsRecipients (postid, username) values (?, ?)',
-							params: [ uuid, members[i] ]
-						});
-					}
-
-					//do the insert
-					db.insertTransaction(
-						inserts,
-						function (err, results) {
-							if (err) {
-								//database error
-								return callback(api_errors.database(req.session.user, params, err));
-							}
-							else {
-								//return the text of the post
-								return callback(api_utils.wrapResponse({
-									params: params,
-									success: params.text
-								}));
-							}
+					db.query('select UUID() as uuid', [], function(err, results) {
+						if (err) {
+							//database error
+							return callback(api_errors.database(req.session.user, params, err));
 						}
-					);
+						else {
+							var uuid = results[0].uuid;
+
+							//create the insert for the post itself
+							var inserts = [
+								{ query: 'insert into GroupPosts (postid, poster, groupid, timestamp, type, content) ' +
+											'values(?, ?, ?, NOW(), ?, ?)',
+								  params: [ uuid, params.poster, params.groupid, 'text', params.text ] }
+							];
+
+							//add an insert for each member of the group
+							for (var i in members) {
+								inserts.push({
+									query: 'insert into GroupPostsRecipients (postid, username) values (?, ?)',
+									params: [ uuid, members[i] ]
+								});
+							}
+
+							//do the insert
+							db.insertTransaction(
+								inserts,
+								function (err, results) {
+									if (err) {
+										//database error
+										return callback(api_errors.database(req.session.user, params, err));
+									}
+									else {
+										//return the text of the post
+										return callback(api_utils.wrapResponse({
+											params: params,
+											success: params.text
+										}));
+									}
+								}
+							);
+						}
+					});
 				}
 			}
 		);

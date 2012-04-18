@@ -176,7 +176,11 @@ function create(req, params, callback) {
 						  params: [ uuid ] }
 					],
 					getGroupCallback(req, params, function () {
-						//TODO post a group-created message to the group
+						//post to the group that the user created it
+						posts.system(req, {
+											groupid: uuid,
+											text: req.session.user.username + ' created the group'},
+									function(data) { console.log(data.response.error) });
 						
 						//call the callback with the correct arguments
 						callback.apply(null, arguments);

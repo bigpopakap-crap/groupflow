@@ -7,14 +7,18 @@
 .post-tile-partial:nth-child(2n) {
 	background-color: #EEEEEE;
 }
+.post-tile-partial.system {
+	background-color: #0088CC;
+	color: white;
+}
 
 .post-tile-partial .column {
 	height: 100%;
 }
 
-.post-tile-partial .content-column {
-	border-left: solid 1px #CCCCCC;
-	padding-left: 8px;
+.post-tile-partial .poster-column {
+	border-right: solid 1px #CCCCCC;
+	padding-right: 8px;
 }
 
 .post-tile-partial .poster {
