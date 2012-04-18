@@ -16,9 +16,9 @@
 	height: 100%;
 }
 
-.post-tile-partial .poster-column {
-	border-right: solid 1px #CCCCCC;
-	padding-right: 8px;
+.post-tile-partial:not(.system) .content-column {
+	border-left: solid 1px #CCCCCC;
+	padding-left: 8px;
 }
 
 .post-tile-partial .poster {
