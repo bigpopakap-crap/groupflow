@@ -130,9 +130,9 @@ function groupStatusToPermissions(flags) {
 		case 'member': 		return {
 								status: 'member',
 								receive: true,
-								post: (memberpost ? true : false),
+								post: (flags.memberpost ? true : false),
 								delete: false,
-								invite: (memberinvite ? true : false),
+								invite: (flags.memberinvite ? true : false),
 								cancel: false,
 								leave: false,
 								kick: false,
