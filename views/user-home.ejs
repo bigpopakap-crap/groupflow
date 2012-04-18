@@ -20,6 +20,9 @@
 
 	<div class="container container-fluid">
 		<%- partial('partials/page-headers/user-header.ejs') %>
+		<ul class="nav nav-pills pull-right">
+			<li class="active"><a href="">Refresh notifications</a></li>
+		</ul>
 
 		<div class="row-fluid">
 			<div class="span3">
@@ -55,7 +58,7 @@
 							<% for (var i in notifications.read) { %>
 								<%- partial('partials/notification-tile', {
 										notification: notifications.read[i],
-										alert_class: "alert-warning"
+										alert_class: "alert-info"
 									}) %>
 							<% } %>
 					</div>
