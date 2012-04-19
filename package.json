@@ -2,7 +2,7 @@
 	"name": "Groupflow",
 	"version": "0.0.0",
 	"engines": {
-		"node": "0.5.x",
+		"node": "x",
 		"npm": "1.0.x"
 	},
 	"dependencies": {
