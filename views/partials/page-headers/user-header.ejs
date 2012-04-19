@@ -5,7 +5,11 @@
 				'/public/lib/bootstrap/css/bootstrap.min.css',
 				'/public/page-headers/user-header.css'
 			],
-			scripts: []
+			scripts: [
+				'/public/lib/jquery/jquery.min.js',
+				'/public/lib/gf/gf-ajax-submit.js',
+				'/public/page-headers/user-header.js'
+			]
 		}) %>
 </head>
 <body>
@@ -14,7 +18,21 @@
 			<img class="user-picture" src="/api/users/picture/me?type=large">
 		</div>
 		<h1 class="nowrap"><%= user.name.full %></h1>
-		<p class="blurb"><%= user.blurb %></p>
+		<div class="blurb-area">
+			<div class="blurb-display edit-toggle-target">
+				<span class="blurb"><%= user.blurb %></span>
+				(<a class="edit-toggle" href="#">edit blurb</a>)
+			</div>
+			
+			<div class="blurb-edit edit-toggle-target hidden">
+				<form method="post" action="/api/users/blurb/set">
+					<input type="text" class="span7" name="blurb" value="" placeholder="What are you thinking?">
+					<input type="submit" class="span1 btn btn-primary" value="Post">
+					<input type="button" class="span1 btn edit-toggle" value="Cancel">
+					<div class="help-block message"></div>
+				</form>
+			</div>
+		</div>
 	</div>
 </body>
 
