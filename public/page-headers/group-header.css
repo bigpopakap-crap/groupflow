@@ -6,3 +6,7 @@
 .group-header-partial .description {
 	color: #666666;
 }
+
+.group-header-partial .group-actions {
+	margin-bottom: 4px;
+}
