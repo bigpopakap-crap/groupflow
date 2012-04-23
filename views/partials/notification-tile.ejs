@@ -9,7 +9,8 @@
 	<%- partial('partials/resources.ejs', {
 			stylesheets: [
 				'/public/lib/bootstrap/css/bootstrap.min.css',
-				'/public/gf-style.css'
+				'/public/gf-style.css',
+				'/public/notification-tile.css'
 			],
 			scripts: [
 				'/public/lib/jquery/jquery.min.js',
@@ -19,7 +20,7 @@
 </head>
 <body>
 	<div class="notification-tile-partial" data-notid="<%= notification.notid %>">
-		<div class="alert <%= alert_class %>">
+		<div class="notification-tile alert <%= alert_class %>">
 			<span class="text"><%= notification.text %></span>
 			<% if (notification.unread) { %>
 				- <a class="follow action" href="<%= notification.href %>">check it out</a>
