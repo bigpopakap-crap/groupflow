@@ -43,8 +43,8 @@
 				<form class="form-search" method="post" action="/api/groups/posts/create">
 					<div class="control-group">
 						<input type="hidden" name="groupid" value="<%= group.groupid %>">
-						<input type="text" class="post-input span10" name="text"
-							   placeholder="Write something..." autofocus="autofocus" autocomplete="off">
+						<textarea type="text" class="post-input span10" name="text" 
+							   placeholder="Write something..." autofocus="autofocus" autocomplete="off"></textarea>
 						<input type="submit" class="btn btn-primary span2" value="Post">
 						<div class="message help-block"></div>
 					</div>
