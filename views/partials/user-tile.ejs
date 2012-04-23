@@ -72,7 +72,7 @@
 				<% if (userObj.username == user.username) { %>
 					<strong class="black-text">You</strong> (<%= userObj.name.full %>, <%= userObj.username %>)
 				<% } else { %>
-					<strong class="black-text"><%= userObj.name.full %></strong> (<%= userObj.username %>)
+					<strong class="black-text"><%= userObj.username %></strong> (<%= userObj.name.full %>)
 				<% } %>
 				<div class="user-blurb nowrap">"<%= userObj.blurb %>"</div>
 			</div>

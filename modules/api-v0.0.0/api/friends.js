@@ -49,7 +49,7 @@ exports.configure = configure;
 			'username', 'name', 'length'
 	
 	NOTE: sort is not not yet an option, currently doesn't sort globally, but each
-		batch of results is sorted by full name
+		batch of results is sorted by username
 
 	Note that this function does adjust the returned input parameters to the maxcount
 		and offset that were actually used. If maxcount was not given, it will be returned
@@ -80,7 +80,9 @@ function list(req, params, callback) {
 	else {
 		var username = req.session.user.username;
 		db.query(
-			'select * from Friendships where lesser=? or greater=? limit ?, ?',
+			'select * from Friendships where lesser=? or greater=?' +
+					' order by lesser, greater' +
+					' limit ?, ?',
 			[username, username, params.offset, params.maxcount],
 			function (err, results) {
 				if (err) {
@@ -102,12 +104,6 @@ function list(req, params, callback) {
 							return callback(data);
 						}
 						else if (response.success) {
-							//sort the array by firstname
-							response.success = response.success.sort(function(a, b) {
-								//TODO what changed? a.firstName worked and then it suddenly didn't
-								return a.name.full.localeCompare(b.name.full);
-							});
-
 							//successful! return the array
 							return callback(api_utils.wrapResponse({
 								params: params,
