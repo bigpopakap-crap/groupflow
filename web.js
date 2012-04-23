@@ -259,6 +259,7 @@ app.get('/group', function (req, res, next) {
 			api.groups.get(req, { groupid: groupid }, function (group_data) {
 
 				if (group_data.response.success) {
+					var group = group_data.response.success;
 
 					//get the user's permissions
 					api.groups.members.permissions.me(req, { groupid: groupid }, function (perm_data) {
@@ -275,7 +276,7 @@ app.get('/group', function (req, res, next) {
 
 							//render the page if the group was gotten
 							gen_utils.render(req, res, 'group-home.ejs', {
-								group: group_data.response.success,
+								group: group,
 								permissions: permissions,
 								posts: posts,
 								input: input
@@ -294,6 +295,50 @@ app.get('/group', function (req, res, next) {
 		else {
 			//no groupid specified, go back to the groups page
 			res.redirect('/groups');
+		}
+	}
+	else return next();
+});
+//group members page
+app.get('/group/members', function (req, res, next) {
+	if (req.session.user) {
+		//get the groupid
+		var groupid = req.param('groupid');
+
+		if (groupid) {
+			//get the group object
+			api.groups.get(req, { groupid: groupid }, function (group_data) {
+				if (group_data.response.success) {
+					var group = group_data.response.success;
+
+					//get the user's permissions
+					api.groups.members.permissions.me(req, { groupid: groupid }, function (perm_data) {
+						//get the permissions if successful, else just default to no permissions
+						//TODO display an error on failure?
+						var permissions = {};
+						if (perm_data.response.success) permissions = perm_data.response.success;					
+
+						api.groups.members.list(req, { groupid: groupid, status: 'owner' }, function (owner_data) {
+							api.groups.members.list(req, { groupid: groupid, status: 'admin'}, function (admin_data) {
+								api.groups.members.list(req, { groupid: groupid, status: 'member'}, function (member_data) {
+									//TODO paging?
+									//TODO what happens on error?
+									if (owner_data.response.success && admin_data.response.success && member_data.response.success) {
+										//render the page with all the members
+										gen_utils.render(req, res, 'group-members.ejs', {
+											group: group,
+											permissions: permissions,
+											owner: owner_data.response.success[0],
+											admins: admin_data.response.success,
+											members: member_data.response.success
+										});
+									}
+								});
+							});
+						});
+					});
+				}
+			});
 		}
 	}
 	else return next();

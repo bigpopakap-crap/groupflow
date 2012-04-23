@@ -13,29 +13,33 @@
 		}) %>
 </head>
 <body>
-	<div class="user-header-partial row-fluid">
-		<div class="user-picture-outer pull-left">
-			<img class="user-picture" src="/api/users/picture/me?type=large">
-		</div>
-		<h1 class="nowrap"><%= user.name.full %></h1>
-		<div class="blurb-area">
-			<div class="blurb-display edit-toggle-target">
-				<span class="blurb"><%= user.blurb %></span>
-				(<a class="edit-toggle" href="#">edit blurb</a>)
+	<div class="user-header-partial">
+		<div class="row-fluid">
+			<div class="user-picture-outer pull-left">
+				<img class="user-picture" src="/api/users/picture/me?type=large">
 			</div>
+			<h1 class="nowrap"><%= user.name.full %></h1>
+			<div class="blurb-area">
+				<div class="blurb-display edit-toggle-target">
+					<span class="blurb"><%= user.blurb %></span>
+					(<a class="edit-toggle" href="#">edit blurb</a>)
+				</div>
 			
-			<div class="blurb-edit edit-toggle-target hidden">
-				<form method="post" action="/api/users/blurb/set">
-					<input type="text" class="span7" name="blurb" value=""
-							placeholder="What's on your mind'?" autocomplete="off">
-					<input type="submit" class="span1 btn btn-primary" value="Post">
-					<input type="button" class="span1 btn edit-toggle" value="Cancel">
-					<div class="help-block message"></div>
-				</form>
+				<div class="blurb-edit edit-toggle-target hidden">
+					<form method="post" action="/api/users/blurb/set">
+						<input type="text" class="span7" name="blurb" value=""
+								placeholder="What's on your mind'?" autocomplete="off">
+						<input type="submit" class="span1 btn btn-primary" value="Post">
+						<input type="button" class="span1 btn edit-toggle" value="Cancel">
+						<div class="help-block message"></div>
+					</form>
+				</div>
 			</div>
 		</div>
 
-		<hr>
+		<div class="row-fluid">
+			<hr>
+		</div>
 	</div>
 </body>
 

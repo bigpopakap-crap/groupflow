@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<%/* 
+	Expects variables:
+		group - the group object
+		owner - the user object of the owner
+		admins - the list of user objects of the admins
+		members - the list of user objects of the normal members
+*/%>
+<html>
+<head>
+	<%- partial('partials/header/header-start.ejs', {
+			title: process.env.APP_NAME + (group ? ' - ' + group.name : '')
+		}) %>
+	<%- partial('partials/resources.ejs', {
+			stylesheets: [
+				'/public/lib/bootstrap/css/bootstrap.min.css',
+				'/public/gf-style.css'
+			],
+			scripts: []
+		}) %>
+	<%- partial('partials/header/header-end.ejs') %>
+</head>
+<body>
+	<%- partial('partials/topbar.ejs') %>
+	<%- partial('partials/shadowbox.ejs') %>
+
+	<div class="container container-fluid">
+		<%- partial('partials/page-headers/group-header.ejs') %>
+
+		<div class="row-fluid">
+			<a href="/group?groupid=<%= group.groupid %>">
+				<img src="/public/images/icons/back.png">
+				<h4>Back to group</h4>
+			</a>
+		</div>
+
+		<div class="row-fluid">
+			<h2>Owner</h2>
+			<% if (owner) { %>
+				<%- partial('partials/user-tile.ejs', {
+						userObj: owner,
+						alert_class: "alert-info",
+						friend_status: "" 
+					}) %>
+			<% } else { %>
+				<div class="alert alert-warning">
+					<div>This group has no owner</div>
+				</div>
+			<% } %>
+		</div>
+
+		<div class="row-fluid">
+			<h2>Admins</h2>
+			<% if (admins.length > 0) { %>
+				<% for (var i in admins) { %>
+					<%- partial('partials/user-tile.ejs', {
+							userObj: admins[i],
+							alert_class: "alert-info",
+							friend_status: "" 
+						}) %>
+				<% } %>
+			<% } else { %>
+				<div class="alert alert-warning">
+					<div>This group has no admins</div>
+				</div>
+			<% } %>
+		</div>
+
+		<div class="row-fluid">
+			<h2>Members</h2>
+			<% if (members.length > 0) { %>
+				<% for (var i in members) { %>
+					<%- partial('partials/user-tile.ejs', {
+							userObj: members[i],
+							alert_class: "alert-info",
+							friend_status: "" 
+						}) %>
+				<% } %>
+			<% } else { %>
+				<div class="alert alert-warning">
+					<div>This group has no members</div>
+				</div>
+			<% } %>
+		</div>
+	</div>
+</body>
+</html>

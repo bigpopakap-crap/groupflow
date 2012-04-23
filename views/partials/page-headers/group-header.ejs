@@ -13,55 +13,59 @@
 		}) %>
 </head>
 <body>
-	<div class="group-header-partial row-fluid">
-		<!-- group action buttons -->
-		<div class="pull-right">
-			<ul class="group-actions nav nav-pills pull-right">
-				<!-- group invitations button -->
-				<li>
-					<a href="#invite-area" data-toggle="pill">
-						Invite friends
-					</a>
-				</li>
+	<div class="group-header-partial">
+		<div class="row-fluid">
+			<!-- group action buttons -->
+			<div class="pull-right">
+				<ul class="group-actions nav nav-pills pull-right">
+					<!-- group invitations button -->
+					<li>
+						<a href="#invite-area" data-toggle="pill">
+							Invite friends
+						</a>
+					</li>
 
-				<!-- other actions dropdown -->
-				<li>
-					<a href="#other-actions" data-toggle="pill">
-						Other actions
-					</a>
-				</li>
-			</ul>
+					<!-- other actions dropdown -->
+					<li>
+						<a href="#other-actions" data-toggle="pill">
+							Other actions
+						</a>
+					</li>
+				</ul>
 
-			<div class="tab-content">
-				<div id="invite-area" class="tab-pane pull-right">
-					<% if (permissions.invite) { %>
-						<form class="form-search" method="post" action="/api/groups/invitations/create">
-							<div class="control-group">
-								<input type="hidden" name="groupid" value="<%= group.groupid %>">
-								<input type="text" name="username" placeholder="Enter a username here">
-								<input type="submit" class="btn btn-primary" value="Invite">
-								<div class="message help-block"></div>
-							</div>
-						</form>
-					<% } else { %>
-						<p>You do not have permission to invite people</p>
-					<% } %>
+				<div class="tab-content">
+					<div id="invite-area" class="tab-pane pull-right">
+						<% if (permissions.invite) { %>
+							<form class="form-search" method="post" action="/api/groups/invitations/create">
+								<div class="control-group">
+									<input type="hidden" name="groupid" value="<%= group.groupid %>">
+									<input type="text" name="username" placeholder="Enter a username here">
+									<input type="submit" class="btn btn-primary" value="Invite">
+									<div class="message help-block"></div>
+								</div>
+							</form>
+						<% } else { %>
+							<p>You do not have permission to invite people</p>
+						<% } %>
+					</div>
+
+					<div id="other-actions" class="tab-pane pull-right">
+						<!-- TODO implement leave action -->
+						<a href="/group/members?groupid=<%= group.groupid %>">View members</a>
+					</div>
 				</div>
+			</div>
 
-				<div id="other-actions" class="tab-pane pull-right">
-					<!-- TODO implement leave action -->
-					<p>No other actions available</p>
-				</div>
+			<!-- group title and description -->
+			<div>
+				<a href="/group?groupid=<%= group.groupid %>"><h1 class="nowrap"><%= group.name %></h1></a>
+				<p class="description"><%= group.description %></p>
 			</div>
 		</div>
 
-		<!-- group title and description -->
-		<div>
-			<h1 class="nowrap"><%= group.name %></h1>
-			<p class="description"><%= group.description %></p>
+		<div class="row-fluid">
+			<hr>
 		</div>
-
-		<hr>
 	</div>
 </body>
 
