@@ -18,12 +18,12 @@
 		}) %>
 </head>
 <body>
-	<div class="notification-tile-partial">
+	<div class="notification-tile-partial" data-notid="<%= notification.notid %>">
 		<div class="alert <%= alert_class %>">
 			<span class="text"><%= notification.text %></span>
 			<% if (notification.unread) { %>
-				- <a class="action" href="<%= notification.href %>">check it out</a>
-				<a class="close pull-right" title="Dismiss" data-notid="<%= notification.notid %>">&times;</a>
+				- <a class="follow action" href="<%= notification.href %>">check it out</a>
+				<a class="close pull-right" title="Dismiss">&times;</a>
 			<% } %>		
 		</div>
 	</div>

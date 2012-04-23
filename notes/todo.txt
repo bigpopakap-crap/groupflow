@@ -1,5 +1,4 @@
 IMMEDIATE STUFF
-- interface for blurb-setting
 - add Groupflow as a friend and put them in the two official groups
 - put in auto-refresh feature?
 - add list of current group members

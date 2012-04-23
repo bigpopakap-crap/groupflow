@@ -37,6 +37,10 @@ exports.configure = configure;
 /*
 	Inputs:
 		groupid
+		after (optional) - return only results after this specific post
+
+	Note: if the postid specified in the "after" field is invalid, or not an actual
+		post, then the function will return an empty list
 
 	Note it doesn't matter what the user's permissions are currently in the group,
 	any post which they can see based on the GroupPostsRecipients table will be
@@ -48,6 +52,7 @@ exports.configure = configure;
 		Error: no auth'd user, no such group, database
 		Success: the post objects
 		{
+			postid: id,
 			poster: username,
 			content: " the text "
 		}
@@ -73,10 +78,14 @@ function list(req, params, callback) {
 			if (response.success) {
 				var group = response.success;
 
+				//calculate the extra filter if the "after" parameter was given
+				var afterString = (params.after ? ' and p.timestamp > (select timestamp from GroupPosts where postid=?)' : '');
+				var afterParams = (params.after ? [params.after] : []);
+
 				//get all postids this user has received
 				db.query(
-					'select p.postid from (GroupPostsRecipients r, GroupPosts p) where username=? and r.postid=p.postid and p.groupid=?',
-					[ req.session.user.username, params.groupid ],
+					'select p.postid from (GroupPostsRecipients r, GroupPosts p) where username=? and r.postid=p.postid and p.groupid=?' + afterString,
+					[ req.session.user.username, params.groupid ].concat(afterParams),
 					function (err, results) {
 						if (err) {
 							//database error
@@ -141,7 +150,7 @@ function ARR_QUERY_STRING(postids) {
 		else questions += ',?';
 	}
 
-	return 'select poster, content ' +
+	return 'select postid, poster, content ' +
 			'from GroupPosts ' +
 			'where postid in (' + questions + ') ' +
 			'order by timestamp desc';

@@ -130,7 +130,7 @@ function listfun(role) {
 							}
 							else if (response.success) {
 								//make sure there are as many groups as group ids
-								if (groupids.length != response.success.length || results.length != groupids.length) {
+								if (groupids.length != response.success.length) {
 									return callback(api_errors.internalServer(req.session.user, params));
 								}
 								else {

@@ -15,7 +15,7 @@
 		}) %>
 </head>
 <body>
-	<div class="post-tile-partial row-fluid <% if (!post.poster) { %>system<% } %>">
+	<div class="post-tile-partial row-fluid <% if (!post.poster) { %>system<% } %>" data-postid="<%= post.postid %>">
 		<div class="column poster-column span3">
 			<% if (post.poster) { %>
 				<div class="poster nowrap">

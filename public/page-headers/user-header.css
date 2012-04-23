@@ -5,12 +5,12 @@
 
 .user-header-partial .user-picture-outer {
 	margin-right: 20px;
-	max-width: 180px;
-	max-height: 180px;
 }
 
 .user-header-partial .user-picture {
 	border: solid 1px #999999;
+	max-width: 180px;
+	max-height: 180px;
 }
 
 .user-header-partial .blurb {

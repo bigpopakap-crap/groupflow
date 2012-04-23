@@ -9,7 +9,7 @@
 		$('#invite-area form').submit(function () {
 			$(this).ajaxSubmit({
 				success: function (data) {
-					this.find('.message').text('Invitation sent');
+					this.find('.message').text('Invitation sent to ' + data.request.params.username);
 				},
 				warning: function (data) {
 					//invitation was already sent, but just pretend this was successful

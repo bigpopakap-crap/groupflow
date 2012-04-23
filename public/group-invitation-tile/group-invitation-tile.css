@@ -2,6 +2,10 @@
 	display: inline;
 }
 
+.group-invitation-tile-partial .group-invitation-tile {
+	margin-bottom: 8px;
+}
+
 .group-invitation-tile-partial .group-invitation-info .group-description {
 	font-style: italic;
 }
