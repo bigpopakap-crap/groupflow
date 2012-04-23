@@ -23,7 +23,11 @@
 			]
 		}) %>
 	<script type="text/javascript">
-		group_home("<%= group.groupid %>", "<%= (posts.length > 0) ? (posts[0].postid) : "" %>")
+		group_home(
+			"<%= group.groupid %>",
+			"<%= (posts.length > 0) ? (posts[0].postid) : "" %>",
+			"<%= (input) ? input : "" %>"
+		);
 	</script>
 	<%- partial('partials/header/header-end.ejs') %>
 </head>

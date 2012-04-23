@@ -250,8 +250,10 @@ app.post('/groups/create', function (req, res, next) {
 
 app.get('/group', function (req, res, next) {
 	if (req.session.user) {
-		//get the groupid parameter
+		//get the groupid and input parameters
 		var groupid = req.param('groupid');
+		var input = req.param('input');
+
 		if (groupid) {
 			//get the group object
 			api.groups.get(req, { groupid: groupid }, function (group_data) {
@@ -275,7 +277,8 @@ app.get('/group', function (req, res, next) {
 							gen_utils.render(req, res, 'group-home.ejs', {
 								group: group_data.response.success,
 								permissions: permissions,
-								posts: posts
+								posts: posts,
+								input: input
 							});
 						});
 					});

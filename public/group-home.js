@@ -1,7 +1,10 @@
 var group_home = (function ($) {
-	return function(GROUP_ID, AFTER) {
+	return function(GROUP_ID, AFTER, INPUT) {
 
 		$(document).ready(function () {
+			//set the input if it is should be set
+			$('.post-area .post-input').val(INPUT).focus();
+
 			//ajax submit the post form
 			$('.post-area form').submit(function () {
 				$(this).ajaxSubmit({
@@ -32,7 +35,9 @@ var group_home = (function ($) {
 			$.get('/api/groups/posts/list?groupid=' + GROUP_ID + (AFTER ? '&after=' + AFTER : ''), function (data) {
 				data = JSON.parse(data);				
 				if (data.response.success && data.response.success.length > 0) {
-					window.location.reload();
+					window.location.replace(
+						window.location.pathname + '?groupid=' + GROUP_ID + '&input=' + $('.post-area .post-input').val()
+					);
 				}
 			});
 		}
