@@ -18,9 +18,10 @@
 				if (typeof data.response.success != 'undefined') {
 					var num = data.response.success;
 
-					//set the text and make it red if it is non-zero
+					//set the text and set the color
 					$(sel).text(num);
 					if (num > 0) $(sel).addClass(red_class);
+					else $(sel).removeClass(red_class);
 				}
 			}
 		});
