@@ -2,8 +2,17 @@ var group_home = (function ($) {
 	return function(GROUP_ID, AFTER, INPUT) {
 
 		$(document).ready(function () {
+			//initialize the text counter
+			$('.post-area .counter').textCounter({
+				target: '.post-area .post-input',
+				count: 240
+			});
+
+			//make the text area submit on enter key
+			$('.post-area .post-input').enterSubmit();
+
 			//set the input if it is should be set
-			$('.post-area .post-input').val(INPUT).focus();
+			$('.post-area .post-input').val(INPUT).keyup().focus();
 
 			//ajax submit the post form
 			$('.post-area form').submit(function () {
@@ -35,8 +44,11 @@ var group_home = (function ($) {
 			$.get('/api/groups/posts/list?groupid=' + GROUP_ID + (AFTER ? '&after=' + AFTER : ''), function (data) {
 				data = JSON.parse(data);				
 				if (data.response.success && data.response.success.length > 0) {
+					var inputString = $('.post-area .post-input').val();
+					var inputParam = inputString ? '&input=' + inputString : '';
+
 					window.location.replace(
-						window.location.pathname + '?groupid=' + GROUP_ID + '&input=' + $('.post-area .post-input').val()
+						window.location.pathname + '?groupid=' + GROUP_ID + inputParam
 					);
 				}
 			});

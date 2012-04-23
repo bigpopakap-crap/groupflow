@@ -19,7 +19,9 @@
 			scripts: [
 				'/public/lib/jquery/jquery.min.js',
 				'/public/lib/gf/gf-ajax-submit.js',
-				'/public/group-home.js'
+				'/public/lib/gf/gf-enter-submit.js',
+				'/public/group-home.js',
+				'/public/lib/text-counter.js'
 			]
 		}) %>
 	<script type="text/javascript">
@@ -46,6 +48,9 @@
 						<textarea type="text" class="post-input span10" name="text" 
 							   placeholder="Write something..." autofocus="autofocus" autocomplete="off"></textarea>
 						<input type="submit" class="btn btn-primary span2" value="Post">
+						<div class="help-block">
+							<span class="counter"></span> characters left
+						</div>
 						<div class="message help-block"></div>
 					</div>
 				</form>
